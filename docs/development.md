@@ -2,7 +2,15 @@
 
 Start with README.md, ROADMAP.md, docs/architecture.md and AGENTS.md.
 
-The initial repository contains documentation only. There are no executable integration tests, CI results or supported Home Assistant versions yet. Add meaningful behavior tests together with the first code extraction, rather than placeholder tests that only prove files exist.
+The development tree contains HA-independent source mapping and observation validation, with standard-library behavior tests. It has no HA integration tests, CI results or supported Home Assistant versions yet. See [source configuration](source-configuration.md) and the [provenance record](provenance.md).
+
+From the repository root, using Python 3.12 or later:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+No dependencies or production configuration are needed. Local verification used Python 3.12.14. Tests validate the source boundary, not the accounting engine, HA lifecycle or a complete electricity bill.
 
 Use synthetic fixtures for counters, contracts, resets, missing prices and time transitions. Add explicit expected amounts and rounding tolerances. Test the Home Assistant adapter lifecycle separately from the accounting core. Test backup restoration in isolation.
 
