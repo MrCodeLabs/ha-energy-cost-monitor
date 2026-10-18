@@ -1,0 +1,20 @@
+# Runtime and private input files must never be published.
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+node_modules/
+dist/
+*.sqlite*
+*.db
+*.log
+.env
+.env.*
+secrets.yaml
+profile.local.json
+private/
+backups/
+.DS_Store
+Thumbs.db
