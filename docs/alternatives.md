@@ -18,13 +18,27 @@ Decision: use or contribute here for basic cost-sensor behavior. The proposed En
 
 GitHub metadata reports a non-archived MIT-licensed project. Cost sensors can use an existing energy sensor with fixed or sensor-based prices. The reviewed code includes unit conversion and price modifiers. This is a relevant existing solution for appliance and energy cost tracking.
 
-The current review does not establish the complete issue/PR landscape or all author-maintained frontend projects. Before changing overlapping functionality, extend that review rather than assuming this project fills a gap.
+The follow-up review on 18 October 2026 covered cost-related issues and PRs, including merged [price modifiers #4262](https://github.com/bramstroker/homeassistant-powercalc/pull/4262), [standalone cost flow #4265](https://github.com/bramstroker/homeassistant-powercalc/pull/4265) and [energy-unit conversion #4269](https://github.com/bramstroker/homeassistant-powercalc/pull/4269). These are existing capabilities, not gaps for this project. [Price-selector issue #4422](https://github.com/bramstroker/homeassistant-powercalc/issues/4422) is closed as completed; [PV/battery mixed-price request #4298](https://github.com/bramstroker/homeassistant-powercalc/issues/4298) is closed as not planned. Neither status alone proves present behavior. The discussion in [collaboration #2904](https://github.com/bramstroker/homeassistant-powercalc/issues/2904) now links Powercalc's own cost support, so the original request is not evidence of a missing basic cost sensor.
+
+The author's [Powercalc Library Viewer](https://github.com/bramstroker/powercalc-library-ui) is a profile-library and analytics site. [Powercalc Measure](https://github.com/bramstroker/powercalc-measure-app) provides a UI for measuring device power profiles. Their READMEs do not describe the proposed contract-comparison/report-snapshot workflow.
+
+## Follow-up evidence and implementation decision — 18 October 2026
+
+GitHub repository metadata reports both primary projects as non-archived. Default-branch heads observed through the API were Dynamic Energy Cost [`53e2890`](https://github.com/martinarva/dynamic_energy_cost/commit/53e28904002960fe2f73c70b33dc58ac3cfed292) (6 September 2026) and Powercalc [`f9c6bbf`](https://github.com/bramstroker/homeassistant-powercalc/commit/f9c6bbf97ec20754591ed48b4d469964f0ede967) (18 October 2026). Activity and archive status do not guarantee future maintenance or compatibility.
+
+Re-read Dynamic Energy Cost's README, manifest (1.2.4), config flow and sensor code, and Powercalc's cost documentation and `sensors/cost.py` (blob `acc80c44486e56e0f07c214ce8814349c390e16d`). Dynamic Energy Cost already validates consumption-source selection and converts units. Its README explicitly leaves full billing and alternative-contract comparisons outside its scope. Powercalc already accepts existing energy meters and dynamic or fixed prices. No code from either project is imported.
+
+The scoped issue/PR search included current import/export discussion [#243](https://github.com/martinarva/dynamic_energy_cost/issues/243), calibration report [#246](https://github.com/martinarva/dynamic_energy_cost/issues/246), reset PR [#132](https://github.com/martinarva/dynamic_energy_cost/pull/132) and configuration PR [#194](https://github.com/martinarva/dynamic_energy_cost/pull/194). Reports and historical patches are inputs to review, not claims of an unresolved defect in the current source.
+
+Searching the authors' public repository names/descriptions also found [MFFR Profit Tracker](https://github.com/martinarva/MFFR-Profit-Tracker): its README describes a React frontend and backend for balancing-reserve battery revenue, rather than a companion contract-cost dashboard. This qualifies the earlier limited frontend search. Searches covered `user:martinarva` and `user:bramstroker fork:false`, plus the linked frontend READMEs; they are not an exhaustive audit of every repository or frontend file.
+
+Decision: proceed with a small, HA-independent source-configuration boundary for this project's planned quality-aware accounting and frozen scenario reports. Its concrete need is to describe independent meters, optional solar/battery/EV/heat-pump capabilities, freshness and plausibility thresholds without household defaults. Basic unit conversion and cost-sensor improvements still belong upstream where applicable. This step does not implement billing, a HA adapter or a card, and does not claim that the complete planned workflow is already available.
 
 ## Decision for this repository
 
 Create a separate project home and document extraction of the existing privately developed accounting/reporting workflow. Do not fork or duplicate the basic cost-sensor implementations above. Code extraction will require another scoped comparison before integration/frontend changes.
 
-The first public project is documentation only. Its intended distinguishing combination is versioned supply scenarios, import/export accounting, regional bill components, explicit coverage/uncertainty and frozen comparison reports. The first implementation must demonstrate that combination before advertising it as supported.
+The initial published baseline was documentation only. The current local development adds the source boundary described above. The intended distinguishing combination remains versioned supply scenarios, import/export accounting, regional bill components, explicit coverage/uncertainty and frozen comparison reports. The first installable implementation must demonstrate that combination before advertising it as supported.
 
 ## HACS milestones
 

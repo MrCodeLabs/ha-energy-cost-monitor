@@ -2,9 +2,9 @@
 
 Samostojen projekt za primerjavo dobavnih scenarijev elektrike, prikaz kakovosti meritev in ponovljiva poročila na podlagi podatkov Home Assistanta.
 
-**Stanje 18. 10. 2026: vzpostavljen javni projekt in razvojni načrt. Namestljive integracije, kartice, izdaje ali podpore HACS v tem repozitoriju še ni.**
+**Stanje 18. 10. 2026: razvojni model nastavljivih virov, preverjanje opazovanj in sintetični testi. Namestljive integracije, kartice, izdaje ali podpore HACS v tem repozitoriju še ni.**
 
-Obstoječi zasebni prototip že vsebuje zbiralnik, obračunsko jedro, prijavljeni API, kartico, poročila in teste. Pred javnim prenosom je treba odstraniti hišne odvisnosti ter preveriti namestitev, nadgradnje in obnovo podatkov.
+Obstoječi zasebni prototip že vsebuje zbiralnik, obračunsko jedro, prijavljeni API, kartico, poročila in teste. Pred javnim prenosom je treba razrešiti izvor in licence ter preveriti namestitev, nadgradnje in obnovo podatkov. Nov [razvojni model virov](docs/source-configuration.md) je napisan samostojno in še ni povezan s HA ali obračunskim jedrom. Primer minimalne hiše ne potrebuje EV, hranilnika, sončne elektrarne ali TČ.
 
 ## Prva ciljna različica
 

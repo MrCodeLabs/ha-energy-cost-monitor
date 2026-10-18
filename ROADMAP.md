@@ -10,11 +10,15 @@ Updated: 18 October 2026. Only checked items are complete in this public project
 
 ## First public implementation
 
-- [ ] Review private prototype source provenance and extract only reusable code and tests.
-- [ ] Replace fixed entity IDs and thresholds with validated configuration and supported units.
-- [ ] Make solar, battery, EV and heat-pump sources optional; quality gates must match configured capabilities.
+- [x] Inspect the prototype source boundary and record unresolved transfer permissions in docs/provenance.md.
+- [x] Refresh upstream code/docs, issue/PR and related frontend comparison before implementation.
+- [x] Add an HA-independent source mapping with validated units and explicit freshness/power thresholds.
+- [x] Model optional solar, battery, EV and heat-pump capabilities with scoped observation quality gates.
+- [x] Add synthetic source examples for a minimal household and optional capabilities, with behavior tests.
+- [ ] Resolve source attribution/licensing and extract only cleared accounting code and tests.
+- [ ] Connect the validated mapping to accounting and HA; enforce configured increment thresholds and interval-quality gates.
 - [ ] Separate the accounting core, Slovenian tariff/calendar logic, data adapters and presentation.
-- [ ] Add synthetic examples for a minimal household and optional EV/battery/heat-pump capabilities.
+- [ ] Add synthetic accounting scenarios for the minimal household and optional capabilities.
 - [ ] Define one-instance support first or implement isolated storage and unique IDs for multiple instances.
 - [ ] Implement and test setup, options, reload/unload, task cancellation and recovery from invalid configuration.
 - [ ] Preserve existing measurements, profiles and frozen reports during migration; never silently replace a user's database.
@@ -47,4 +51,4 @@ Updated: 18 October 2026. Only checked items are complete in this public project
 - [ ] Add measured monthly/final comparisons only after the corresponding observation windows finish.
 - [ ] Collect feedback and prefer upstream contributions where an improvement belongs in an existing project.
 
-The first development task is configurable source mapping and capability-based validation, preceded by a fresh review of the relevant existing implementations.
+Completed locally on 18 October 2026: configurable source mapping and capability-based observation validation, preceded by a fresh upstream review. See [configuration and limitations](docs/source-configuration.md). This is development code, not an installable integration. Next: resolve transfer permissions, adapt the accounting core to this boundary and add synthetic interval/continuity tests, then test the HA lifecycle independently.

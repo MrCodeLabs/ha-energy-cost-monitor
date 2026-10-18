@@ -2,7 +2,7 @@
 
 A project for comparing electricity supply scenarios and explaining energy costs using Home Assistant measurements, with visible data quality and reproducible reports.
 
-**Status: project setup and public development plan, 18 October 2026. This repository does not yet contain an installable integration or dashboard card.** An existing private prototype is being prepared for general use. There is no public release or HACS installation yet.
+**Status: source configuration and observation validation for local development, 18 October 2026. This repository does not yet contain an installable integration or dashboard card.** An existing private prototype is being prepared for general use. There is no public release or HACS installation yet.
 
 [Slovenska navodila](README.sl.md) · [Roadmap](ROADMAP.md) · [Design](docs/architecture.md) · [Alternatives](docs/alternatives.md) · [Experience journal](docs/experience.md)
 
@@ -20,7 +20,9 @@ These describe the intended public product. They are not a compatibility claim o
 
 The private prototype has an accounting engine, a Home Assistant adapter, an authenticated reporting API, a dashboard card and behavioral tests. It uses UTC quarter-hour intervals with a local calendar, a separate SQLite database, versioned profiles and backup support.
 
-Public extraction still requires configurable inputs, synthetic examples, an installation lifecycle, migration and restore checks, and a review of source provenance. Household configuration, databases, invoices and private Git history will not be imported.
+This development tree adds an HA-independent [source configuration boundary](docs/source-configuration.md), detached observation validation, synthetic examples and behavior tests. Solar, battery, EV and heat-pump inputs are optional. It is not yet connected to an accounting engine or HA.
+
+Public extraction still requires permission/attribution for transferred code, an installation lifecycle, migration and restore checks. See the [provenance record](docs/provenance.md). Household configuration, databases, invoices and private Git history will not be imported.
 
 ## Choose an existing tool where it fits
 

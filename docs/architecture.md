@@ -1,6 +1,6 @@
 # Design and extraction boundary
 
-Status: proposed public architecture, 18 October 2026. This is not an implemented API contract.
+Status: proposed public architecture with an implemented development source boundary, 18 October 2026. The full accounting/HA API contract is not implemented.
 
 ## Data flow
 
@@ -17,6 +17,8 @@ The existing prototype uses a separate SQLite database and serializes database w
 5. Presentation: authenticated summaries, charts, reports and a companion card.
 
 Current household entity names, contract settings, device identifiers and deployment scripts are not public defaults. Optional sources must not prevent a minimal configuration from working. A heat-pump daily estimate is a different input type from a cumulative meter.
+
+The first boundary is implemented in `energy_cost_monitor/sources.py` and `observations.py`: validated immutable mappings and detached observations with explicit quality reasons. See [source configuration](source-configuration.md) for the development schema, capability rules, alias restrictions and unit/freshness checks. Configured power limits are retained for the future counter-delta layer; no stateful accounting or interval coverage is computed yet. A missing optional source does not insert a zero or invalidate unrelated meters. Daily estimates remain outside cumulative-meter readiness. No HA adapter, storage, tariff engine or presentation is included in this step.
 
 ## Accounting invariants
 
