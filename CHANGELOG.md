@@ -1,5 +1,17 @@
 # Changelog
 
+## Local development — 2026-10-20 — continuous integration
+
+- Added GitHub Actions for Ruff and the complete synthetic suite on Ubuntu/Windows with Python 3.12–3.14.
+- Pinned action revisions and development dependencies; use the same tzdata package on both operating systems.
+- Added a stable `CI result` gate, read-only token permissions, time limits and cancellation of superseded runs.
+- Added weekly Dependabot proposals for Actions and Python development requirements.
+- Documented local commands, branch-protection setup and the separate pre-publication privacy review.
+
+Validation: 81 tests passed on Windows/Python 3.12.14, Ruff 0.17.1 passed and actionlint 1.7.12 accepted the workflow. Application code and tests are unchanged.
+
+Limitations: first hosted run and other matrix environments are not yet verified. Branch protection has not been enabled. There is no deployment or release automation; HA/card/HACS checks await their packages. Next: publish and verify CI, then require `CI result` before merging; development continues with the single-instance HA adapter and sampling policy.
+
 ## Local development — 2026-10-20 — supply scenarios
 
 - Added strict immutable EUR/excluding-VAT supply scenarios with versioned validity, price sources/status, explicit import/export prices and monthly subscriptions.

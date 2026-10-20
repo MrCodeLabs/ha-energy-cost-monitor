@@ -24,3 +24,9 @@ Podroben [razvojni načrt](ROADMAP.md) loči že vzpostavljen projekt od prihodn
 Javna razvojna kopija vsebuje samo pregledano splošno kodo in izmišljene primere. Hišne nastavitve, zbirke, računi, dostopi in zasebna zgodovina ostanejo zunaj javnega repozitorija. Produkcijska namestitev se ob vzpostavitvi tega projekta ne spreminja.
 
 Dokumentacija še ni navodilo za namestitev. Za osnovne stroškovne senzorje najprej preveri obstoječa Dynamic Energy Cost in Powercalc, povezana v [angleškem README](README.md).
+
+## Razvojna preverjanja
+
+Pripravljen je GitHub Actions CI: statični pregled Python kode z Ruff in sintetični testi na Linuxu/Windowsu s Python 3.12–3.14. Dependabot tedensko predlaga posodobitve razvojnih odvisnosti in Actions; združitev ostaja ročna. Lokalno je uspešnih 81 testov, prvi zagon na GitHubu pa še ni potrjen.
+
+CI nima produkcijske namestitve. Preverjanja HA/HACS sledijo ob dodani integraciji. Zaščito veje je treba posebej nastaviti z obveznim rezultatom `CI result`; sam workflow je ne vključi. Ukazi za lokalno preverjanje in omejitve so v [razvojnih navodilih](docs/development.md#continuous-integration).

@@ -36,6 +36,8 @@ There is currently nothing to install. Do not copy this repository into `custom_
 
 Issues may discuss the scope and design. Use synthetic examples; do not upload access tokens, private logs, account or meter identifiers, invoices, or production databases. See [development guidance](docs/development.md).
 
+GitHub Actions is configured for Python lint and synthetic tests on Linux/Windows with Python 3.12–3.14, with weekly Dependabot update proposals. The first hosted run is pending; this is not an HA compatibility check or a deployment pipeline. See [CI setup and local commands](docs/development.md#continuous-integration).
+
 ## License
 
 New content in this repository is licensed under the [MIT License](LICENSE). Any future imported code must have its origin and license reviewed and its required notices retained.
