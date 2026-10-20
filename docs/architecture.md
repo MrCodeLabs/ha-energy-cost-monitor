@@ -1,6 +1,6 @@
 # Design and extraction boundary
 
-Status: proposed public architecture with an implemented development source boundary, 18 October 2026. The full accounting/HA API contract is not implemented.
+Status: implemented source validation, cumulative-meter storage and detached supply-scenario comparison, 20 October 2026. HA adapters and regional bill components remain unimplemented.
 
 ## Data flow
 
@@ -18,7 +18,11 @@ The existing prototype uses a separate SQLite database and serializes database w
 
 Current household entity names, contract settings, device identifiers and deployment scripts are not public defaults. Optional sources must not prevent a minimal configuration from working. A heat-pump daily estimate is a different input type from a cumulative meter.
 
-The first boundary is implemented in `energy_cost_monitor/sources.py` and `observations.py`: validated immutable mappings and detached observations with explicit quality reasons. See [source configuration](source-configuration.md) for the development schema, capability rules, alias restrictions and unit/freshness checks. Configured power limits are retained for the future counter-delta layer; no stateful accounting or interval coverage is computed yet. A missing optional source does not insert a zero or invalidate unrelated meters. Daily estimates remain outside cumulative-meter readiness. No HA adapter, storage, tariff engine or presentation is included in this step.
+The first boundary is implemented in `energy_cost_monitor/sources.py` and `observations.py`: validated immutable mappings and detached observations with explicit quality reasons. See [source configuration](source-configuration.md) for the schema, capability rules, alias restrictions and unit/freshness checks.
+
+`accounting.py` implements cumulative deltas, configured power/continuity limits, estimated UTC allocation and per-role coverage in a dedicated SQLite database. Sample, baseline, anomaly and interval writes are atomic. Stored schema/configuration identity prevents accidental reuse of incompatible files. See the [ledger contract and limits](accounting.md). A missing optional source does not insert a zero or invalidate unrelated meters. Daily estimates remain snapshots outside cumulative accounting.
+
+`pricing.py` consumes detached ledger intervals and immutable scenarios. It validates explicit price validity, units, provenance and confirmation status, then calculates import/export supply and local-calendar subscription shares using decimals. Only complete energy intervals are priced; comparisons share the same usable buckets. The [pricing contract](pricing.md) distinguishes partial evidence, full-window supply totals and unverified reference assumptions. It does not write to SQLite or control collection. Live price adapters, persisted/frozen scenario versions, session boundaries, HA lifecycle, backup/restore, regional tariffs and presentation remain future work.
 
 ## Accounting invariants
 
