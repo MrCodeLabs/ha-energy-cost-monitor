@@ -36,7 +36,7 @@ There is currently nothing to install. Do not copy this repository into `custom_
 
 Issues may discuss the scope and design. Use synthetic examples; do not upload access tokens, private logs, account or meter identifiers, invoices, or production databases. See [development guidance](docs/development.md).
 
-GitHub Actions is configured for Python lint and synthetic tests on Linux/Windows with Python 3.12–3.14, with weekly Dependabot update proposals. The first hosted run is pending; this is not an HA compatibility check or a deployment pipeline. See [CI setup and local commands](docs/development.md#continuous-integration).
+GitHub Actions checks Python lint and synthetic tests on Linux/Windows with Python 3.12–3.14, with weekly Dependabot update proposals. The [first hosted PR run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) passed on 20 October 2026; this is not an HA compatibility check or a deployment pipeline. See [CI setup and local commands](docs/development.md#continuous-integration).
 
 ## License
 

@@ -8,9 +8,9 @@
 - Added weekly Dependabot proposals for Actions and Python development requirements.
 - Documented local commands, branch-protection setup and the separate pre-publication privacy review.
 
-Validation: 81 tests passed on Windows/Python 3.12.14, Ruff 0.17.1 passed and actionlint 1.7.12 accepted the workflow. Application code and tests are unchanged.
+Validation: 81 tests passed locally on Windows/Python 3.12.14, Ruff 0.17.1 passed and actionlint 1.7.12 accepted the workflow. The [first hosted PR run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) passed lint, all six OS/Python test combinations and `CI result`. Application code and tests are unchanged.
 
-Limitations: first hosted run and other matrix environments are not yet verified. Branch protection has not been enabled. There is no deployment or release automation; HA/card/HACS checks await their packages. Next: publish and verify CI, then require `CI result` before merging; development continues with the single-instance HA adapter and sampling policy.
+Limitations: branch protection has not been enabled. There is no deployment or release automation; HA/card/HACS checks await their packages. Next: require `CI result` before merging; development continues with the single-instance HA adapter and sampling policy.
 
 ## Local development — 2026-10-20 — supply scenarios
 

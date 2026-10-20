@@ -2,7 +2,7 @@
 
 Start with README.md, ROADMAP.md, docs/architecture.md and AGENTS.md.
 
-The development tree contains HA-independent source mapping, observation validation, a SQLite cumulative-meter ledger and detached supply-scenario comparison, with standard-library behavior tests. A GitHub Actions workflow is configured; its first hosted result is still pending. It has no HA integration tests or supported Home Assistant versions yet. See [source configuration](source-configuration.md), [accounting](accounting.md), [pricing](pricing.md) and the [provenance record](provenance.md).
+The development tree contains HA-independent source mapping, observation validation, a SQLite cumulative-meter ledger and detached supply-scenario comparison, with standard-library behavior tests. The [first hosted CI run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) passed on 20 October 2026 across the full matrix. It has no HA integration tests or supported Home Assistant versions yet. See [source configuration](source-configuration.md), [accounting](accounting.md), [pricing](pricing.md) and the [provenance record](provenance.md).
 
 From the repository root, using Python 3.12 or later:
 
@@ -28,7 +28,7 @@ Actions are pinned to full commit SHAs, the token has `contents: read` only, and
 
 After the first hosted run succeeds, configure a branch ruleset for `main` requiring a pull request and the `CI result` status check. The workflow file alone does not enforce branch protection. Repository settings have not been changed by this addition.
 
-This workflow is not a private-data or secret scanner. Review file contents and both author/committer email metadata before pushing; a public CI run happens after upload and cannot prevent that initial disclosure. Use an appropriate GitHub noreply identity when committing. Local validation covers Ruff, the workflow syntax with actionlint 1.7.12 and the Python 3.12 test suite; the other matrix environments await GitHub execution.
+This workflow is not a private-data or secret scanner. Review file contents and both author/committer email metadata before pushing; a public CI run happens after upload and cannot prevent that initial disclosure. Use an appropriate GitHub noreply identity when committing. Local validation covers Ruff, the workflow syntax with actionlint 1.7.12 and the Python 3.12 test suite; GitHub execution also confirmed all six OS/Python combinations.
 
 HA lifecycle/card tests, hassfest and HACS validation will be added when the corresponding integration and card files exist. Passing core CI is not evidence of Home Assistant compatibility or installability.
 
