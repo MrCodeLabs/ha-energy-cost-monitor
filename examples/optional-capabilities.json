@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "capabilities": ["solar", "battery", "ev", "heat_pump"],
+  "sources": {
+    "house": {"entity_id": "sensor.example_house_energy", "kind": "cumulative_energy", "unit": "kWh", "max_age_seconds": 180, "max_power_kw": 12},
+    "import": {"entity_id": "sensor.example_grid_import", "kind": "cumulative_energy", "unit": "Wh", "max_age_seconds": 180, "max_power_kw": 12},
+    "export": {"entity_id": "sensor.example_grid_export", "kind": "cumulative_energy", "unit": "Wh", "max_age_seconds": 180, "max_power_kw": 12},
+    "pv": {"entity_id": "sensor.example_solar_energy", "kind": "cumulative_energy", "unit": "kWh", "max_age_seconds": 180, "max_power_kw": 9, "freshness_sources": ["pv_power"]},
+    "pv_power": {"entity_id": "sensor.example_solar_power", "kind": "power", "unit": "W", "max_age_seconds": 60},
+    "charge": {"entity_id": "sensor.example_battery_charge", "kind": "cumulative_energy", "unit": "kWh", "max_age_seconds": 180, "max_power_kw": 5},
+    "discharge": {"entity_id": "sensor.example_battery_discharge", "kind": "cumulative_energy", "unit": "kWh", "max_age_seconds": 180, "max_power_kw": 5},
+    "battery_soc": {"entity_id": "sensor.example_battery_soc", "kind": "percentage", "unit": "%", "max_age_seconds": 60},
+    "ev": {"entity_id": "sensor.example_ev_energy", "kind": "cumulative_energy", "unit": "kWh", "max_age_seconds": 180, "max_power_kw": 7, "freshness_sources": ["ev_power", "ev_connected"]},
+    "ev_power": {"entity_id": "sensor.example_ev_power", "kind": "power", "unit": "W", "max_age_seconds": 60},
+    "ev_connected": {"entity_id": "binary_sensor.example_ev_connected", "kind": "binary", "max_age_seconds": 60},
+    "heating": {"entity_id": "sensor.example_heating_daily_estimate", "kind": "daily_energy_estimate", "unit": "kWh", "max_age_seconds": 86400, "max_power_kw": 4},
+    "water": {"entity_id": "sensor.example_hot_water_daily_estimate", "kind": "daily_energy_estimate", "unit": "kWh", "max_age_seconds": 86400, "max_power_kw": 4}
+  }
+}

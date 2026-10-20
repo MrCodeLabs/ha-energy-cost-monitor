@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 18 October 2026. Only checked items are complete in this public project.
+Updated: 20 October 2026. Only checked items are complete in this public project.
 
 ## Project setup
 
@@ -10,22 +10,31 @@ Updated: 18 October 2026. Only checked items are complete in this public project
 
 ## First public implementation
 
-- [ ] Review private prototype source provenance and extract only reusable code and tests.
-- [ ] Replace fixed entity IDs and thresholds with validated configuration and supported units.
-- [ ] Make solar, battery, EV and heat-pump sources optional; quality gates must match configured capabilities.
-- [ ] Separate the accounting core, Slovenian tariff/calendar logic, data adapters and presentation.
-- [ ] Add synthetic examples for a minimal household and optional EV/battery/heat-pump capabilities.
+- [x] Inspect the prototype source boundary and record unresolved transfer permissions in docs/provenance.md.
+- [x] Refresh upstream code/docs, issue/PR and related frontend comparison before implementation.
+- [x] Add an HA-independent source mapping with validated units and explicit freshness/power thresholds.
+- [x] Model optional solar, battery, EV and heat-pump capabilities with scoped observation quality gates.
+- [x] Add synthetic source examples for a minimal household and optional capabilities, with behavior tests.
+- [x] Resolve owner attribution/MIT permission and extract reviewed cumulative-meter accounting with synthetic tests.
+- [x] Connect validated sources to the meter ledger; enforce configured increment thresholds and per-role interval coverage.
+- [x] Add synthetic metering scenarios for the minimal household and optional capabilities.
+- [x] Extract a separate supply-price/scenario model with effective dates, explicit missing prices and synthetic cost calculations.
 - [ ] Define one-instance support first or implement isolated storage and unique IDs for multiple instances.
+- [ ] Connect the source/ledger boundary to HA with an explicit sampling policy for coarse or irregular counter reports.
 - [ ] Implement and test setup, options, reload/unload, task cancellation and recovery from invalid configuration.
 - [ ] Preserve existing measurements, profiles and frozen reports during migration; never silently replace a user's database.
 - [ ] Package the companion card and document its distribution and authenticated API access.
 
 ## Accounting and evidence
 
-- [ ] Keep explicit effective dates, sources, units and confirmation status for tariffs and contract assumptions.
+- [x] Keep explicit effective dates, sources, units and confirmation status for supply-price scenarios.
+- [ ] Add separately sourced Slovenian tariff/holiday rules and remaining contract assumptions.
+- [x] Separate supply pricing from collection, including local-calendar subscription allocation.
 - [ ] Distinguish supplier comparison, known bill components, full bill estimate, credit and actual payment.
-- [ ] Test negative prices, missing data, counter resets/jumps, stale inputs, restarts and duplicate samples.
-- [ ] Test DST, holiday calendars, tariff expiry, and hourly versus quarter-hour market-price assumptions.
+- [x] Test missing observations, counter resets/jumps, stale inputs, restarts, duplicate samples and atomic rollback.
+- [x] Test distinct UTC intervals for 23/25-hour windows and include missing intervals in coverage.
+- [x] Test negative/missing supply prices, local DST subscription allocation, contract expiry/switches and explicit hourly/quarter-hour price periods.
+- [ ] Test regional holiday calendars, regulated tariff expiry and provider-specific market-index/averaging assumptions.
 - [ ] Add synthetic golden invoice cases with stated rounding rules and tolerances.
 - [ ] Verify frozen HTML/CSV equivalence, migration, consistent backup and an isolated restore.
 - [ ] Validate the tariff model against dated official sources before describing any rules as current.
@@ -47,4 +56,4 @@ Updated: 18 October 2026. Only checked items are complete in this public project
 - [ ] Add measured monthly/final comparisons only after the corresponding observation windows finish.
 - [ ] Collect feedback and prefer upstream contributions where an improvement belongs in an existing project.
 
-The first development task is configurable source mapping and capability-based validation, preceded by a fresh review of the relevant existing implementations.
+Completed locally on 20 October 2026: owner permission under MIT, cumulative-meter extraction, SQLite persistence and the separate supply-scenario model; 81 source/metering/pricing tests passed. See [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). This is development code, not an installable integration. Next: define the single-instance HA adapter and sampling policy, then independently test its lifecycle. Prototype database migration, backup/restore, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented.

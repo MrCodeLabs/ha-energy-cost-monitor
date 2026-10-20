@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "capabilities": [],
+  "sources": {
+    "house": {
+      "entity_id": "sensor.example_import_energy",
+      "kind": "cumulative_energy",
+      "unit": "kWh",
+      "max_age_seconds": 180,
+      "max_power_kw": 12
+    },
+    "import": {
+      "entity_id": "sensor.example_import_energy",
+      "kind": "cumulative_energy",
+      "unit": "kWh",
+      "max_age_seconds": 180,
+      "max_power_kw": 12
+    }
+  }
+}
