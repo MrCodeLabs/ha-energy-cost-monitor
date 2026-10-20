@@ -45,7 +45,7 @@ Updated: 20 October 2026. Only checked items are complete in this public project
 - [ ] Add sanitized screenshots and a worked example with invented values.
 - [x] Configure CI for core behavior tests on Linux/Windows, Python lint and dependency update proposals.
 - [x] Confirm the first hosted CI run across the full OS/Python matrix.
-- [ ] Require the `CI result` check in main branch protection.
+- [x] Require the `CI result` check in main branch protection.
 - [ ] Add card tests, hassfest and HACS validation when the integration/card packages exist.
 - [ ] Test a clean Home Assistant installation and an independent user's configuration.
 - [ ] Review all distributed files and Git history for private data and secrets.

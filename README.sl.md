@@ -29,4 +29,4 @@ Dokumentacija še ni navodilo za namestitev. Za osnovne stroškovne senzorje naj
 
 GitHub Actions CI preverja kodo z Ruff in izvaja sintetične teste na Linuxu/Windowsu s Python 3.12–3.14. Dependabot tedensko predlaga posodobitve razvojnih odvisnosti in Actions; združitev ostaja ročna. Lokalno je uspešnih 81 testov, [prvi PR zagon na GitHubu](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) pa je 20. 10. 2026 uspešno zaključil celotno matriko.
 
-CI nima produkcijske namestitve. Preverjanja HA/HACS sledijo ob dodani integraciji. Zaščito veje je treba posebej nastaviti z obveznim rezultatom `CI result`; sam workflow je ne vključi. Ukazi za lokalno preverjanje in omejitve so v [razvojnih navodilih](docs/development.md#continuous-integration).
+CI nima produkcijske namestitve. Preverjanja HA/HACS sledijo ob dodani integraciji. Aktivno pravilo `main-ci` za vejo `main` zahteva PR, posodobljeno osnovo in uspešen rezultat `CI result`. Pravilo je nastavitev repozitorija; sam workflow je ne vključi v drugih kopijah projekta. Ukazi za lokalno preverjanje in omejitve so v [razvojnih navodilih](docs/development.md#continuous-integration).

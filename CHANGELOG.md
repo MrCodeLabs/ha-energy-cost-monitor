@@ -7,10 +7,11 @@
 - Added a stable `CI result` gate, read-only token permissions, time limits and cancellation of superseded runs.
 - Added weekly Dependabot proposals for Actions and Python development requirements.
 - Documented local commands, branch-protection setup and the separate pre-publication privacy review.
+- Activated the `main-ci` repository ruleset: require PRs, an up-to-date branch and `CI result` from GitHub Actions, with no bypass actors and no force pushes/deletions.
 
 Validation: 81 tests passed locally on Windows/Python 3.12.14, Ruff 0.17.1 passed and actionlint 1.7.12 accepted the workflow. The [first hosted PR run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) passed lint, all six OS/Python test combinations and `CI result`. Application code and tests are unchanged.
 
-Limitations: branch protection has not been enabled. There is no deployment or release automation; HA/card/HACS checks await their packages. Next: require `CI result` before merging; development continues with the single-instance HA adapter and sampling policy.
+Limitations: repository rules are external settings and are not inherited by forks. There is no deployment or release automation; HA/card/HACS checks await their packages. Next: review and merge the CI PR; development continues with the single-instance HA adapter and sampling policy.
 
 ## Local development — 2026-10-20 — supply scenarios
 

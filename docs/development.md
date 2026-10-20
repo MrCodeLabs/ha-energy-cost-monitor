@@ -26,7 +26,7 @@ Actions are pinned to full commit SHAs, the token has `contents: read` only, and
 
 [Dependabot](../.github/dependabot.yml) checks Actions and development requirements weekly and proposes updates for review. It does not automatically merge them. Its configuration becomes active after it reaches the default branch.
 
-After the first hosted run succeeds, configure a branch ruleset for `main` requiring a pull request and the `CI result` status check. The workflow file alone does not enforce branch protection. Repository settings have not been changed by this addition.
+On 20 October 2026, the repository's [main-ci ruleset](https://github.com/MrCodeLabs/ha-energy-cost-monitor/rules/25495068) was activated for `main`. It requires a pull request, an up-to-date branch and `CI result` from GitHub Actions. It blocks deletion and force pushes, has no bypass actors and requires zero approving reviews so a sole maintainer can merge a passing PR. The workflow file alone does not enforce branch protection; forks need their own repository rules.
 
 This workflow is not a private-data or secret scanner. Review file contents and both author/committer email metadata before pushing; a public CI run happens after upload and cannot prevent that initial disclosure. Use an appropriate GitHub noreply identity when committing. Local validation covers Ruff, the workflow syntax with actionlint 1.7.12 and the Python 3.12 test suite; GitHub execution also confirmed all six OS/Python combinations.
 
