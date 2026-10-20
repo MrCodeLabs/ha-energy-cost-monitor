@@ -36,9 +36,19 @@ Decision: proceed with a small, HA-independent source-configuration boundary for
 
 ## Decision for this repository
 
+### Meter-accounting follow-up — 20 October 2026
+
+Rechecked Dynamic Energy Cost's default head: it remains `53e28904002960fe2f73c70b33dc58ac3cfed292`. Re-read Powercalc's current cost accumulation, source-reset and missing-price handling (`sensors/cost.py`, blob `148d58d733862b821bdd74bec0d2782ef5744703`); its cost source has changed since the earlier review, while the reviewed basic-sensor boundary still applies. The [PV/battery request #4298](https://github.com/bramstroker/homeassistant-powercalc/issues/4298) remains closed, last updated 3 September 2026. The dated issue/PR/frontend review above remains the comparison baseline; no new frontend implementation is being proposed here.
+
+The current extraction adds an independent ledger of cumulative energy, covered time and unallocated gaps. Collection does not depend on price availability. It does not duplicate a price-times-energy sensor, and does not yet implement the planned contract comparison. Basic cost-sensor changes should still go to the relevant upstream project.
+
+### Supply-scenario follow-up — 20 October 2026
+
+Using the same day's scoped upstream review above, the next local step implements detached, versioned supply-scenario comparison with explicit validity, monthly subscription allocation and comparisons on common covered intervals. This addresses the previously documented alternative-contract workflow. It adds no HA integration or frontend and imports no upstream implementation. Basic cost sensors remain an upstream use case; a full bill model and frozen reports remain unimplemented here.
+
 Create a separate project home and document extraction of the existing privately developed accounting/reporting workflow. Do not fork or duplicate the basic cost-sensor implementations above. Code extraction will require another scoped comparison before integration/frontend changes.
 
-The initial published baseline was documentation only. The current local development adds the source boundary described above. The intended distinguishing combination remains versioned supply scenarios, import/export accounting, regional bill components, explicit coverage/uncertainty and frozen comparison reports. The first installable implementation must demonstrate that combination before advertising it as supported.
+The initial published baseline was documentation only. Current local development adds the source boundary and cumulative-meter ledger described above. The intended distinguishing combination remains versioned supply scenarios, import/export accounting, regional bill components, explicit coverage/uncertainty and frozen comparison reports. The first installable implementation must demonstrate that combination before advertising it as supported.
 
 ## HACS milestones
 

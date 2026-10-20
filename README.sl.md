@@ -2,9 +2,11 @@
 
 Samostojen projekt za primerjavo dobavnih scenarijev elektrike, prikaz kakovosti meritev in ponovljiva poročila na podlagi podatkov Home Assistanta.
 
-**Stanje 18. 10. 2026: razvojni model nastavljivih virov, preverjanje opazovanj in sintetični testi. Namestljive integracije, kartice, izdaje ali podpore HACS v tem repozitoriju še ni.**
+**Stanje 20. 10. 2026: nastavljivi viri, trajno merilno jedro in primerjava dobavnih scenarijev. Namestljive integracije, kartice, izdaje ali podpore HACS v tem repozitoriju še ni.**
 
-Obstoječi zasebni prototip že vsebuje zbiralnik, obračunsko jedro, prijavljeni API, kartico, poročila in teste. Pred javnim prenosom je treba razrešiti izvor in licence ter preveriti namestitev, nadgradnje in obnovo podatkov. Nov [razvojni model virov](docs/source-configuration.md) je napisan samostojno in še ni povezan s HA ali obračunskim jedrom. Primer minimalne hiše ne potrebuje EV, hranilnika, sončne elektrarne ali TČ.
+Obstoječi zasebni prototip že vsebuje zbiralnik, obračunsko jedro, prijavljeni API, kartico, poročila in teste. Lastnik je potrdil lastno avtorstvo in dovolil pregledani prenos pod MIT. [Razvojni model virov](docs/source-configuration.md) je povezan z [merilnim jedrom](docs/accounting.md): prirastki, ocenjena četrturna razporeditev, pokritost, vrzeli, ponastavitve in ločena zbirka SQLite. Primer minimalne hiše ne potrebuje EV, hranilnika, sončne elektrarne ali TČ.
+
+[Dobavni scenariji](docs/pricing.md) dodajajo veljavnost cen prevzema/oddaje, naročnino, negativne cene in primerjavo na istih pokritih intervalih. Manjkajoči podatki ostanejo označeni. Izračun je v EUR brez DDV, omrežnine in dajatev; ni celoten račun. HA adapter, namestitev, nadgradnje in obnova ostajajo odprti.
 
 ## Prva ciljna različica
 
