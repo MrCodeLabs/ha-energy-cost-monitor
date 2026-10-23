@@ -2,7 +2,7 @@
 
 A project for comparing electricity supply scenarios and explaining energy costs using Home Assistant measurements, with visible data quality and reproducible reports.
 
-**Status: configurable sources, a persistent cumulative-meter ledger and supply-scenario comparison for local development, 20 October 2026. This repository does not yet contain an installable integration or dashboard card.** An existing private prototype is being prepared for general use. There is no public release or HACS installation yet.
+**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests; a full Home Assistant installation has not yet been tested. There is no public release, HACS support or dashboard card.
 
 [Slovenska navodila](README.sl.md) · [Roadmap](ROADMAP.md) · [Design](docs/architecture.md) · [Alternatives](docs/alternatives.md) · [Experience journal](docs/experience.md)
 
@@ -18,13 +18,13 @@ These describe the intended public product. They are not a compatibility claim o
 
 ## What exists today
 
-The private prototype has an accounting engine, a Home Assistant adapter, an authenticated reporting API, a dashboard card and behavioral tests. It uses UTC quarter-hour intervals with a local calendar, a separate SQLite database, versioned profiles and backup support.
-
 This development tree connects an HA-independent [source configuration boundary](docs/source-configuration.md) and observation validation to a [cumulative-meter ledger](docs/accounting.md). It stores counter deltas, estimated UTC interval allocations, anomalies and coverage in a separate SQLite database. Solar, battery, EV and heat-pump inputs are optional. Synthetic tests cover continuity, restarts and transaction rollback.
 
 The [supply-scenario model](docs/pricing.md) applies explicitly versioned import/export prices and monthly subscriptions to the same covered intervals across offers. It preserves missing prices, reference status and partial coverage. Calculations use decimal arithmetic and exclude VAT, network charges and levies.
 
-The owner has authorized reviewed prototype transfers under MIT; the extraction is documented in the [provenance record](docs/provenance.md). Live price adapters, regional tariff calendars, HA lifecycle, migration and restore checks remain pending. Household configuration, databases, invoices and private Git history will not be imported.
+The [HA adapter](docs/ha-adapter.md) collects using per-meter report timestamps, preserves gaps and drains pending database writes during unload/reload. It provides setup/reconfigure/options flows and a collection-quality sensor. Sources and storage identity are explicit; prices remain independent of collection.
+
+The owner has authorized reviewed prototype transfers under MIT; the extraction is documented in the [provenance record](docs/provenance.md). Live price adapters, regional tariff calendars, full HA validation, migration and restore checks remain pending. Household configuration, databases, invoices and private Git history will not be imported.
 
 ## Choose an existing tool where it fits
 
@@ -32,7 +32,7 @@ For an energy sensor plus a price sensor, consider [Dynamic Energy Cost](https:/
 
 ## Installation and contribution
 
-There is currently nothing to install. Do not copy this repository into `custom_components` or add it to HACS yet. The first public implementation will have explicit supported inputs, installation instructions, tests and a release status.
+The self-contained component is for disposable development labs only; see the [lab procedure and limits](docs/ha-adapter.md). Do not overwrite a production prototype or add this development tree to HACS. A supported beta still requires actual HA testing, migration/restore checks and complete upgrade/rollback instructions.
 
 Issues may discuss the scope and design. Use synthetic examples; do not upload access tokens, private logs, account or meter identifiers, invoices, or production databases. See [development guidance](docs/development.md).
 

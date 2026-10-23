@@ -78,7 +78,11 @@ class AccountingEngine:
     this class never upgrades, clears or replaces an existing database.
     """
 
-    def __init__(self, path: Path | str, config: SourceConfig, *, max_gap_seconds: float):
+    def __init__(self, path: Path | str, config: SourceConfig, *, max_gap_seconds: float,
+                 sampling_mode: str = "collection"):
+        if sampling_mode not in {"collection", "report"}:
+            raise ValueError("unsupported_sampling_mode")
+        self.sampling_mode = sampling_mode
         max_gap_seconds = _timestamp(max_gap_seconds)
         if not 0 < max_gap_seconds <= INTERVAL_SECONDS:
             raise ValueError("max_gap_seconds_must_be_between_zero_and_900")
@@ -93,6 +97,10 @@ class AccountingEngine:
             "sources": {role: asdict(source) for role, source in config.sources.items()},
             "max_gap_seconds": max_gap_seconds,
         }
+        # Preserve the identity of existing collection-time databases. Report
+        # time ledgers cannot silently reopen them with different semantics.
+        if sampling_mode != "collection":
+            identity["sampling_mode"] = sampling_mode
         self._identity = hashlib.sha256(
             json.dumps(identity, sort_keys=True, allow_nan=False).encode("utf-8")
         ).hexdigest()
@@ -152,9 +160,9 @@ class AccountingEngine:
     def ingest(self, timestamp: float, observations: Mapping[str, Observation]) -> bool:
         """Atomically collect a snapshot; ignore duplicate or older collection times.
 
-        Allocation uses collection times, as in the prototype. Report timestamps
-        validate freshness; they do not turn uniform allocation into measured
-        quarter-hour energy. Daily estimates are stored but never differenced.
+        Report mode uses each meter's report time and ignores repeated reads of
+        the same report. Neither mode makes uniform allocation a measurement.
+        Daily estimates are stored but never differenced.
         """
         timestamp = _timestamp(timestamp)
         with self._db(write=True) as db:
@@ -175,9 +183,17 @@ class AccountingEngine:
                     self._anomaly(db, timestamp, role, reading.quality)
                     continue
                 value = reading.value
+                sample_time = timestamp
+                if self.sampling_mode == "report":
+                    sample_time = _timestamp(observations[self.config.sources[role].entity_id].reported_at)
+                    if previous is not None and sample_time <= previous[0]:
+                        if sample_time < previous[0] or value != previous[1]:
+                            db.execute("UPDATE baselines SET continuous=0 WHERE role=?", (role,))
+                            self._anomaly(db, timestamp, role, "non_monotonic_report")
+                        continue
                 if previous is not None:
                     start, before, continuous = previous
-                    elapsed = timestamp - start
+                    elapsed = sample_time - start
                     delta = value - before
                     limit = self.config.sources[role].max_power_kw * (elapsed / 3600)
                     if delta < 0:
@@ -187,12 +203,17 @@ class AccountingEngine:
                     elif not continuous or elapsed > self.max_gap_seconds:
                         self._anomaly(db, timestamp, role, "gap", delta, delta)
                     else:
-                        self._allocate(db, role, start, timestamp, delta)
+                        self._allocate(db, role, start, sample_time, delta)
                 # A reset/jump starts a new baseline; its delta is never charged.
                 db.execute("INSERT INTO baselines VALUES(?, ?, ?, 1) ON CONFLICT(role) "
                            "DO UPDATE SET ts=excluded.ts, value=excluded.value, continuous=1",
-                           (role, timestamp, value))
+                           (role, sample_time, value))
         return True
+
+    def break_continuity(self) -> None:
+        """Do not bridge an adapter restart or collection failure with estimates."""
+        with self._db(write=True) as db:
+            db.execute("UPDATE baselines SET continuous=0")
 
     @staticmethod
     def _anomaly(db, timestamp, role, reason, delta=None, unassigned=None) -> None:

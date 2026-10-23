@@ -1,6 +1,6 @@
 # Supply prices and scenario comparison
 
-Implemented for local development on 20 October 2026. `energy_cost_monitor/pricing.py` evaluates detached [ledger intervals](accounting.md) without writing to the ledger or fetching prices. This is a comparison of electricity supply, excluding VAT. Network charges, taxes, levies, settlement credits and actual payment are outside this calculation.
+Implemented for local development on 20 October 2026. `custom_components/energy_cost_monitor/_core/pricing.py` (also importable as `energy_cost_monitor.pricing`) evaluates detached [ledger intervals](accounting.md) without writing to the ledger or fetching prices. This is a comparison of electricity supply, excluding VAT. Network charges, taxes, levies, settlement credits and actual payment are outside this calculation.
 
 ## Scenario input
 

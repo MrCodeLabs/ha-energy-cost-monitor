@@ -1,0 +1,13 @@
+{
+  "domain": "energy_cost_monitor",
+  "name": "Energy Cost Monitor",
+  "codeowners": ["@MrCodeLabs"],
+  "config_flow": true,
+  "documentation": "https://github.com/MrCodeLabs/ha-energy-cost-monitor",
+  "integration_type": "helper",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/MrCodeLabs/ha-energy-cost-monitor/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0.dev0"
+}

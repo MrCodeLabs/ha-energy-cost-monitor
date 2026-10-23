@@ -29,7 +29,7 @@ An energy source may declare `freshness_sources`, a list of configured signal ro
 
 ## Detached observations
 
-`normalize_snapshot(config, observations, now=utc_timestamp)` takes observations keyed by entity ID. Each `Observation` contains `value`, `unit` and `reported_at` (UTC Unix seconds). A future HA adapter should supply the actual state unit and `last_reported`, not the last time the value changed. An unchanged counter or zero power can still be fresh. Missing timestamps are unknown, not automatically fresh.
+`normalize_snapshot(config, observations, now=utc_timestamp)` takes observations keyed by entity ID. Each `Observation` contains `value`, `unit` and `reported_at` (UTC Unix seconds). The development HA adapter supplies the actual state unit and `last_reported`, not the last time the value changed. An unchanged counter or zero power can still be fresh. Missing timestamps are unknown, not automatically fresh.
 
 Readings normalize to kWh, kW, percent or boolean. The observed unit must match the configured unit exactly; a unit change needs configuration review. Missing or unsupported units never fall back to kWh. Numeric zero and binary `off` remain valid. Negative grid power means export; negative battery power means charging. Other negative power, negative energy and percentages outside 0–100 are invalid. Price data does not pass through this module; the separate [supply-scenario model](pricing.md) supports negative prices.
 
