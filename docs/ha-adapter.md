@@ -137,3 +137,10 @@ zapolni vrzeli. Diagnostični senzor kaže stanje zajema, ne potrjenega računa.
 Preizkusi uporabljajo začasne zbirke in izmišljene podatke. Celoten HA še ni
 preizkušen; naslednji korak je ločen laboratorijski HA, hassfest in nato preizkus
 migracije/obnove. Produkcijska namestitev in zasebni prototip ostaneta ločena.
+
+## Real HA follow-up — 23 October 2026
+
+The lab gate above has now been exercised with real HA 2026.10.2 and synthetic
+states: creation, sensor updates, reload and process restart passed, as did
+official hassfest. See [coverage and remaining gates](lab-validation.md).
+Hosted CI for the new jobs, wider lifecycle coverage and migration remain open.

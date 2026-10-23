@@ -22,7 +22,8 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [x] Define one-instance support with reserved runtime, fixed private storage and stable diagnostic entity ID.
 - [x] Connect the source/ledger boundary to a development HA adapter with an explicit per-meter report-time sampling policy.
 - [x] Implement setup, options, reconfigure, reload/unload, task cancellation and recovery; verify isolated adapter contracts with real SQLite/executor work.
-- [ ] Verify the adapter in a disposable HA installation with real config-entry/platform fixtures; run hassfest and add a dedicated Linux HA CI job.
+- [x] Verify the adapter in a disposable HA installation with real config-entry/platform behavior; run hassfest and add a dedicated Linux HA CI job (local execution; hosted run pending).
+- [ ] Extend real HA coverage to browser UX, disable/re-enable, removal/re-add and cancellation during writes.
 - [ ] Preserve existing measurements, profiles and frozen reports during migration; never silently replace a user's database.
 - [ ] Package the companion card and document its distribution and authenticated API access.
 
@@ -60,4 +61,4 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [ ] Add measured monthly/final comparisons only after the corresponding observation windows finish.
 - [ ] Collect feedback and prefer upstream contributions where an improvement belongs in an existing project.
 
-Completed locally on 23 October 2026: single-instance development adapter, report-time sampling and isolated lifecycle contract tests. See [adapter scope and next verification gate](docs/ha-adapter.md), [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). Next: actual disposable HA validation and hassfest, followed by explicit migration/backup/restore work. Prototype migration, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented. No production installation is authorized by this development step.
+Completed locally on 23 October 2026: single-instance development adapter, report-time sampling and isolated lifecycle contract tests. See [adapter scope and next verification gate](docs/ha-adapter.md), [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). Follow-up: headless disposable HA validation and hassfest passed locally; new CI jobs are prepared. Next: explicit migration, functional parity and backup/restore work. See [lab coverage](docs/lab-validation.md). Prototype migration, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented. No production installation is authorized by this development step.

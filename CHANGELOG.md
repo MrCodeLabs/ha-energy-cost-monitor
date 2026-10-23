@@ -1,5 +1,26 @@
 # Changelog
 
+## Local development — 2026-10-23 — HACS packaging
+
+- Added HACS metadata, lab installation/update/rollback instructions and a required
+  HACS CI check for custom repositories. Brands is explicitly excluded until the
+  separate catalog submission; other validation checks remain required.
+- HACS installation and hosted validation are pending at this preparation stage.
+
+
+## Local development — 2026-10-23 — real HA lab
+
+- Added a repeatable, network-isolated HA 2026.10.2 container test using real
+  bootstrap/config-entry/platform APIs and synthetic sensor states.
+- Verified setup, missing inputs, reload, shutdown and a second process with
+  persistent history. SQLite checks passed in both phases (5 then 10 samples).
+- Official hassfest passed: one integration, zero invalid integrations.
+- Added pinned real-HA and hassfest CI jobs to the required aggregate result.
+
+These CI changes have not been published or run on GitHub. No component runtime
+code changed. See [evidence and remaining replacement gates](docs/lab-validation.md).
+Migration and production replacement remain blocked by incomplete functionality.
+
 ## Local development — 2026-10-23 — publication privacy preparation
 
 - Generalized public documentation to focus on the public project, retaining
