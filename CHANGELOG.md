@@ -1,5 +1,48 @@
 # Changelog
 
+## Local development — 2026-10-23 — publication privacy preparation
+
+- Generalized public documentation to focus on the public project, retaining
+  licensing and source attribution without private deployment details.
+- Ignore `.storage/` directories to exclude future HA lab runtime configuration.
+- Document verification of both author and committer names/emails before commit
+  and push; local Git uses the public project identity and GitHub noreply.
+
+Validation: documentation/diff checks, root/nested storage ignore checks and both
+effective Git identities verified locally. Runtime code is unchanged by this
+step; no additional runtime tests were needed. Existing published history is
+unchanged, and current-file edits do not remove information from older commits.
+
+## Local development — 2026-10-23 — single-instance HA adapter
+
+- Added a self-contained development component, config/reconfigure/options flows,
+  English/Slovenian forms and a diagnostic collection-quality sensor.
+- Added a single-instance reservation, fixed private SQLite path, serialized
+  executor collection and cancellation-safe setup rollback/reload/unload/shutdown.
+- Added report-time accounting with independent meter timestamps. Repeated reads
+  no longer advance baselines or create artificial increment-rate spikes. The
+  original standalone collection-time API/storage identity is preserved.
+- Preserve unknowns and gaps, reject incompatible existing ledgers, retain storage
+  on removal and allow cadence-only options without changing measurement identity.
+- Moved canonical core modules under the component with existing MIT notices and
+  a standalone import facade; no new private or third-party source was copied.
+- Refreshed the upstream comparison and reviewed HA 2026.10.2 APIs, including its
+  `probatio` schemas. Documented source-reporting limits and the next lab gate.
+
+Validation: **119 tests passed** on Windows/Python 3.12.14, including 38 new
+report-sampling, asynchronous collector and HA contract checks. Real SQLite writes
+and executor threads are used; the HA APIs are explicit test doubles. Ruff passed.
+Windows sandbox restrictions initially blocked asyncio's loopback socket pair;
+the suite passed with local test execution permitted. No device/network service
+was queried by tests.
+
+Limitations: full HA loading/frontend/platform validation, hassfest, hosted CI for
+this branch, HACS, migration/restore, retention and supported beta packaging are
+pending. Reconfiguration cannot change the identity of an existing ledger. This
+is local, uncommitted development; production and the private prototype are
+unchanged. Next: a disposable HA lab with real config-entry fixtures and hassfest,
+then explicit migration and isolated backup/restore work.
+
 ## Local development — 2026-10-20 — continuous integration
 
 - Added GitHub Actions for Ruff and the complete synthetic suite on Ubuntu/Windows with Python 3.12–3.14.

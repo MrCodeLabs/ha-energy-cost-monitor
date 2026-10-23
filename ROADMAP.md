@@ -1,6 +1,6 @@
 # Roadmap
 
-Updated: 20 October 2026. Only checked items are complete in this public project.
+Updated: 23 October 2026. Only checked items are complete in this development tree; local changes are not a public release.
 
 ## Project setup
 
@@ -19,9 +19,10 @@ Updated: 20 October 2026. Only checked items are complete in this public project
 - [x] Connect validated sources to the meter ledger; enforce configured increment thresholds and per-role interval coverage.
 - [x] Add synthetic metering scenarios for the minimal household and optional capabilities.
 - [x] Extract a separate supply-price/scenario model with effective dates, explicit missing prices and synthetic cost calculations.
-- [ ] Define one-instance support first or implement isolated storage and unique IDs for multiple instances.
-- [ ] Connect the source/ledger boundary to HA with an explicit sampling policy for coarse or irregular counter reports.
-- [ ] Implement and test setup, options, reload/unload, task cancellation and recovery from invalid configuration.
+- [x] Define one-instance support with reserved runtime, fixed private storage and stable diagnostic entity ID.
+- [x] Connect the source/ledger boundary to a development HA adapter with an explicit per-meter report-time sampling policy.
+- [x] Implement setup, options, reconfigure, reload/unload, task cancellation and recovery; verify isolated adapter contracts with real SQLite/executor work.
+- [ ] Verify the adapter in a disposable HA installation with real config-entry/platform fixtures; run hassfest and add a dedicated Linux HA CI job.
 - [ ] Preserve existing measurements, profiles and frozen reports during migration; never silently replace a user's database.
 - [ ] Package the companion card and document its distribution and authenticated API access.
 
@@ -59,4 +60,4 @@ Updated: 20 October 2026. Only checked items are complete in this public project
 - [ ] Add measured monthly/final comparisons only after the corresponding observation windows finish.
 - [ ] Collect feedback and prefer upstream contributions where an improvement belongs in an existing project.
 
-Completed locally on 20 October 2026: owner permission under MIT, cumulative-meter extraction, SQLite persistence and the separate supply-scenario model; 81 source/metering/pricing tests passed. See [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). This is development code, not an installable integration. Next: define the single-instance HA adapter and sampling policy, then independently test its lifecycle. Prototype database migration, backup/restore, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented.
+Completed locally on 23 October 2026: single-instance development adapter, report-time sampling and isolated lifecycle contract tests. See [adapter scope and next verification gate](docs/ha-adapter.md), [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). Next: actual disposable HA validation and hassfest, followed by explicit migration/backup/restore work. Prototype migration, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented. No production installation is authorized by this development step.

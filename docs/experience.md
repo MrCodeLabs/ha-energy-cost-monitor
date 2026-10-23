@@ -2,7 +2,7 @@
 
 ## 18 October 2026 — starting the public project
 
-The project grows from an existing private Home Assistant prototype introduced on 11 October 2026. The practical goal is to compare supply scenarios using the same measured intervals and make missing data and assumptions visible.
+The project's practical goal is to compare supply scenarios using the same measured intervals and make missing data and assumptions visible.
 
 Lessons informing the public design:
 
@@ -12,7 +12,7 @@ Lessons informing the public design:
 - Dashboard refresh needs visible progress, timeout recovery and a last-success time.
 - Simulated tests and a working dashboard do not prove agreement with a real supplier invoice.
 
-These are design lessons from the prototype. This entry claims neither verified savings nor a validated complete bill. The public implementation and independent installation tests are pending.
+These are public design principles. This entry claims neither verified savings nor a validated complete bill. At this initial milestone, implementation and independent installation tests were pending.
 
 ## Template for future measured entries
 

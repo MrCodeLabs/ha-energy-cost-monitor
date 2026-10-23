@@ -34,7 +34,7 @@ The first usable reading establishes a baseline. Later readings pass the configu
 
 An invalid observation breaks continuity only for its affected meter. On recovery, a nonnegative plausible delta across that gap is retained as `unassigned_kwh`, without filling intervals. An excessive elapsed time has the same effect. Resets/jumps remain rejected changes, not valid unassigned consumption. No missing value becomes zero.
 
-Accepted deltas are distributed uniformly between **collection timestamps** into UTC 900-second buckets. This is an allocation estimate even when coverage is complete. `reported_at` checks freshness only. Polling a cached reading can allocate zero before a later update and can make that update appear to exceed the configured power limit. Integrations with coarse or irregular counter reporting require an adapter/sampling policy review; these results must not be advertised as measured distributor quarter-hours.
+Accepted deltas are uniformly allocated into UTC 900-second buckets. The default `sampling_mode="collection"` retains the original collection-time behavior and storage identity. The HA adapter explicitly uses `sampling_mode="report"`: each meter uses its observation timestamp, repeated reads do not advance baselines and conflicting/older reports break continuity. Report mode has a distinct storage identity and cannot silently reuse a collection-time database. Both modes remain allocation estimates even when coverage is complete. See the [reporting policy and coarse-source limitations](ha-adapter.md#sampling-contract).
 
 Daily energy estimates and signals are saved in detached normalized snapshots. They are not cumulative totals and do not participate in interval coverage. Daily estimate allocation and EV session detection are future work.
 
@@ -48,7 +48,7 @@ Each bucket exposes per-role energy, covered seconds and a complete flag. Entire
 
 ## Storage and limits
 
-Each ingest uses one SQLite transaction for sample, baselines, anomalies and allocations. A failure rolls all of them back. Connections close after each operation; write transactions serialize updates and duplicate detection. This synchronous development API belongs in a serialized executor when a future HA adapter calls it.
+Each ingest uses one SQLite transaction for sample, baselines, anomalies and allocations. A failure rolls all of them back. Connections close after each operation; write transactions serialize updates and duplicate detection. The HA adapter serializes this synchronous API through executor work. `break_continuity()` retains history and marks all baselines discontinuous after an unobserved restart/failure window.
 
 New files use application ID `0x45434D31`, schema version 1 and a configuration identity hash. Existing files must match the schema and configuration. Unrelated, blank, unsupported or differently configured databases are rejected without replacement. A missing database during collection is an error, not permission to recreate it. This is a new public development schema and does not open or migrate prototype databases.
 
@@ -58,4 +58,4 @@ There is no retention policy, migration, backup/restore API, multi-instance HA l
 
 Jedro iz kumulativnih števcev izračuna prirastke in jih enakomerno razporedi v 15-minutne intervale UTC. Upošteva nastavljene meje moči, svežino, vrzeli in ponastavitve; dnevna ocena TČ ostane ločena. Skupaj s porabo vedno prikaži pokritost. Popolna pokritost ne pomeni izmerjene četrturne porabe distributerja.
 
-Preizkusi uporabljajo izmišljene podatke in začasne zbirke. Produkcijske zbirke ne odpiraj s tem razvojnim jedrom. Dobavne cene/scenariji so izvedeni v ločenem modulu; življenjski cikel HA, migracije, obnova in namestitev še niso izvedeni. Naslednji korak je priklop in preizkus HA za eno instanco z izrecno politiko zbiranja meritev.
+Preizkusi uporabljajo izmišljene podatke in začasne zbirke. Produkcijske zbirke ne odpiraj s tem razvojnim jedrom. Razvojni HA adapter uporablja čase poročil in ima izolirane teste življenjskega cikla; pravi HA preizkus, migracije, obnova in podprta namestitev ostajajo odprti. Dobavne cene so še vedno ločene od zbiranja.

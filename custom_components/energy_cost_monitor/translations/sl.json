@@ -1,0 +1,46 @@
+{
+  "title": "Energy Cost Monitor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Nastavitev razvojne merilne zbirke",
+        "description": "Vnesi JSON z lastno preslikavo virov. Uporabljaj le v ločeni testni namestitvi. Nastavitve morajo ustrezati obstoječi zbirki; migracija še ni izvedena.",
+        "data": {
+          "source_config": "Konfiguracija virov (JSON)",
+          "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
+        }
+      },
+      "reconfigure": {
+        "title": "Popravi konfiguracijo",
+        "description": "Meritve ostanejo ohranjene. Viri, enote, pragovi in razmik poročil morajo ustrezati zbirki; njihova sprememba potrebuje prihodnjo migracijo.",
+        "data": {
+          "source_config": "Konfiguracija virov (JSON)",
+          "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
+        }
+      }
+    },
+    "error": {
+      "invalid_configuration": "Neveljavna konfiguracija, nezdružljiva zbirka ali interval zajema izven dovoljenih mej svežine. Popravi nastavitve; zbirka ni bila nadomeščena.",
+      "storage_unavailable": "Dostop do obstoječe zbirke ni mogoč. Preveri dostop in poskusi znova."
+    },
+    "abort": {
+      "single_instance_allowed": "Podprta je le ena instanca Energy Cost Monitorja.",
+      "already_configured": "Energy Cost Monitor je že nastavljen.",
+      "reconfigure_successful": "Konfiguracija je posodobljena."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Interval zajema",
+        "description": "Zajem bere obstoječa stanja HA in ne zahteva posodobitev naprav. Interval ne sme preseči mej svežine virov ali najdaljšega razmika poročil.",
+        "data": {
+          "poll_seconds": "Interval zajema (sekunde)"
+        }
+      }
+    },
+    "error": {
+      "invalid_poll_interval": "Vnesi celo število od 5 do 300 sekund, največ do meje svežine virov in najdaljšega razmika poročil."
+    }
+  }
+}

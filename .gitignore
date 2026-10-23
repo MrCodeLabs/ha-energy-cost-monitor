@@ -1,4 +1,5 @@
 # Runtime and private input files must never be published.
+.storage/
 __pycache__/
 *.py[cod]
 .venv/

@@ -36,6 +36,35 @@ Decision: proceed with a small, HA-independent source-configuration boundary for
 
 ## Decision for this repository
 
+### HA adapter follow-up — 23 October 2026
+
+Refreshed the primary repositories, Dynamic Energy Cost's README and integration
+setup/reload implementation, Powercalc's cost documentation and `sensors/cost.py`,
+the import/export request [#243](https://github.com/martinarva/dynamic_energy_cost/issues/243)
+(open), and the standalone cost flow [PR #4265](https://github.com/bramstroker/homeassistant-powercalc/pull/4265)
+(merged). Both repositories remain non-archived. Observed default heads were
+Dynamic Energy Cost [`53e2890`](https://github.com/martinarva/dynamic_energy_cost/commit/53e28904002960fe2f73c70b33dc58ac3cfed292)
+and Powercalc [`d2d15cb`](https://github.com/bramstroker/homeassistant-powercalc/commit/d2d15cb9c5db285557369853ccf2ba7e669b67e6).
+Re-read the related [MFFR Profit Tracker README](https://github.com/martinarva/MFFR-Profit-Tracker):
+its React frontend remains described around balancing-reserve operation/revenue.
+This refresh uses the earlier author/frontend survey and does not claim an
+exhaustive new search of all projects.
+
+Decision: retain upstream tools for ordinary energy-cost sensors. This adapter's
+specific purpose is to feed the existing independent coverage ledger and detached
+supply comparisons, preserve unknown intervals and storage identity, and manage
+their single-writer lifecycle. Neither upstream implementation was copied. No
+new dashboard is introduced. The distinction remains a development objective,
+not a claim of complete billing or reporting support.
+
+HA API review used [config-entry lifecycle documentation](https://developers.home-assistant.io/docs/config_entries_index/),
+[options-flow documentation](https://developers.home-assistant.io/docs/config_entries_options_flow_handler/),
+the [report timestamp announcement](https://developers.home-assistant.io/blog/2024/03/20/state_reported_timestamp/)
+and [Core 2026.10.2 source](https://github.com/home-assistant/core/tree/2026.10.2).
+The reviewed release uses `probatio` schemas. Report timestamps describe state
+reports to HA, which cannot prove the physical measurement time of a cached or
+rounded source. Actual HA execution and hassfest are still pending.
+
 ### Meter-accounting follow-up — 20 October 2026
 
 Rechecked Dynamic Energy Cost's default head: it remains `53e28904002960fe2f73c70b33dc58ac3cfed292`. Re-read Powercalc's current cost accumulation, source-reset and missing-price handling (`sensors/cost.py`, blob `148d58d733862b821bdd74bec0d2782ef5744703`); its cost source has changed since the earlier review, while the reviewed basic-sensor boundary still applies. The [PV/battery request #4298](https://github.com/bramstroker/homeassistant-powercalc/issues/4298) remains closed, last updated 3 September 2026. The dated issue/PR/frontend review above remains the comparison baseline; no new frontend implementation is being proposed here.

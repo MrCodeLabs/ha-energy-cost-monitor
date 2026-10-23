@@ -1,0 +1,46 @@
+{
+  "title": "Energy Cost Monitor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure a development ledger",
+        "description": "Paste a source configuration JSON using your own entity mapping. Use only in an isolated test instance. Existing ledger identity must match; migration is not implemented.",
+        "data": {
+          "source_config": "Source configuration (JSON)",
+          "max_gap_seconds": "Maximum time between meter reports (seconds)"
+        }
+      },
+      "reconfigure": {
+        "title": "Correct configuration",
+        "description": "Existing measurements are retained. Source identities, units, thresholds and maximum report gap must match the ledger; changing them requires a future migration.",
+        "data": {
+          "source_config": "Source configuration (JSON)",
+          "max_gap_seconds": "Maximum time between meter reports (seconds)"
+        }
+      }
+    },
+    "error": {
+      "invalid_configuration": "Invalid source configuration, incompatible existing ledger, or polling interval outside source freshness limits. Correct the settings; the ledger has not been replaced.",
+      "storage_unavailable": "Cannot access the existing ledger. Check storage access and retry."
+    },
+    "abort": {
+      "single_instance_allowed": "Only one Energy Cost Monitor instance is supported.",
+      "already_configured": "Energy Cost Monitor is already configured.",
+      "reconfigure_successful": "Configuration updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Collection interval",
+        "description": "Polling reads existing HA states. It does not request device updates. This interval must not exceed any configured freshness limit or the maximum report gap.",
+        "data": {
+          "poll_seconds": "Poll interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "invalid_poll_interval": "Use an integer from 5 to 300 seconds, no longer than source freshness or maximum report gap."
+    }
+  }
+}
