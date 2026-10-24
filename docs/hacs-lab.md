@@ -1,5 +1,7 @@
 # HACS development package
 
+**Consolidated status, 23 October 2026:** see [published checks, latest local evidence and remaining gates](validation-status.md). Earlier dated observations below describe their tested revision; they do not imply full application migration or a complete HACS installation transaction.
+
 This is a development custom repository, not a supported beta or a HACS default
 catalog entry. Use a disposable HA 2026.10.2 or newer lab with synthetic sources.
 Do not install on an instance with an existing `energy_cost_monitor` component:

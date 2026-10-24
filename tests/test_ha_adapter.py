@@ -49,6 +49,14 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
             await self.adapter.async_setup_entry(self.hass, Entry("another-entry"))
         self.assertIs(self.hass.data[DOMAIN], runtime)
 
+    async def test_backup_blocks_a_new_writer_until_post_backup(self):
+        self.hass.data[f"{DOMAIN}_backup_in_progress"] = True
+        with self.assertRaises(ConfigEntryNotReady):
+            await self.setup()
+        self.assertNotIn(DOMAIN, self.hass.data)
+        self.hass.data.pop(f"{DOMAIN}_backup_in_progress")
+        await self.setup()
+
     async def test_missing_source_sets_incomplete_then_recovers(self):
         self.hass.state_values.clear()
         runtime = await self.setup()

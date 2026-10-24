@@ -54,6 +54,38 @@ class CollectorTests(unittest.IsolatedAsyncioTestCase):
         await task
         self.assertEqual(self.collector.latest["timestamp"], START)
 
+    async def test_backup_pause_drains_writer_blocks_ticks_and_breaks_continuity(self):
+        task, release = await self.gate()
+        paused = asyncio.create_task(self.collector.pause())
+        await asyncio.sleep(0)
+        self.assertFalse(paused.done())
+        self.assertIsNone(self.collector.request())
+        release.set()
+        await paused
+        self.assertTrue(task.done())
+        self.offset = 60
+        await self.collector.resume()
+        self.assertIsNone(self.engine.summary(START, START + 900).energy_kwh["house"])
+        self.offset = 120
+        await self.collector.request()
+        self.assertAlmostEqual(self.engine.summary(START, START + 900).energy_kwh["house"], 0.01)
+
+    async def test_cancelled_backup_pause_does_not_leave_collector_frozen(self):
+        task, release = await self.gate()
+        paused = asyncio.create_task(self.collector.pause())
+        await asyncio.sleep(0)
+        paused.cancel()
+        release.set()
+        with self.assertRaises(asyncio.CancelledError):
+            await paused
+        self.assertTrue(task.done())
+        self.assertFalse(self.collector.paused)
+
+    async def test_post_backup_cannot_resurrect_an_unloaded_collector(self):
+        await self.collector.pause()
+        await self.collector.stop()
+        self.assertIsNone(self.collector.resume())
+
     async def test_unload_drains_writer_and_rejects_new_ticks(self):
         task, release = await self.gate()
         stop = asyncio.create_task(self.collector.stop())

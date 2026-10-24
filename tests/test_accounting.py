@@ -290,7 +290,7 @@ class AccountingTests(unittest.TestCase):
 
     def test_newer_schema_is_rejected_and_preserved(self):
         with closing(sqlite3.connect(self.path)) as db, db:
-            db.execute("PRAGMA user_version=2")
+            db.execute("PRAGMA user_version=3")
         before = self.path.read_bytes()
         with self.assertRaisesRegex(ValueError, "unsupported_database"):
             AccountingEngine(self.path, self.config, max_gap_seconds=120)

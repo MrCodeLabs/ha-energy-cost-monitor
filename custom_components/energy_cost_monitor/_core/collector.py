@@ -68,16 +68,33 @@ class Collector:
         self.on_update = on_update
         self.task = None
         self.stopped = False
+        self.paused = False
         self.failed = False
         self.latest = None
         self._needs_break = False
 
     def request(self):
-        if self.stopped:
+        if self.stopped or self.paused:
             return None
         if self.task is None or self.task.done():
             self.task = asyncio.create_task(self._collect())
         return self.task
+
+    async def pause(self):
+        """Prevent new writes and finish the existing one before HA copies files."""
+        self.paused = True
+        try:
+            if self.task is not None:
+                await drain_on_cancel(self.task)
+        except BaseException:
+            self.paused = False
+            raise
+
+    def resume(self):
+        """A backup gap cannot establish continuous measurements."""
+        self.paused = False
+        self._needs_break = True
+        return self.request()
 
     def _write(self, now, observations):
         if self._needs_break:
