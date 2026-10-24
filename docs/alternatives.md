@@ -81,4 +81,23 @@ The initial published baseline was documentation only. Current local development
 
 ## HACS milestones
 
+### History preservation follow-up — 23 October 2026
+
+Default heads were rechecked: Dynamic Energy Cost remains `53e2890` and Powercalc
+remains `d2d15cb9`. The same-day source/docs, issue/PR and related-frontend review
+above remains the comparison baseline. Offline preservation of this project's
+legacy records and its single-writer backup lifecycle are project-specific gaps;
+no upstream implementation is imported. Backup hooks follow the
+[official HA backup platform](https://developers.home-assistant.io/docs/core/platform/backup/).
+
 Public GitHub hosting, custom-repository installation and default-catalog inclusion are separate milestones. Follow the current [general requirements](https://www.hacs.dev/docs/publish/start/), [integration requirements](https://www.hacs.dev/docs/publish/integration/) and [catalog process](https://www.hacs.dev/docs/publish/include/). No successful HACS/hassfest validation or catalog acceptance is claimed at project setup.
+
+### Recovery verification follow-up — 23 October 2026
+
+The same-day upstream source/docs, issue/PR and frontend comparison above remains the baseline. This offline-only change verifies preservation of this project's own legacy rows and mapped intervals; it does not add a cost sensor or frontend. No upstream code is imported. The official HA backup documentation was re-opened; the recovery ZIP does not replace HA backup/restore or claim full application rollback.
+
+### Restore follow-up — 24 October 2026
+
+Rechecked default source heads through GitHub: Dynamic Energy Cost remains `53e28904002960fe2f73c70b33dc58ac3cfed292`, Powercalc remains `d2d15cb9c5db285557369853ccf2ba7e669b67e6`. The previous source/docs and issue/PR/frontend review remains the scoped baseline, not a claim that no new issues exist. This offline restore step serves this project's own migration format; it adds no sensor or frontend and imports no upstream code.
+
+Reconciliation follow-up, 24 October 2026: the same-day source-head check and existing source/docs, issue/PR/frontend comparison remain the scoped baseline. This change implements compatibility with the owner-authorized legacy format, not another general cost sensor. No upstream code or frontend is imported.

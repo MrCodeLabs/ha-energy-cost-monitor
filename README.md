@@ -1,8 +1,10 @@
 # Energy Cost Monitor for Home Assistant
 
+**Status / stanje, 23 October 2026:** [published checks, local migration work and remaining gates](docs/validation-status.md).
+
 A project for comparing electricity supply scenarios and explaining energy costs using Home Assistant measurements, with visible data quality and reproducible reports.
 
-**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests; a full Home Assistant installation has not yet been tested. There is no public release, HACS support or dashboard card.
+**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests and a successful headless lab test on real Home Assistant 2026.10.2; see [lab evidence and limits](docs/lab-validation.md). There is no public release, HACS support or dashboard card.
 
 [Slovenska navodila](README.sl.md) · [Roadmap](ROADMAP.md) · [Design](docs/architecture.md) · [Alternatives](docs/alternatives.md) · [Experience journal](docs/experience.md)
 
@@ -24,7 +26,7 @@ The [supply-scenario model](docs/pricing.md) applies explicitly versioned import
 
 The [HA adapter](docs/ha-adapter.md) collects using per-meter report timestamps, preserves gaps and drains pending database writes during unload/reload. It provides setup/reconfigure/options flows and a collection-quality sensor. Sources and storage identity are explicit; prices remain independent of collection.
 
-The owner has authorized reviewed prototype transfers under MIT; the extraction is documented in the [provenance record](docs/provenance.md). Live price adapters, regional tariff calendars, full HA validation, migration and restore checks remain pending. Household configuration, databases, invoices and private Git history will not be imported.
+The owner has authorized reviewed prototype transfers under MIT; the extraction is documented in the [provenance record](docs/provenance.md). Offline archival migration, SQLite snapshot and HA backup hooks are implemented locally; full application rollback and feature parity remain pending, alongside live price adapters, regional tariff calendars and broader HA validation. Household configuration, databases, invoices and private Git history will not be imported.
 
 ## Choose an existing tool where it fits
 
@@ -32,7 +34,7 @@ For an energy sensor plus a price sensor, consider [Dynamic Energy Cost](https:/
 
 ## Installation and contribution
 
-The self-contained component is for disposable development labs only; see the [lab procedure and limits](docs/ha-adapter.md). Do not overwrite a production prototype or add this development tree to HACS. A supported beta still requires actual HA testing, migration/restore checks and complete upgrade/rollback instructions.
+The self-contained component is for disposable development labs only; see the [lab procedure and limits](docs/ha-adapter.md). Do not overwrite a production prototype. HACS packaging is being validated for disposable labs only; see [the HACS lab procedure](docs/hacs-lab.md). A supported beta still requires broader HA lifecycle/UI testing, full application migration/restore checks and complete upgrade/rollback instructions.
 
 Issues may discuss the scope and design. Use synthetic examples; do not upload access tokens, private logs, account or meter identifiers, invoices, or production databases. See [development guidance](docs/development.md).
 

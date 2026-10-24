@@ -1,5 +1,7 @@
 # Roadmap
 
+**Status / stanje, 23 October 2026:** [published checks, local migration work and remaining gates](docs/validation-status.md).
+
 Updated: 23 October 2026. Only checked items are complete in this development tree; local changes are not a public release.
 
 ## Project setup
@@ -22,8 +24,15 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [x] Define one-instance support with reserved runtime, fixed private storage and stable diagnostic entity ID.
 - [x] Connect the source/ledger boundary to a development HA adapter with an explicit per-meter report-time sampling policy.
 - [x] Implement setup, options, reconfigure, reload/unload, task cancellation and recovery; verify isolated adapter contracts with real SQLite/executor work.
-- [ ] Verify the adapter in a disposable HA installation with real config-entry/platform fixtures; run hassfest and add a dedicated Linux HA CI job.
+- [x] Verify the adapter in a disposable HA installation with real config-entry/platform behavior; run hassfest and add a dedicated Linux HA CI job (local execution and hosted PR #4 checks passed).
+- [ ] Extend real HA coverage to browser UX, disable/re-enable, removal/re-add and cancellation during writes.
 - [ ] Preserve existing measurements, profiles and frozen reports during migration; never silently replace a user's database.
+- [x] Implement offline archival migration with explicit interval mapping, schema-2 downgrade guard and verified original-row export.
+- [x] Build a consistent recovery bundle retaining both eras and independently verifying historical interval mapping.
+- [x] Verify bundle restoration to a new ledger and continued collection in a third real HA process.
+- [x] Export native intervals/snapshots into the legacy format and verify resumed legacy ingestion without cross-era counter bridging.
+- [x] Reconstruct native EV sessions with explicit partial/unknown energy for offline reconciliation.
+- [ ] Complete live session/profile/report workflows and full application rollback/feature parity.
 - [ ] Package the companion card and document its distribution and authenticated API access.
 
 ## Accounting and evidence
@@ -38,6 +47,7 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [ ] Test regional holiday calendars, regulated tariff expiry and provider-specific market-index/averaging assumptions.
 - [ ] Add synthetic golden invoice cases with stated rounding rules and tolerances.
 - [ ] Verify frozen HTML/CSV equivalence, migration, consistent backup and an isolated restore.
+- [x] Preserve synthetic frozen report bodies in migration and verify archived rows on export; test consistent SQLite snapshot and HA writer pause/resume.
 - [ ] Validate the tariff model against dated official sources before describing any rules as current.
 
 ## Public beta
@@ -47,7 +57,8 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [x] Configure CI for core behavior tests on Linux/Windows, Python lint and dependency update proposals.
 - [x] Confirm the first hosted CI run across the full OS/Python matrix.
 - [x] Require the `CI result` check in main branch protection.
-- [ ] Add card tests, hassfest and HACS validation when the integration/card packages exist.
+- [x] Add hassfest and HACS validation for the integration (Brands excluded).
+- [ ] Add card tests when the companion card exists.
 - [ ] Test a clean Home Assistant installation and an independent user's configuration.
 - [ ] Review all distributed files and Git history for private data and secrets.
 - [ ] Publish an explicitly labeled first beta and documented compatibility range.
@@ -60,4 +71,4 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [ ] Add measured monthly/final comparisons only after the corresponding observation windows finish.
 - [ ] Collect feedback and prefer upstream contributions where an improvement belongs in an existing project.
 
-Completed locally on 23 October 2026: single-instance development adapter, report-time sampling and isolated lifecycle contract tests. See [adapter scope and next verification gate](docs/ha-adapter.md), [ledger limitations](docs/accounting.md) and [pricing semantics](docs/pricing.md). Next: actual disposable HA validation and hassfest, followed by explicit migration/backup/restore work. Prototype migration, live price adapters, regional bill rules and frozen reports remain unverified or unimplemented. No production installation is authorized by this development step.
+Current evidence and ordered next steps are consolidated in [validation status](docs/validation-status.md). Offline archival migration and backup hooks are locally tested; application rollback after new measurements, feature parity and full HACS installation/upgrade remain open. No production deployment is performed by this development work.

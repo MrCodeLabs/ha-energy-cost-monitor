@@ -20,3 +20,6 @@ private/
 backups/
 .DS_Store
 Thumbs.db
+
+# Recovery bundles contain private databases, even with a generic filename.
+*.zip

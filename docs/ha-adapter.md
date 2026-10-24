@@ -1,5 +1,7 @@
 # Home Assistant development adapter
 
+**Consolidated status, 23 October 2026:** see [published checks, latest local evidence and remaining gates](validation-status.md). Earlier dated observations below describe their tested revision; they do not imply full application migration or a complete HACS installation transaction.
+
 Implemented locally on 23 October 2026. This is an unreleased, single-instance
 adapter with isolated contract tests. The API review targets Home Assistant
 **2026.10.2**, including its `probatio` form schemas. A complete HA installation,
@@ -137,3 +139,17 @@ zapolni vrzeli. Diagnostični senzor kaže stanje zajema, ne potrjenega računa.
 Preizkusi uporabljajo začasne zbirke in izmišljene podatke. Celoten HA še ni
 preizkušen; naslednji korak je ločen laboratorijski HA, hassfest in nato preizkus
 migracije/obnove. Produkcijska namestitev in zasebni prototip ostaneta ločena.
+
+## Real HA follow-up — 23 October 2026
+
+The lab gate above has now been exercised with real HA 2026.10.2 and synthetic
+states: creation, sensor updates, reload and process restart passed, as did
+official hassfest. See [coverage and remaining gates](lab-validation.md).
+Hosted CI for the new jobs, wider lifecycle coverage and migration remain open.
+
+## History and backup follow-up — 23 October 2026
+
+The later local migration branch adds [offline archival migration](migration.md),
+verified original-row export, consistent SQLite snapshots and HA pre/post-backup
+writer coordination. Earlier pending statements above describe the initial adapter.
+Full application rollback, retention and the remaining user workflows are still open.

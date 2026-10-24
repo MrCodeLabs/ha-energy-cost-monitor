@@ -76,6 +76,8 @@ class Runtime:
 
 async def async_setup_entry(hass, entry):
     """Reserve the sole runtime before the first await; never replace a DB."""
+    if hass.data.get(f"{DOMAIN}_backup_in_progress"):
+        raise ConfigEntryNotReady("Backup in progress; retrying after the snapshot")
     if DOMAIN in hass.data:
         raise ConfigEntryError("Only one Energy Cost Monitor instance is supported")
     runtime = Runtime(hass, entry)

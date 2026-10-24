@@ -54,10 +54,50 @@ jobs:
       - name: Run synthetic behavior tests
         run: python -m unittest discover -s tests -v
 
+  ha:
+    name: Real Home Assistant lab
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Synthetic setup, reload and process restart
+        run: bash lab/run.sh
+
+  hassfest:
+    name: Hassfest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate integration
+        run: >-
+          docker run --rm --network none
+          -v "$GITHUB_WORKSPACE:/github/workspace:ro"
+          ghcr.io/home-assistant/hassfest@sha256:2dce3c5423a600e7965e5a3d5a95e0707e8452fb001ab2b5d0602099bbecba92
+
+  hacs:
+    name: HACS custom repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa
+        with:
+          category: integration
+          comment: false
+          # Custom-repository lab only. Catalog submission still requires Brands.
+          ignore: brands
+
   ci:
     name: CI result
     if: ${{ always() }}
-    needs: [lint, tests]
+    needs: [lint, tests, ha, hassfest, hacs]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -65,6 +105,12 @@ jobs:
         env:
           LINT_RESULT: ${{ needs.lint.result }}
           TEST_RESULT: ${{ needs.tests.result }}
+          HA_RESULT: ${{ needs.ha.result }}
+          HASSFEST_RESULT: ${{ needs.hassfest.result }}
+          HACS_RESULT: ${{ needs.hacs.result }}
         run: |
           test "$LINT_RESULT" = success
           test "$TEST_RESULT" = success
+          test "$HA_RESULT" = success
+          test "$HASSFEST_RESULT" = success
+          test "$HACS_RESULT" = success

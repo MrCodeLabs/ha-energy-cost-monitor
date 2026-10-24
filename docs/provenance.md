@@ -29,4 +29,18 @@ collector, HA setup/configuration/sensor code and synthetic lifecycle tests were
 written for this public design. No additional private source or third-party
 implementation was transferred. Upstream code and official HA APIs were reviewed
 as documented in [alternatives](alternatives.md). The full HA runtime has not yet
-been exercised.
+been exercised at that initial step; the subsequent headless lab is documented
+in [lab validation](lab-validation.md).
+
+## Offline migration and backup — 23 October 2026
+
+The owner-authorized legacy SQLite table layout and allocation semantics were
+reviewed to define an explicit compatibility boundary. `migration.py` is newly
+written for this repository: original rows are archived, interval mapping is
+operator-supplied and no private configuration, report or fixture is copied into
+the repository. Synthetic frozen-report cases are invented. Backup hooks and
+collector pause/resume are newly written against the documented HA backup API.
+
+## Reconciliation and sessions — 24 October 2026
+
+New owner-authored MIT code implements a compatibility export and conservative session reconstruction. The private owner-authorized legacy engine was read to verify its table/body contract and tested locally with invented data. No private source, profile, entity mapping or runtime data was copied into public fixtures.

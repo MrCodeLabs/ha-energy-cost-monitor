@@ -25,6 +25,7 @@ INTERVAL_SECONDS = 900
 MAX_QUERY_INTERVALS = 400 * 96
 APPLICATION_ID = 0x45434D31
 SCHEMA_VERSION = 1
+MIGRATED_SCHEMA_VERSION = 2
 
 
 def _timestamp(value: float) -> float:
@@ -143,9 +144,22 @@ class AccountingEngine:
     def _validate_database(self) -> None:
         try:
             with self._db() as db:
+                version = db.execute("PRAGMA user_version").fetchone()[0]
                 if (db.execute("PRAGMA application_id").fetchone()[0] != APPLICATION_ID
-                        or db.execute("PRAGMA user_version").fetchone()[0] != SCHEMA_VERSION):
+                        or version not in {SCHEMA_VERSION, MIGRATED_SCHEMA_VERSION}):
                     raise ValueError("unsupported_database")
+                if version == MIGRATED_SCHEMA_VERSION:
+                    migration = db.execute("SELECT value FROM meta WHERE key='migration'").fetchone()
+                    cutover = db.execute("SELECT value FROM meta WHERE key='collection_not_before'").fetchone()
+                    if migration is None or cutover is None:
+                        raise ValueError("missing_migration_boundary")
+                    try:
+                        record = json.loads(migration[0])
+                        boundary = _timestamp(float(cutover[0]))
+                        if record["version"] != 1 or record["cutover"] != boundary or boundary % INTERVAL_SECONDS:
+                            raise ValueError("invalid_migration_boundary")
+                    except (ValueError, TypeError, KeyError):
+                        raise ValueError("invalid_migration_boundary") from None
                 identity = db.execute("SELECT value FROM meta WHERE key='identity'").fetchone()
                 if identity is None or identity[0] != self._identity:
                     raise ValueError("database_configuration_mismatch")
@@ -166,6 +180,9 @@ class AccountingEngine:
         """
         timestamp = _timestamp(timestamp)
         with self._db(write=True) as db:
+            cutover = db.execute("SELECT value FROM meta WHERE key='collection_not_before'").fetchone()
+            if cutover is not None and timestamp < float(cutover[0]):
+                raise ValueError("sample_precedes_migration_cutover")
             latest = db.execute("SELECT MAX(ts) FROM samples").fetchone()[0]
             if latest is not None and timestamp <= latest:
                 return False
@@ -186,6 +203,9 @@ class AccountingEngine:
                 sample_time = timestamp
                 if self.sampling_mode == "report":
                     sample_time = _timestamp(observations[self.config.sources[role].entity_id].reported_at)
+                    if cutover is not None and sample_time < float(cutover[0]):
+                        self._anomaly(db, timestamp, role, "report_precedes_migration_cutover")
+                        continue
                     if previous is not None and sample_time <= previous[0]:
                         if sample_time < previous[0] or value != previous[1]:
                             db.execute("UPDATE baselines SET continuous=0 WHERE role=?", (role,))

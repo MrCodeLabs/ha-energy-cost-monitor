@@ -1,0 +1,62 @@
+# Validation status and remaining gates
+
+## Latest verification — 2026-10-24 — legacy reconciliation and EV sessions
+
+- Added verified-bundle reconciliation into a fresh legacy-format database, preserving new allocations without replaying counters; explicit signal mappings convert canonical units.
+- Added resume-barrier/baseline reset, marked closure of pre-cutover sessions, and conservative native EV session reconstruction with pauses, gaps and unknown/edge energy.
+- Fixed a cutover regression: late reports timestamped before migration could seed baselines and change old intervals. They now remain anomalies without becoming baselines.
+- Validation: 155 tests passed on Windows/Python 3.12.14 and Linux/Python 3.14; Ruff passed. Five real HA phases passed. A separate local synthetic harness verified actual legacy-engine reads and resumed ingestion. Full application parity remains open; no publication or production change.
+
+See [reconciliation procedure and exact limits](reconciliation.md).
+
+## Latest verification — 24 October 2026
+
+The 139-test baseline passed again. The next step adds verified `restore-bundle`
+and continued collection after restoration. All 145 tests passed on Windows
+Python 3.12.14 and Linux Python 3.14, plus Ruff and hassfest. The real HA lab
+passed five phases, including a third process loading the restored migrated
+ledger and increasing its samples from 12 to 18. See [current lab evidence](lab-validation.md)
+and [restore procedure](migration.md). These changes remain local and uncommitted.
+The earlier dated entries below describe earlier revisions. Full old-application
+replay, feature parity, HACS UI installation and production replacement remain open.
+
+Last consolidated: 23 October 2026. This records completed checks; it is not a live status monitor or a release announcement.
+
+## Published versus local work
+
+| Scope | Evidence | Limit |
+| --- | --- | --- |
+| Published lab/CI work | Commit `14b9e95`, draft [PR #4](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/4); [PR run 40004088767](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/40004088767) passed all 11 jobs | PR was open and unmerged at last verification; no beta release |
+| Hosted checks | Ruff, six OS/Python test jobs, real HA lab, hassfest, HACS validation, aggregate CI result | HACS validation excludes Brands; no deployment |
+| Local migration work | `feature/history-migration`, based on `14b9e95`; 134 tests passed on Windows Python 3.12.14 and Linux Python 3.14; Ruff and hassfest passed | Uncommitted/unpublished; these changes have no hosted CI result yet |
+| Real HA migration rehearsal | HA 2026.10.2: fresh and migrated stores each tested across two processes; 6 then 12 new samples; synthetic historical energy preserved; backup hooks/snapshot exercised | Headless synthetic tests, not full HA OS/Supervisor restore or complete UI/lifecycle coverage |
+| HACS download rehearsal | HACS 2.0.5 real download/extraction backend fetched main and the lab branch; HA loaded the package; repeated download preserved the ledger | No OAuth/browser installation transaction; component runtime code was identical between those revisions, so this does not prove a runtime-version upgrade |
+
+## Latest local follow-up
+
+Verified recovery bundle added on 23 October 2026: both era databases and a
+checksum manifest are produced from one snapshot; historical mappings are
+independently reconstructed and compared row by row. 139 tests and Ruff passed
+on Windows/Python 3.12.14. The earlier 134-test Linux/real-HA result applies to
+the previous revision, not this follow-up. No new hosted CI result or release.
+See [recovery procedure and limitations](migration.md#verified-recovery-bundle).
+
+## What migration guarantees
+
+The [offline migration](migration.md) archives original rows, explicitly maps historical energy intervals, records a cutover and uses schema 2 to reject an old schema-1 writer. Verified export restores the archived original logical rows. A consistent SQLite snapshot and HA writer pause/resume are implemented.
+
+Archiving profiles, sessions and report bodies does not implement their new application workflows. Export does **not** replay measurements collected after cutover into the old application. Preserve the new ledger separately until application reconciliation and rollback are implemented and tested.
+
+## Next development sequence
+
+1. Review the local migration diff, privacy boundary and failure cases. On an explicit publication request, commit/push it separately and run hosted CI. Review PR #4 separately; its passing checks do not validate unpublished changes.
+2. Complete application migration and rollback: explicit source identity mapping, restart-safe cutover and reconciliation of post-cutover measurements. Prove closed-window comparison and a rollback after new measurements without loss or silent reinterpretation.
+3. Close functional gaps against the existing workflow: event/signal capture, EV sessions and partial sessions, independent live-price fetch/cache/backfill, versioned profiles, dated regional bill components, daily quality/study progress, frozen HTML/CSV reports, authenticated API/card and retention of at least 400 days. Record acceptance evidence for each feature before treating replacement as ready.
+4. Rehearse full HACS installation and a genuine runtime-version upgrade, broader HA lifecycle/UI behavior, and backup/restore in an isolated environment. Use synthetic configurations for public evidence.
+5. Once parity and recovery gates pass, perform the separately managed production transition with a fresh backup, closed-window comparisons and explicit rollback criteria. Then evaluate a labeled beta/custom-repository installation, independent-user feedback and a separate default HACS catalog submission, including Brands.
+
+## Information boundary
+
+Further migration development can use synthetic fixtures. Actual invoice validation later needs dated contract validity, agreed power and excess-power treatment, export/netting/VAT assumptions, the precise indexed-price basis, and a closed-period invoice. Keep originals and household configuration private; publish only invented or thoroughly sanitized examples. Public tariff sources should be researched and dated by the implementer. Credentials must never be shared in issues or test fixtures.
+
+Current content checks do not prove that all historic Git metadata is anonymous. Review author/committer identity and reachable history separately before publishing. No production changes or public release are implied by a passing test.

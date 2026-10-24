@@ -1,5 +1,65 @@
 # Changelog
 
+## Local development — 2026-10-24 — legacy reconciliation and EV sessions
+
+- Added verified-bundle reconciliation into a fresh legacy-format database, preserving new allocations without replaying counters; explicit signal mappings convert canonical units.
+- Added resume-barrier/baseline reset, marked closure of pre-cutover sessions, and conservative native EV session reconstruction with pauses, gaps and unknown/edge energy.
+- Fixed a cutover regression: late reports timestamped before migration could seed baselines and change old intervals. They now remain anomalies without becoming baselines.
+- Validation: 155 tests passed on Windows/Python 3.12.14 and Linux/Python 3.14; Ruff passed. Five real HA phases passed. A separate local synthetic harness verified actual legacy-engine reads and resumed ingestion. Full application parity remains open; no publication or production change.
+
+
+## Local development — 2026-10-24 — verified restore and HA restart
+
+- Added `restore-bundle`: fixed archive members, size/checksum checks, independent database/history verification, legacy-export consistency and atomic publication to a new ledger path. Existing destinations are never overwritten.
+- Added recovery/continued-collection tests and rejection of corrupted contents, misleading counts, extra archive paths, inconsistent legacy data and the wrong source configuration.
+- Extended real-HA validation with a third process booted from a restored migrated ledger.
+- Validation: all 145 tests passed on Windows/Python 3.12.14 and Linux/Python 3.14; Ruff and hassfest passed. All five HA 2026.10.2 phases passed: fresh 6/12 samples, migrated 6/12/18 samples across creation/restart/restore. No hosted run, publication or production transition for this local revision. Old-application replay and full functional parity remain open.
+
+## Local development — 2026-10-23 — verified recovery bundle
+
+- Added a no-clobber recovery ZIP containing a consistent new ledger, verified legacy export and checksums/counts.
+- Independently rebuild and compare historical interval mappings; reject changed energy/coverage, missing/extra rows and overlapping native samples.
+- Added tests for recovery after restart/new measurements, snapshot consistency during continued collection, tampering and existing destinations. Explicitly close comparison cursors on failure for Windows cleanup.
+- Validation: 139 tests passed on Windows/Python 3.12.14; Ruff passed. This follow-up has not been rerun on Linux/real HA or hosted CI. Full old-application replay remains open.
+
+## Local development — 2026-10-23 — offline migration and backup
+
+- Added no-clobber migration of a consistent legacy snapshot, preserving original
+  rows and report bodies with per-table digests. Explicit interval mapping retains
+  historical allocation semantics; new collection cannot precede the cutover.
+- Migrated databases use schema 2 so older schema-1-only code rejects them.
+  Existing unmigrated native databases remain supported.
+- Added consistent SQLite snapshots and verified export of original rows.
+  Post-cutover data remains in the new ledger; replay into the old application
+  is not implemented and full application rollback remains open.
+- Added HA backup hooks that drain/pause collection, prevent setup during backup
+  and resume without bridging the gap. Added fresh/migrated real-HA lab scenarios.
+
+Validation: 134 local tests passed; four real HA phases passed (fresh/migrated,
+creation/restart), as did hassfest and Ruff. This step remains local; hosted CI
+for the migration changes has not run. See [migration limits](docs/migration.md).
+
+## Local development — 2026-10-23 — HACS packaging
+
+- Added HACS metadata, lab installation/update/rollback instructions and a required
+  HACS CI check for custom repositories. Brands is explicitly excluded until the
+  separate catalog submission; other validation checks remain required.
+- HACS installation and hosted validation are pending at this preparation stage.
+
+
+## Local development — 2026-10-23 — real HA lab
+
+- Added a repeatable, network-isolated HA 2026.10.2 container test using real
+  bootstrap/config-entry/platform APIs and synthetic sensor states.
+- Verified setup, missing inputs, reload, shutdown and a second process with
+  persistent history. SQLite checks passed in both phases (5 then 10 samples).
+- Official hassfest passed: one integration, zero invalid integrations.
+- Added pinned real-HA and hassfest CI jobs to the required aggregate result.
+
+These CI changes have not been published or run on GitHub. No component runtime
+code changed. See [evidence and remaining replacement gates](docs/lab-validation.md).
+Migration and production replacement remain blocked by incomplete functionality.
+
 ## Local development — 2026-10-23 — publication privacy preparation
 
 - Generalized public documentation to focus on the public project, retaining
