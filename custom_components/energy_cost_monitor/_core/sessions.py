@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 """
 
 
-def reconstruct_sessions(samples, intervals, *, stop, max_gap_seconds=300, charging_kw=0.1):
+def reconstruct_sessions(samples, intervals, *, stop, max_gap_seconds=300, charging_kw=0.1, close_open=True):
     """Return observed connection sessions, without re-differencing EV counters.
 
     Only EV intervals fully inside a session contribute energy. Edge allocations
@@ -54,13 +54,18 @@ def reconstruct_sessions(samples, intervals, *, stop, max_gap_seconds=300, charg
                 finish(ts, True)
         prior = ts, plug, power
     if active is not None:
-        finish(stop, False)
+        if close_open:
+            finish(stop, False)
+        else:
+            active["body"]["partial"] = True
+            sessions.append(active)
     # Inputs are native EV allocations, never legacy session totals.
     for start, kwh, seconds in intervals:
         for session in sessions:
-            if start < session["end"] and start + 900 > session["start"]:
+            session_end = stop if session["end"] is None else session["end"]
+            if start < session_end and start + 900 > session["start"]:
                 body = session["body"]
-                if start >= session["start"] and start + 900 <= session["end"]:
+                if start >= session["start"] and start + 900 <= session_end:
                     body["kwh"] += kwh
                     body["covered_seconds"] += seconds
                 else:
@@ -68,7 +73,7 @@ def reconstruct_sessions(samples, intervals, *, stop, max_gap_seconds=300, charg
                     body["partial"] = True
     for session in sessions:
         body = session["body"]
-        if body["covered_seconds"] < session["end"] - session["start"]:
+        if body["covered_seconds"] < (stop if session["end"] is None else session["end"]) - session["start"]:
             body["partial"] = True
         body["ecm_energy_status"] = "partial" if body["partial"] else "complete"
         if body["covered_seconds"] == 0:

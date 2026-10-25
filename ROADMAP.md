@@ -1,6 +1,10 @@
 # Roadmap
 
-**Status / stanje, 23 October 2026:** [published checks, local migration work and remaining gates](docs/validation-status.md).
+**Local development, 25 October 2026:** live session views, optional reference-price fetches,
+versioned profiles, frozen HTML/CSV reports and an admin API/card are implemented on
+`feature/application-workflows`. See [usage, backup boundary and remaining gates](docs/application-workflows.md).
+No production deployment or public release is implied.
+
 
 Updated: 23 October 2026. Only checked items are complete in this development tree; local changes are not a public release.
 
@@ -9,6 +13,14 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [x] Define a separate public project, scope and privacy boundary.
 - [x] Document comparable existing projects and the intended distinction.
 - [x] Add English/Slovenian entry points, a license and an experience journal.
+
+## Local application layer — 25 October 2026
+
+- [x] Add live conservative session views, optional price fetching/cache and immutable profile versions.
+- [x] Add frozen supply HTML/CSV reports, HA-admin API and a bundled development card.
+- [x] Verify actual HTTP authorization, paired-store snapshots and restart/restore in the isolated HA lab.
+- [ ] Verify real Lovelace/browser/mobile UX, downloads and independent user configuration.
+- [ ] Convert legacy profiles/reports for the new UI and validate regional full-bill cases.
 
 ## First public implementation
 
@@ -58,7 +70,7 @@ Updated: 23 October 2026. Only checked items are complete in this development tr
 - [x] Confirm the first hosted CI run across the full OS/Python matrix.
 - [x] Require the `CI result` check in main branch protection.
 - [x] Add hassfest and HACS validation for the integration (Brands excluded).
-- [ ] Add card tests when the companion card exists.
+- [x] Add card syntax/behavior tests; real browser UX remains open.
 - [ ] Test a clean Home Assistant installation and an independent user's configuration.
 - [ ] Review all distributed files and Git history for private data and secrets.
 - [ ] Publish an explicitly labeled first beta and documented compatibility range.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Local development — 2026-10-25 — application workflows
+
+- Added live conservative EV-session views, optional public reference-price fetching/cache, immutable profile versions and frozen HTML/CSV reports.
+- Added an HA-admin API and bundled development card with period selection, simple price form and advanced scenario editing.
+- Added a separate private application store, backup/shutdown draining, cancellation recovery and paired-store restore checks.
+- Expanded synthetic tests, real HA HTTP authorization/restart/restore coverage and CI card behavior checks. See [usage and limits](docs/application-workflows.md). Full billing and legacy UI parity remain open; no publication or production change.
+
 ## Local development — 2026-10-24 — legacy reconciliation and EV sessions
 
 - Added verified-bundle reconciliation into a fresh legacy-format database, preserving new allocations without replaying counters; explicit signal mappings convert canonical units.

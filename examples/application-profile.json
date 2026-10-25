@@ -1,0 +1,86 @@
+{
+  "name": "Invented demo \u2014 replace before use",
+  "scenarios": [
+    {
+      "schema_version": 1,
+      "id": "offer-a",
+      "currency": "EUR",
+      "tax_basis": "excluding_vat",
+      "timezone": "UTC",
+      "versions": [
+        {
+          "id": "january",
+          "from": "2026-01-01T00:00:00Z",
+          "until": "2027-01-01T00:00:00Z",
+          "import": [
+            {
+              "from": "2026-01-01T00:00:00Z",
+              "until": "2027-01-01T00:00:00Z",
+              "value": "0.20",
+              "unit": "EUR/kWh",
+              "source": "Invented offer A for development tests",
+              "status": "reference"
+            }
+          ],
+          "export": [
+            {
+              "from": "2026-01-01T00:00:00Z",
+              "until": "2027-01-01T00:00:00Z",
+              "value": "0.05",
+              "unit": "EUR/kWh",
+              "source": "Invented offer A for development tests",
+              "status": "reference"
+            }
+          ],
+          "subscription": {
+            "value": "3.10",
+            "unit": "EUR/month",
+            "source": "Invented offer A for development tests",
+            "status": "reference"
+          }
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "id": "offer-b",
+      "currency": "EUR",
+      "tax_basis": "excluding_vat",
+      "timezone": "UTC",
+      "versions": [
+        {
+          "id": "january",
+          "from": "2026-01-01T00:00:00Z",
+          "until": "2027-01-01T00:00:00Z",
+          "import": [
+            {
+              "from": "2026-01-01T00:00:00Z",
+              "until": "2027-01-01T00:00:00Z",
+              "value": "150",
+              "unit": "EUR/MWh",
+              "source": "Invented offer B for development tests",
+              "status": "reference"
+            }
+          ],
+          "export": [
+            {
+              "from": "2026-01-01T00:00:00Z",
+              "until": "2027-01-01T00:00:00Z",
+              "value": "40",
+              "unit": "EUR/MWh",
+              "source": "Invented offer B for development tests",
+              "status": "reference"
+            }
+          ],
+          "subscription": {
+            "value": "6.20",
+            "unit": "EUR/month",
+            "source": "Invented offer B for development tests",
+            "status": "reference"
+          }
+        }
+      ]
+    }
+  ],
+  "indexed_import": {}
+}

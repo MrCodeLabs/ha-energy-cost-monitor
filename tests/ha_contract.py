@@ -99,6 +99,7 @@ def install_doubles(now):
     module("homeassistant.util")
     module("homeassistant.util.dt", utcnow=lambda: datetime.fromtimestamp(now(), timezone.utc))
     module("homeassistant.components")
+    module("homeassistant.components.http", HomeAssistantView=object)
     module("homeassistant.components.sensor", SensorEntity=SensorEntity, SensorDeviceClass=SimpleNamespace(ENUM="enum"))
     patcher = patch.dict(sys.modules, modules)
     patcher.start()
@@ -128,6 +129,8 @@ class Entry:
 class Hass:
     def __init__(self, directory, adapter, sensor):
         self.data = {}
+        self.views = []
+        self.http = SimpleNamespace(register_view=self.views.append)
         self.adapter, self.sensor = adapter, sensor
         self.config = SimpleNamespace(path=lambda *parts: str(Path(directory).joinpath(*parts)))
         self.state_values = {}

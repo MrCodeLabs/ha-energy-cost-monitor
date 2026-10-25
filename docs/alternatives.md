@@ -101,3 +101,27 @@ The same-day upstream source/docs, issue/PR and frontend comparison above remain
 Rechecked default source heads through GitHub: Dynamic Energy Cost remains `53e28904002960fe2f73c70b33dc58ac3cfed292`, Powercalc remains `d2d15cb9c5db285557369853ccf2ba7e669b67e6`. The previous source/docs and issue/PR/frontend review remains the scoped baseline, not a claim that no new issues exist. This offline restore step serves this project's own migration format; it adds no sensor or frontend and imports no upstream code.
 
 Reconciliation follow-up, 24 October 2026: the same-day source-head check and existing source/docs, issue/PR/frontend comparison remain the scoped baseline. This change implements compatibility with the owner-authorized legacy format, not another general cost sensor. No upstream code or frontend is imported.
+
+
+### Application/card follow-up — 25 October 2026
+
+Rechecked public repositories, current source/docs and open issues before this
+integration/frontend extension. Dynamic Energy Cost remains at `53e2890` (active);
+recent issues #245–247 concern documentation, calibration and source attributes.
+Powercalc is active at `948016c`; current `sensors/cost.py` still serves source
+energy/cost accumulation and handles price units/surcharges. Recent #5064/#5065
+are device-profile submissions. The previously reviewed PV/battery and standalone
+cost requests remain part of the comparison, not newly verified capabilities.
+Re-read the author's [MFFR Profit Tracker](https://github.com/martinarva/MFFR-Profit-Tracker)
+README: its React UI concerns balancing-reserve profit, not this project's paired
+ledger/profile snapshots and conservative EV-session coverage.
+
+The concrete gap here is a UI/API over this project's existing independent ledger,
+versioned alternative contracts, preserved missing coverage, source-price provenance
+and immutable reports. This is a scoped comparison, not an exhaustive catalog
+survey. Basic cost-sensor improvements still belong upstream. No upstream source
+or frontend was copied. Reviewed official [HA custom-card documentation](https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/),
+[REST view documentation](https://developers.home-assistant.io/docs/api/rest/),
+Core 2026.10.2 authentication/HTTP APIs and the frontend authenticated fetch methods.
+Price parsing follows the [Energy-Charts v2 OpenAPI schema](https://api.energy-charts.info/openapi.json);
+its reference index is not asserted to equal a supplier billing index.

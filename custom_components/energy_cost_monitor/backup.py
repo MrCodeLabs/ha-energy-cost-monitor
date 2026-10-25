@@ -14,8 +14,12 @@ async def async_pre_backup(hass):
             raise RuntimeError("Energy Cost Monitor setup in progress; retry backup")
         if runtime is not None and runtime.collector is not None:
             await runtime.collector.pause()
+        if runtime is not None and runtime.application is not None:
+            await runtime.application.pause()
     except BaseException:
         hass.data.pop(BACKUP_LOCK, None)
+        if runtime is not None and runtime.collector is not None:
+            runtime.collector.resume()
         raise
 
 
