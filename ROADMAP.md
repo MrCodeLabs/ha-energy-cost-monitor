@@ -1,5 +1,22 @@
 # Roadmap
 
+## Product completion gate — 26 October 2026
+
+The [configuration-only product goal](docs/product-goal.md) governs the remaining
+work: implement general configurable features, not household patches. HACS
+installation alone does not complete the product.
+
+- [ ] Replace required source JSON entry with guided sensor/capability forms.
+- [ ] Provide forms for supported pricing, export, regional, EV and study settings.
+- [ ] Provide guided import/recovery and card setup without required code/file edits.
+- [ ] Validate clean installation by another user with different synthetic inputs.
+- [ ] Verify update persistence and privacy of all distributed artifacts.
+
+**26 October 2026, local follow-up:** [offline legacy application migration](docs/application-migration.md)
+now converts supply profiles and exposes archived reports/sessions. Original study,
+regional and mode data remain archived; equivalent new workflows are still open.
+This is not production readiness or a published release.
+
 **Local development, 25 October 2026:** live session views, optional reference-price fetches,
 versioned profiles, frozen HTML/CSV reports and an admin API/card are implemented on
 `feature/application-workflows`. See [usage, backup boundary and remaining gates](docs/application-workflows.md).

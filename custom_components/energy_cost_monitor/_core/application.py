@@ -68,7 +68,9 @@ def validate_profile(profile):
             raise ValueError("invalid_market_binding")
         if _money(data["markup_eur_kwh"], "markup") is None:
             raise ValueError("unknown_market_markup")
-    if len(encoded(profile).encode()) > 256000:
+    # Offline legacy imports may include saved historical price periods. The
+    # HTTP write limit remains 256 KB; larger imports are read-only in the card.
+    if len(encoded(profile).encode()) > 2000000:
         raise ValueError("profile_too_large")
     return profile
 
@@ -211,6 +213,22 @@ class ApplicationStore:
             ev_rows = ledger.execute("SELECT start,kwh,seconds FROM intervals WHERE role='ev' AND start>=? AND start+900<=?",
                                      (start, session_stop)).fetchall()
             latest = ledger.execute("SELECT MAX(ts) FROM samples").fetchone()[0]
+            archived_sessions = []
+            migration = ledger.execute("SELECT value FROM meta WHERE key='migration'").fetchone()
+            if migration:
+                cutover = json.loads(migration[0])["cutover"]
+                for ident, begin, stop, body in ledger.execute(
+                    "SELECT * FROM legacy_sessions WHERE start<? AND (end IS NULL OR end>?) ORDER BY start",
+                    (min(session_stop, cutover), start)
+                ):
+                    if start >= cutover:
+                        continue
+                    data = json.loads(body)
+                    data["ecm_semantics"] = "legacy_archived_not_recomputed"
+                    if stop is None or stop > cutover:
+                        data["partial"] = True
+                    archived_sessions.append({"id": ident, "start": begin, "end": min(stop, cutover) if stop is not None else cutover,
+                                              "original_end": stop, "body": data, "legacy": True})
         intervals = []
         for ts in range(start, end, 900):
             energy, seconds, complete = {}, {}, {}
@@ -249,6 +267,7 @@ class ApplicationStore:
         sessions = reconstruct_sessions(((ts, json.loads(body)) for ts, body in sample_rows), ev_rows,
                                         stop=session_stop, max_gap_seconds=engine.max_gap_seconds, close_open=False,
                                         charging_kw=profile.get("session_charging_kw", 0.1) if profile else 0.1)
+        sessions = sorted(archived_sessions + sessions, key=lambda item: item["start"])
         return {"schema_version": 1, "start": start, "end": end, "as_of": now, "latest_sample": latest,
                 "profile_id": profile_id, "profile": profile, "comparison": comparison,
                 "intervals": plain(intervals), "sessions": sessions, "market_provenance": provenance,
@@ -269,7 +288,8 @@ class ApplicationStore:
 
     def reports(self):
         with self.db() as db:
-            return [{"id": i, "created": t, "start": json.loads(b)["start"], "end": json.loads(b)["end"]}
+            return [{"id": i, "created": t, "start": json.loads(b)["start"], "end": json.loads(b)["end"],
+                     "legacy": json.loads(b).get("kind") == "legacy_frozen"}
                     for i, t, b in db.execute("SELECT * FROM reports ORDER BY created DESC LIMIT 100")]
 
     def report(self, ident):
@@ -283,6 +303,18 @@ class ApplicationStore:
 
 
 def render_report(data, format):
+    if data.get("kind") == "legacy_frozen":
+        original = data["original_body"]
+        if hashlib.sha256(original.encode()).hexdigest() != data["original_sha256"]:
+            raise ValueError("legacy_report_changed")
+        if format == "csv":
+            return json.loads(original)["csv"]
+        if format != "html":
+            raise ValueError("unsupported_report_format")
+        # Never execute saved legacy HTML. Retain all original evidence as text.
+        return ("<!doctype html><meta charset=utf-8><title>Archived Energy Cost Monitor report</title>"
+                "<h1>Archived legacy report</h1><p>Historical calculation, not recalculated; "
+                "not validated as a current bill.</p><pre>" + html.escape(original) + "</pre>")
     if format == "html":
         def esc(value):
             return html.escape("unknown" if value is None else str(value))

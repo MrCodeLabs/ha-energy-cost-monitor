@@ -19,6 +19,7 @@ def prepare_migration():
     """Invent one closed interval; never load any operator data into this lab."""
     from custom_components.energy_cost_monitor._core.migration import TABLES, migrate_legacy
     from custom_components.energy_cost_monitor._core.sources import parse_config
+    from custom_components.energy_cost_monitor._core.application_migration import migrate_application
     config = parse_config(json.loads(Path("/repo/examples/minimal.json").read_text()))
     start = int(time.time() // 900) * 900 - 3600
     with sqlite3.connect(CONFIG / "synthetic-legacy.sqlite3") as old:
@@ -27,9 +28,20 @@ def prepare_migration():
         old.execute("INSERT INTO samples VALUES(?, '{}')", (start + 800,))
         old.execute("INSERT INTO intervals VALUES(?,?)", (start, json.dumps({
             "energy": {"invented": 0.5}, "seconds": {"invented": 900}})))
+        profile = {"schema_version": 1, "timezone": "UTC", "market": {"basis": "quarter_hour"},
+                   "suppliers": {"invented": [{"from": "2020-01-01", "until": "2030-01-01",
+                       "import_net": .2, "export_net": .05, "monthly_net": 3, "discount_net": 0,
+                       "source": "Synthetic laboratory"}]}}
+        old.execute("INSERT INTO profiles VALUES('synthetic',?,?)", (start, json.dumps(profile)))
+        old.execute("INSERT INTO reports VALUES('synthetic',?,?,?,?)",
+                    (start, start+900, start+900, json.dumps({"csv": "a,b\n1,2", "note": "<script>invented</script>"})))
     migrate_legacy(CONFIG / "synthetic-legacy.sqlite3", CONFIG / ".storage/energy_cost_monitor.sqlite3",
                    config, role_mapping={"house": "invented", "import": "invented"}, cutover=start + 900)
     (CONFIG / "historical-start").write_text(str(start))
+    evidence = migrate_application(CONFIG / "synthetic-legacy.sqlite3",
+                                   CONFIG / ".storage/energy_cost_monitor_application.sqlite3",
+                                   horizon="2030-01-01", active_profile="synthetic")
+    (CONFIG / "legacy-report-id").write_text(evidence["reports"]["synthetic"])
 
 
 def rows():
@@ -103,6 +115,12 @@ async def main():
         report_id = (CONFIG / "report-id").read_text()
         response = await app_view.dispatch(admin_request, "report", {"id": report_id, "format": "html"})
         assert response.status == 200 and "sandbox" in response.headers["Content-Security-Policy"]
+        if os.environ.get("ECM_LAB_MIGRATE") == "1":
+            archived_id = (CONFIG / "legacy-report-id").read_text()
+            archived = await app_view.dispatch(admin_request, "report", {"id": archived_id, "format": "csv"})
+            assert archived.status == 200 and archived.text == "a,b\n1,2"
+            archived = await app_view.dispatch(admin_request, "report", {"id": archived_id, "format": "html"})
+            assert "&lt;script&gt;invented" in archived.text and "<script>invented" not in archived.text
         assert (await app.call(app.store.profiles))["active"]
         from aiohttp import ClientSession
         from homeassistant.auth.const import GROUP_ID_ADMIN

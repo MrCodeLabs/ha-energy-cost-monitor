@@ -1,5 +1,20 @@
 # Existing solutions and project rationale
 
+## Legacy conversion follow-up — 26 October 2026
+
+Reopened the Dynamic Energy Cost and Powercalc repositories, READMEs, sensor/cost
+source, issue and PR lists, and the same author's MFFR Profit Tracker frontend.
+Both cost integrations remain maintained sensor-oriented alternatives; the MFFR
+frontend serves balancing-reserve reporting. Issue/PR web views may be cached, so
+this is not proof of their live queue state. The 25 October review below remains
+the detailed comparison baseline. The specific gap here is compatibility with
+this project's owner-authorized legacy database/profile/report format and paired
+recovery, not a new generic cost sensor. No upstream code is copied.
+
+Sources: [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost),
+[Powercalc cost source](https://github.com/bramstroker/homeassistant-powercalc/blob/master/custom_components/powercalc/sensors/cost.py),
+[MFFR frontend](https://github.com/martinarva/MFFR-Profit-Tracker).
+
 Review date: 18 October 2026. This is a scoped comparison, not an exhaustive survey or a claim that no other solution exists. No third-party code has been copied into this repository.
 
 ## Dynamic Energy Cost

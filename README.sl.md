@@ -1,5 +1,10 @@
 # Energy Cost Monitor za Home Assistant
 
+**Cilj:** splošna integracija prek HACS, ki jo vsak uporabnik nastavi prek obrazcev
+v Home Assistantu, brez dopisovanja kode ali obveznega urejanja JSON/YAML.
+Osebne nastavitve in podatki ostanejo zasebno v njegovem HA. To je cilj razvoja,
+ne trditev o že dokončani funkcionalnosti. [Merila dokončanosti](docs/product-goal.md).
+
 **26. 10. 2026:** PR #5 je združen; CI in dejanska namestitev prek HACS v ločenem laboratoriju sta uspešna. [Dokazi in omejitve](docs/hacs-lab.md).
 
 **Lokalni razvoj, 25. 10. 2026:** dodani so prikaz sej, izbirni cenovni zajem, različice profilov, zamrznjena HTML/CSV poročila in skrbniški API/kartica. [Uporaba, kopije in preostale omejitve](docs/application-workflows.md). Razvoj poteka na veji `feature/application-workflows`; to še ni izdaja.

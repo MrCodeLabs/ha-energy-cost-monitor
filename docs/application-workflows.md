@@ -1,5 +1,11 @@
 # Application workflows — local development, 25 October 2026
 
+**26 October follow-up:** [offline legacy application conversion](application-migration.md)
+adds supply profiles, archived report downloads and labeled historical sessions.
+Read its horizon, reference-price, HTTP-size and downgrade restrictions before
+using it. The historical conversion limitations below describe the 25 October
+baseline; regional billing and full workflow parity remain open.
+
 This branch connects live EV sessions, optional reference-price collection,
 versioned profiles, frozen reports and an authenticated API/card. It is not a
 release or a complete replacement for the legacy application. No production

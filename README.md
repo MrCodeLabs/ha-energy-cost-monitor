@@ -1,5 +1,10 @@
 # Energy Cost Monitor for Home Assistant
 
+**Product goal:** one reusable HACS integration configured entirely through Home
+Assistant forms, without user-written code or required JSON/YAML edits. Household
+settings and data stay private in the user's HA. This is the target experience,
+not a completed capability claim. [Goal and acceptance criteria](docs/product-goal.md).
+
 **26 October 2026:** PR #5 is merged; branch/main CI and the real HACS custom-repository installation passed. [Interactive lab evidence and limits](docs/hacs-lab.md).
 
 **Local development, 25 October 2026:** live session views, optional reference-price fetches,

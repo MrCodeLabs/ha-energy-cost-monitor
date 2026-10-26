@@ -1,5 +1,19 @@
 # Changelog
 
+## Product direction — 2026-10-26
+
+- Document a reusable HACS integration configured through HA forms alone, with
+  guided import/card setup and no required user code or JSON/YAML edits.
+- Define privacy, independent-user setup and update/recovery acceptance gates;
+  distinguish this target from the current development implementation.
+
+## Local development — 2026-10-26 — legacy application migration
+
+- Add explicit offline supply-profile conversion with fixed and indexed import/export, preserved hourly reference averaging and private ID mapping.
+- Expose archived sessions and frozen reports with legacy labels; preserve original report JSON/CSV, escape HTML evidence and check its hash.
+- Test fresh-path publication, error cleanup, price gaps/negative values, cutover and paired reopening. Regional billing, study/event-mode parity and production readiness remain open.
+- See [migration instructions and downgrade limits](docs/application-migration.md).
+
 ## Fix and validation — 2026-10-26 — interactive HACS installation
 
 - Mark the minute price trigger as an HA callback to prevent executor-thread `no running event loop` failures; exercise it through the real HA job dispatcher in the lab.

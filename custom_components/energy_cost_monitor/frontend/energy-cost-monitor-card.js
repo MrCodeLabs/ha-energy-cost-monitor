@@ -84,6 +84,7 @@ class EnergyCostMonitorCard extends HTMLElement {
       if(!data.sessions.length)this._node("p","V izbranem obdobju ni zaznanih EV sej.",card);
       for(const session of [...data.sessions].reverse()) {
         const row=this._node("article",undefined,card), body=session.body;
+        if(session.legacy)this._node("small","Arhivirana seja stare aplikacije · prvotni izračun",row,"muted");
         this._node("strong",`${this._time(session.start)} → ${this._time(session.end)}`,row);
         this._node("p",`${this._number(body.kwh,"kWh")} · polnjenje ${this._number(body.charging_seconds/60,"min")} · premor ${this._number(body.pause_seconds/60,"min")}`,row);
         this._node("small",body.partial?"Delna seja: vrzeli ali neuvrščena energija na robovih intervalov.":"Pokriti intervali seje.",row,"muted");
@@ -96,6 +97,7 @@ class EnergyCostMonitorCard extends HTMLElement {
       });
       for(const report of this._reports || []) {
         const row=this._node("article",undefined,card);
+        if(report.legacy)this._node("small","Arhivirano poročilo · brez ponovnega izračuna",row,"muted");
         this._node("strong",`${this._time(report.start)} – ${this._time(report.end)}`,row);
         const actions=this._node("div",undefined,row,"actions");
         for(const format of ["html","csv"])this._button(format.toUpperCase(),actions,()=>this._download(report.id,format));
