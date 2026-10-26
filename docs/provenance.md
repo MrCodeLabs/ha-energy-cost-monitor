@@ -44,3 +44,7 @@ collector pause/resume are newly written against the documented HA backup API.
 ## Reconciliation and sessions — 24 October 2026
 
 New owner-authored MIT code implements a compatibility export and conservative session reconstruction. The private owner-authorized legacy engine was read to verify its table/body contract and tested locally with invented data. No private source, profile, entity mapping or runtime data was copied into public fixtures.
+
+### Legacy application adapter — 26 October 2026
+
+New conversion code was written against the owner-authorized legacy schema and pricing semantics. No household configuration, stored database, identifiers, tariff values or private history was copied into this repository. Fixtures are invented. Original archived rows retain their provenance; conversion does not certify regional tariffs or third-party price licensing.

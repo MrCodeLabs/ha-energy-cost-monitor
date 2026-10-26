@@ -1,5 +1,15 @@
 # Design and extraction boundary
 
+## Configuration boundary — direction confirmed 26 October 2026
+
+The [product goal](product-goal.md) requires one shared HACS package and a
+configuration-only user experience. Household differences belong in validated
+private HA settings, not generated code, local patches or a private fork.
+Guided forms/import must feed the same validated core models; JSON and offline
+tools may remain optional development interfaces. Keep code installation separate
+from private stores, preserve settings across updates, and explicitly version
+data migrations. This is an acceptance requirement, not a completed UI claim.
+
 **24 October 2026:** [legacy reconciliation and EV session reconstruction](reconciliation.md) now provide a separate compatibility export. Original-only `export-legacy` semantics remain unchanged. Full application parity is still open.
 
 Status: source validation, cumulative-meter storage, detached supply-scenario comparison and a single-instance development HA adapter, 23 October 2026. Full HA validation and regional bill components remain pending.

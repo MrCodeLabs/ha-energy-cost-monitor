@@ -1,5 +1,22 @@
 # Validation status and remaining gates
 
+## Local verification — 26 October 2026 — application migration
+
+Branch `feature/legacy-application-migration`, based on merged main `3d086d5`.
+176 Windows/Python 3.12 tests, Ruff and card behavior tests passed. Pinned real
+HA 2026.10.2 passed all five phases: fresh 6/12 samples, migrated 6/12/18 including
+paired restore. The migrated phases convert a synthetic supply profile and frozen
+report, then verify archived CSV and escaped HTML through the real application API
+after restart/restore. No private data enters the container. Temporary containers
+were removed. These local changes have not been committed or run in hosted CI.
+
+See [conversion semantics, acceptance and downgrade restrictions](application-migration.md).
+This does not prove full regional billing, study/mode parity, native-versus-legacy
+EV energy equivalence, current production source freshness, mobile UX or full HAOS
+restore. Original sessions are explicitly archived results, not recomputed ones.
+The completed HACS installation/update on main is a separate earlier test; this
+unpublished branch was not installed via HACS.
+
 ## Latest verification — 25 October 2026 — application workflows
 
 Local branch `feature/application-workflows`, based on merged main `2540253`.
