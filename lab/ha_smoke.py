@@ -9,7 +9,7 @@ import sys
 import time
 
 from homeassistant import bootstrap, loader
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, HassJob
 
 DOMAIN = "energy_cost_monitor"
 CONFIG = Path("/config")
@@ -86,6 +86,14 @@ async def main():
             method = "GET"
         admin_request = Request(hass_user=SimpleNamespace(is_admin=True))
         app = runtime.application
+        # The real HA scheduler must keep this callback on the event loop.
+        # A plain sync function is sent to an executor, where create_task fails.
+        scheduled = hass.async_run_hass_job(HassJob(app.tick))
+        if scheduled is not None:
+            await scheduled
+        assert app.market_task is not None
+        await app.market_task
+        assert app.price_error is None
         profile = json.loads(Path("/repo/examples/application-profile.json").read_text())
         if phase == "create":
             await app.call(app.store.save_profile, profile)

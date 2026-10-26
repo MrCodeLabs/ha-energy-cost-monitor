@@ -28,9 +28,14 @@ was modified. Verify the installation record and actual files instead of treatin
 the initial ZIP error alone as a failed installation. No release tag exists yet;
 this is a custom-repository development installation, not a catalog beta.
 
-The next test updates this installed copy to the documentation revision containing
+Longer execution exposed a missing HA callback marker on the minute price trigger:
+HA dispatched it to an executor, causing `no running event loop`. The trigger now
+uses `@callback`; the real HA lab invokes it through `HassJob`, so this regression
+fails even in a short test. Collection and existing data were unaffected.
+
+The next test updates this installed copy to the corrected revision containing
 this record, restarts HA and compares the existing samples, profile/report digests
-and config-entry ID. A documentation-only update exercises HACS replacement and
+and config-entry ID. The update exercises HACS replacement, the price-trigger fix and
 persistence, not migration between incompatible application schemas. Its outcome
 must be recorded after execution, not inferred from successful installation.
 
