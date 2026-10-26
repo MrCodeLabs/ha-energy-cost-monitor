@@ -1,5 +1,7 @@
 # Energy Cost Monitor for Home Assistant
 
+**26 October 2026:** PR #5 is merged; branch/main CI and the real HACS custom-repository installation passed. [Interactive lab evidence and limits](docs/hacs-lab.md).
+
 **Local development, 25 October 2026:** live session views, optional reference-price fetches,
 versioned profiles, frozen HTML/CSV reports and an admin API/card are implemented on
 `feature/application-workflows`. See [usage, backup boundary and remaining gates](docs/application-workflows.md).
