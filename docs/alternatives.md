@@ -125,3 +125,12 @@ or frontend was copied. Reviewed official [HA custom-card documentation](https:/
 Core 2026.10.2 authentication/HTTP APIs and the frontend authenticated fetch methods.
 Price parsing follows the [Energy-Charts v2 OpenAPI schema](https://api.energy-charts.info/openapi.json);
 its reference index is not asserted to equal a supplier billing index.
+
+
+### HA scheduler correction — 26 October 2026
+
+The 25 October upstream feature/source/frontend survey remains the scoped baseline.
+This is a correction to our own scheduled callback, not a new integration/UI feature.
+Reviewed [Core 2026.10.2 HassJob dispatch](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/core.py):
+plain synchronous targets run in the executor; `@callback` marks event-loop work.
+The real scheduler regression is now exercised by the isolated HA lab.

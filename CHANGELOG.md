@@ -1,5 +1,11 @@
 # Changelog
 
+## Fix and validation — 2026-10-26 — interactive HACS installation
+
+- Mark the minute price trigger as an HA callback to prevent executor-thread `no running event loop` failures; exercise it through the real HA job dispatcher in the lab.
+- Record merged PR #5, passing hosted CI, actual HACS custom-repository installation, HA restart and real desktop Lovelace profile/report workflow.
+- Document the observed HACS short-SHA ZIP fallback and the distinction between installation, update persistence, full migration and production readiness.
+
 ## Local development — 2026-10-25 — application workflows
 
 - Added live conservative EV-session views, optional public reference-price fetching/cache, immutable profile versions and frozen HTML/CSV reports.

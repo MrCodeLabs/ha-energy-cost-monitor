@@ -10,6 +10,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from homeassistant.core import callback
+
 from ._core.collector import drain_on_cancel
 from ._core.application import ApplicationStore
 from .const import DOMAIN
@@ -60,6 +62,7 @@ class Application:
         async with self.lock:
             pass
 
+    @callback
     def tick(self, _now=None):
         if not self.stopped and time.time() >= self.next_fetch and (self.market_task is None or self.market_task.done()):
             self.market_task = asyncio.create_task(self.refresh_prices())

@@ -1,5 +1,49 @@
 # HACS development package
 
+## Interactive installation verified — 26 October 2026
+
+[PR #5](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/5) merged as
+`a9c9b5abc96c7296493318450bcba6815300336d`. All 11 PR checks passed
+([run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/40362927438));
+the resulting main CI also passed ([run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/40363297381)).
+
+A fresh, isolated HA 2026.10.2 installation used official HACS 2.0.5. The operator
+created a separate test account and authorized HACS through the normal GitHub
+device flow. Through the actual HACS UI, the public repository was added as a
+custom repository of type Integration and commit `a9c9b5a` was installed. HACS's
+stored installation record confirms that commit, and the downloaded card's SHA-256
+matches the repository file. After a process restart, the actual HA configuration
+flow created ECM using only a synthetic cumulative-energy sensor.
+
+The real Lovelace card rendered in a desktop browser. Its simple form saved an
+invented price profile; a frozen report appeared with HTML/CSV export actions.
+The profile and report are in the separate application database. There was no
+production configuration or production token reuse. This goes beyond the earlier
+headless download test; it does not establish mobile UX, full billing, migration
+of legacy profiles/reports, or an HAOS restore.
+
+Observed HACS behavior: its first ZIP request for the short commit SHA returned
+404, then its existing per-file fallback completed installation. No HACS source
+was modified. Verify the installation record and actual files instead of treating
+the initial ZIP error alone as a failed installation. No release tag exists yet;
+this is a custom-repository development installation, not a catalog beta.
+
+Longer execution exposed a missing HA callback marker on the minute price trigger:
+HA dispatched it to an executor, causing `no running event loop`. The trigger now
+uses `@callback`; the real HA lab invokes it through `HassJob`, so this regression
+fails even in a short test. Collection and existing data were unaffected.
+
+The next test updates this installed copy to the corrected revision containing
+this record, restarts HA and compares the existing samples, profile/report digests
+and config-entry ID. The update exercises HACS replacement, the price-trigger fix and
+persistence, not migration between incompatible application schemas. Its outcome
+must be recorded after execution, not inferred from successful installation.
+
+Slovenščina: dejanska namestitev prek HACS in prvi ponovni zagon sta uspešna.
+Kartica v pravem brskalniku shrani izmišljeni profil in zamrznjeno poročilo.
+Produkcija ostaja nespremenjena; to še ni potrditev celotne funkcionalne zamenjave.
+
+
 **Consolidated status, 23 October 2026:** see [published checks, latest local evidence and remaining gates](validation-status.md). Earlier dated observations below describe their tested revision; they do not imply full application migration or a complete HACS installation transaction.
 
 This is a development custom repository, not a supported beta or a HACS default
