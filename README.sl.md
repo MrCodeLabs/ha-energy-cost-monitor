@@ -1,10 +1,10 @@
 # Energy Cost Monitor za Home Assistant
 
-**Status / stanje, 23 October 2026:** [published checks, local migration work and remaining gates](docs/validation-status.md).
+**Lokalni razvoj, 25. 10. 2026:** dodani so prikaz sej, izbirni cenovni zajem, različice profilov, zamrznjena HTML/CSV poročila in skrbniški API/kartica. [Uporaba, kopije in preostale omejitve](docs/application-workflows.md). Razvoj poteka na veji `feature/application-workflows`; to še ni izdaja.
 
 Samostojen projekt za primerjavo dobavnih scenarijev elektrike, prikaz kakovosti meritev in ponovljiva poročila na podlagi podatkov Home Assistanta.
 
-**Stanje 23. 10. 2026: nastavljivi viri, trajno merilno jedro, dobavni scenariji in razvojni HA adapter za eno instanco.** Adapter ima izolirane teste življenjskega cikla in uspešne preizkuse v pravem HA 2026.10.2 brez grafičnega vmesnika. Izdaje, kartice in podpore HACS še ni.
+**Stanje 23. 10. 2026: nastavljivi viri, trajno merilno jedro, dobavni scenariji in razvojni HA adapter za eno instanco.** Adapter ima izolirane teste življenjskega cikla in uspešne preizkuse v pravem HA 2026.10.2 brez grafičnega vmesnika. Javne izdaje in podprte HACS bete še ni; razvojna kartica je dodana v zgoraj opisanem lokalnem nadaljevanju.
 
 Lastnik je potrdil lastno avtorstvo in dovolil pregledani prenos pod MIT. [Razvojni model virov](docs/source-configuration.md) je povezan z [merilnim jedrom](docs/accounting.md): prirastki, ocenjena četrturna razporeditev, pokritost, vrzeli, ponastavitve in ločena zbirka SQLite. Primer minimalne hiše ne potrebuje EV, hranilnika, sončne elektrarne ali TČ.
 

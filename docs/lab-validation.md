@@ -1,5 +1,24 @@
 # Disposable Home Assistant validation
 
+## Latest verification — 25 October 2026 — application workflows
+
+Local branch `feature/application-workflows`, based on merged main `2540253`.
+169 tests passed on Windows/Python 3.12.14 and Linux/Python 3.14. Ruff,
+JavaScript syntax and card behavior tests passed. Hassfest: one integration,
+zero invalid. Real HA 2026.10.2 passed all five phases (fresh 6/12 samples,
+migrated 6/12/18), including authenticated HTTP 401/403/admin checks, profile
+writes, report retrieval, paired-store backup and process restart/restore.
+The Node card suite uses DOM doubles, not a real browser. Hosted CI has not run
+for this local branch. Standard custom-integration and upstream rich SyntaxWarning
+messages appeared in the lab; no integration test failed.
+
+Implemented: live EV-session view, optional reference-price capture, immutable
+profile versions, frozen HTML/CSV reports and admin API/card. See
+[workflow instructions and boundaries](application-workflows.md). Full regional
+billing, legacy profile/report conversion, browser/mobile UX and full HAOS restore
+remain open. This revision is prepared for the owner-requested branch publication; no release, production change or HACS catalog submission.
+
+
 ## Restore follow-up — 24 October 2026
 
 All five current lab phases passed: fresh ledger creation/restart (6 then 12

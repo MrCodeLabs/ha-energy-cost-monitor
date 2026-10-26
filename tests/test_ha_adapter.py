@@ -39,7 +39,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.hass.entities[0]._attr_unique_id, "synthetic-entry_collection")
         self.assertNotIn("sensor.example_import_energy", json.dumps(self.hass.entities[0].extra_state_attributes))
         self.assertEqual(runtime.collector.latest["readings"]["house"]["value"], 10)
-        self.assertEqual(len(self.hass.listeners), 2)
+        self.assertEqual(len(self.hass.listeners), 3)
         self.assertEqual(len(self.entry.update_listeners), 1)
         self.assertTrue(self.adapter.storage_path(self.hass).is_relative_to(Path(self.temp.name) / ".storage"))
 
@@ -85,7 +85,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         new = self.hass.data[DOMAIN]
         self.assertIsNot(new, runtime)
         self.assertTrue(runtime.collector.stopped)
-        self.assertEqual(len(self.hass.listeners), 2)
+        self.assertEqual(len(self.hass.listeners), 3)
         self.assertEqual(len(self.entry.update_listeners), 1)
         self.assertAlmostEqual(new.collector.engine.summary(START, START + 900).energy_kwh["house"], 0.1)
         self.offset = 120

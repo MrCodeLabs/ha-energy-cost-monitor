@@ -43,3 +43,18 @@ The [development adapter](ha-adapter.md) has config/reconfigure/options flows, a
 Isolated lifecycle contracts are tested with HA doubles; headless actual HA loading and platform behavior have also passed. Broader UI/lifecycle coverage remains open. See [current validation status](validation-status.md). An explicit offline legacy migration now preserves original records and mapped intervals; HA backup hooks pause/drain the writer. See [migration and rollback limits](migration.md). Retention and complete application rollback remain open. UI configuration is not presented as a universal HACS requirement.
 
 The production prototype is not moved or updated by project setup. Public development and production deployment remain separate operations.
+
+
+## Application layer — 25 October 2026
+
+The new [application workflows](application-workflows.md) use a separate schema-1
+SQLite database (profiles, price provenance/cache, frozen reports), one async
+application lock, executor transactions and HA backup/shutdown draining. The meter
+schema and independent collector remain unchanged. A ledger read transaction
+captures intervals/samples consistently; the serialized application operation then
+selects one profile/cache revision. Frozen reports retain both snapshots, with
+explicit capture and observation cutoffs, rather than re-evaluating later prices.
+The admin REST view follows the active runtime across reload. Public card code
+contains no configuration or data; actual data routes require HA admin permission.
+The new app store is deliberately outside the existing meter recovery ZIP and must
+be included in paired HA backups. Legacy archive conversion remains separate.

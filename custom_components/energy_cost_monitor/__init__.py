@@ -17,6 +17,7 @@ from ._core.accounting import AccountingEngine
 from ._core.collector import Collector, drain_on_cancel, validate_settings
 from ._core.observations import Observation
 from .const import DOMAIN, STORAGE_FILE
+from .application import Application, application_store
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.SENSOR]
@@ -34,6 +35,7 @@ class Runtime:
         self.unsubscribers = []
         self.listeners = set()
         self.reported_failure = False
+        self.application = None
 
     @callback
     def updated(self):
@@ -70,6 +72,8 @@ class Runtime:
         for unsubscribe in self.unsubscribers:
             unsubscribe()
         self.unsubscribers.clear()
+        if self.application is not None:
+            await self.application.stop()
         if self.collector is not None:
             await self.collector.stop()
 
@@ -92,21 +96,25 @@ async def async_setup_entry(hass, entry):
             engine = AccountingEngine(storage_path(hass), config, max_gap_seconds=gap,
                                       sampling_mode="report")
             engine.break_continuity()
-            return engine
+            return engine, application_store(hass)
 
         try:
-            engine = await drain_on_cancel(hass.async_add_executor_job(open_engine))
+            engine, store = await drain_on_cancel(hass.async_add_executor_job(open_engine))
         except ValueError:
             raise ConfigEntryError("Existing ledger is incompatible; retained without replacement") from None
         except (OSError, sqlite3.Error):
             raise ConfigEntryNotReady("Ledger unavailable; retrying without replacement") from None
         runtime.collector = Collector(engine, runtime.read_snapshot,
                                       hass.async_add_executor_job, runtime.updated)
+        runtime.application = Application(runtime, store)
         await drain_on_cancel(runtime.collector.request())
         if runtime.collector.failed:
             raise ConfigEntryNotReady("Initial collection failed; retrying without replacement")
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        from .api import register_api
+        await register_api(hass)
         runtime.unsubscribers.append(async_track_time_interval(hass, runtime.tick, timedelta(seconds=poll)))
+        runtime.unsubscribers.append(async_track_time_interval(hass, runtime.application.tick, timedelta(minutes=1)))
         runtime.unsubscribers.append(hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, runtime.stop))
         runtime.unsubscribers.append(entry.add_update_listener(async_reload_entry))
     except BaseException:

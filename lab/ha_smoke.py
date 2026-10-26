@@ -44,7 +44,8 @@ async def main():
     hass.config.skip_pip = True
     loader.async_setup(hass)
     assert await bootstrap.async_from_config_dict(
-        {"homeassistant": {"name": "Synthetic lab", "time_zone": "Europe/Ljubljana",
+        {"http": {"server_host": "127.0.0.1", "server_port": 8123},
+         "homeassistant": {"name": "Synthetic lab", "time_zone": "Europe/Ljubljana",
                            "latitude": 0, "longitude": 0, "elevation": 0,
                            "unit_system": "metric"}}, hass
     ) is hass
@@ -78,6 +79,47 @@ async def main():
         await hass.async_block_till_done()
         sensor = hass.states.get("sensor.energy_cost_monitor_collection")
         assert sensor and sensor.state == "collecting", sensor
+        from custom_components.energy_cost_monitor.api import ApplicationView
+        from types import SimpleNamespace
+        app_view = ApplicationView(hass)
+        class Request(dict):
+            method = "GET"
+        admin_request = Request(hass_user=SimpleNamespace(is_admin=True))
+        app = runtime.application
+        profile = json.loads(Path("/repo/examples/application-profile.json").read_text())
+        if phase == "create":
+            await app.call(app.store.save_profile, profile)
+            end = int(time.time() // 900) * 900
+            report_id = await app.call(app.store.freeze, runtime.collector.engine, end-900, end)
+            await hass.async_add_executor_job((CONFIG / "report-id").write_text, report_id)
+        report_id = (CONFIG / "report-id").read_text()
+        response = await app_view.dispatch(admin_request, "report", {"id": report_id, "format": "html"})
+        assert response.status == 200 and "sandbox" in response.headers["Content-Security-Policy"]
+        assert (await app.call(app.store.profiles))["active"]
+        from aiohttp import ClientSession
+        from homeassistant.auth.const import GROUP_ID_ADMIN
+        admin = await hass.auth.async_create_system_user("Synthetic admin", group_ids=[GROUP_ID_ADMIN])
+        member = await hass.auth.async_create_system_user("Synthetic member")
+        admin_refresh = await hass.auth.async_create_refresh_token(admin)
+        member_refresh = await hass.auth.async_create_refresh_token(member)
+        headers = {"Authorization": "Bearer " + hass.auth.async_create_access_token(admin_refresh)}
+        member_headers = {"Authorization": "Bearer " + hass.auth.async_create_access_token(member_refresh)}
+        base = "http://127.0.0.1:8123"
+        async with ClientSession() as client:
+            async with client.get(base + "/api/energy_cost_monitor/profiles") as response:
+                assert response.status == 401, response.status
+            async with client.get(base + "/api/energy_cost_monitor/profiles", headers=member_headers) as response:
+                assert response.status == 403, response.status
+            async with client.post(base + "/api/energy_cost_monitor/profiles", json=profile, headers=headers) as response:
+                assert response.status == 200, await response.text()
+            async with client.get(base + "/api/energy_cost_monitor/view", headers=headers) as response:
+                assert response.status == 200, await response.text()
+            async with client.get(base + "/energy_cost_monitor/energy-cost-monitor-card.js") as response:
+                assert response.status == 200 and "EnergyCostMonitorCard" in await response.text()
+        hass.auth.async_remove_refresh_token(admin_refresh)
+        hass.auth.async_remove_refresh_token(member_refresh)
+        await hass.auth.async_remove_user(admin)
+        await hass.auth.async_remove_user(member)
         from custom_components.energy_cost_monitor.backup import async_post_backup, async_pre_backup
         from custom_components.energy_cost_monitor._core.migration import snapshot
         await async_pre_backup(hass)
@@ -85,6 +127,11 @@ async def main():
         await hass.async_add_executor_job(
             snapshot, CONFIG / ".storage/energy_cost_monitor.sqlite3", CONFIG / f"backup-{phase}.sqlite3"
         )
+        def application_snapshot():
+            with sqlite3.connect(CONFIG / ".storage/energy_cost_monitor_application.sqlite3") as source:
+                with sqlite3.connect(CONFIG / f"application-backup-{phase}.sqlite3") as target:
+                    source.backup(target)
+        await hass.async_add_executor_job(application_snapshot)
         await async_post_backup(hass)
         await runtime.collector.task
         before = await hass.async_add_executor_job(rows)
@@ -121,5 +168,9 @@ if sys.argv[1] == "restore":
     recovery_bundle(ledger, bundle, source_config)
     ledger.rename(CONFIG / "pre-restore.sqlite3")
     restore_bundle(bundle, ledger, source_config)
+    application = CONFIG / ".storage/energy_cost_monitor_application.sqlite3"
+    application.rename(CONFIG / "application-pre-restore.sqlite3")
+    import shutil
+    shutil.copyfile(CONFIG / "application-backup-restart.sqlite3", application)
 
 asyncio.run(main())

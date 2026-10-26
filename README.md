@@ -1,10 +1,14 @@
 # Energy Cost Monitor for Home Assistant
 
-**Status / stanje, 23 October 2026:** [published checks, local migration work and remaining gates](docs/validation-status.md).
+**Local development, 25 October 2026:** live session views, optional reference-price fetches,
+versioned profiles, frozen HTML/CSV reports and an admin API/card are implemented on
+`feature/application-workflows`. See [usage, backup boundary and remaining gates](docs/application-workflows.md).
+No production deployment or public release is implied.
+
 
 A project for comparing electricity supply scenarios and explaining energy costs using Home Assistant measurements, with visible data quality and reproducible reports.
 
-**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests and a successful headless lab test on real Home Assistant 2026.10.2; see [lab evidence and limits](docs/lab-validation.md). There is no public release, HACS support or dashboard card.
+**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests and a successful headless lab test on real Home Assistant 2026.10.2; see [lab evidence and limits](docs/lab-validation.md). There is no public release or supported HACS beta; a local development card is now available (see the current status above).
 
 [Slovenska navodila](README.sl.md) · [Roadmap](ROADMAP.md) · [Design](docs/architecture.md) · [Alternatives](docs/alternatives.md) · [Experience journal](docs/experience.md)
 
