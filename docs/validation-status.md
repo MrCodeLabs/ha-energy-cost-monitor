@@ -1,5 +1,21 @@
 # Validation status and remaining gates
 
+## Local verification — 28 October 2026 — guided initial sources
+
+Branch `feature/guided-source-setup`, based on main `1342c7b`. All 180 local
+Python tests and Ruff passed. After normalizing selector translation keys,
+the four focused wizard tests, Ruff, pinned hassfest (one integration, zero
+invalid) and all five real HA 2026.10.2 phases passed again: fresh 6/12 samples,
+migrated 6/12/18 including restore. Temporary containers were removed.
+Standard custom-integration and upstream rich warnings appeared without test failures.
+
+The fresh lab flow now selects roles and individual sensors through guided steps,
+without source JSON. This is an integration-flow test, not browser/mobile visual
+verification or a HACS installation of this unpublished branch. Existing-entry
+reconfiguration remains advanced. Full regional billing, study, EV parity, guided
+import and card setup remain open. See [guided setup and limits](guided-setup.md).
+Main CI run 40386095060 succeeded; this local branch has no hosted CI result yet.
+
 ## Local verification — 26 October 2026 — application migration
 
 Branch `feature/legacy-application-migration`, based on merged main `3d086d5`.

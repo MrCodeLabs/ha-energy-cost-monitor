@@ -3,11 +3,10 @@
   "config": {
     "step": {
       "user": {
-        "title": "Nastavitev razvojne merilne zbirke",
-        "description": "Vnesi JSON z lastno preslikavo virov. Uporabljaj le v ločeni testni namestitvi. Nastavitve morajo ustrezati obstoječi zbirki; migracija še ni izvedena.",
+        "title": "Nastavitev Energy Cost Monitorja",
+        "description": "Voden postopek omogoča izbor senzorjev brez kode. Napredni uvoz je izbiren. Razvojno različico uporabljaj v laboratoriju.",
         "data": {
-          "source_config": "Konfiguracija virov (JSON)",
-          "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
+          "setup_mode": "Način nastavitve"
         }
       },
       "reconfigure": {
@@ -17,11 +16,46 @@
           "source_config": "Konfiguracija virov (JSON)",
           "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
         }
+      },
+      "advanced": {
+        "title": "Napredni uvoz virov",
+        "description": "Izbirni napredni vnos JSON. Za običajno nastavitev izberi voden postopek. Obstoječe zbirke se ne prepiše.",
+        "data": {
+          "source_config": "Konfiguracija virov (JSON)",
+          "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
+        }
+      },
+      "sources": {
+        "title": "Izberi dodatne meritve",
+        "description": "Poraba hiše (house) in prevzem (import) sta obvezna. Izberi dodatne vire, ki jih imaš. Potrebni energijski števci za izbrane zmožnosti bodo dodani samodejno.",
+        "data": {
+          "roles": "Dodatni viri",
+          "max_gap_seconds": "Najdaljši razmik poročil (s)"
+        }
+      },
+      "source": {
+        "title": "Nastavi vir: {role}",
+        "description": "Izberi senzor, vrsto meritve in dejansko enoto. Cumulative je skupni števec; daily je dnevna ocena. Močnostna meja je največji verjetni prirastek, ne ukaz napravi. Spremljevalne signale uporabi le, če zanesljivo dokazujejo svežino števca.",
+        "data": {
+          "entity_id": "Senzor",
+          "measurement": "Vrsta in enota",
+          "max_age_seconds": "Največja starost poročila (s)",
+          "max_power_kw": "Največja verjetna moč (kW)",
+          "freshness_sources": "Spremljevalni signali svežine"
+        }
+      },
+      "review": {
+        "title": "Preveri izbrane vire",
+        "description": "{sources}\n\nIzberi Shrani ali Ponovi izbor. Skupni senzor za house/import je dovoljen le brez sončne elektrarne, baterije in oddaje, z enakimi nastavitvami.",
+        "data": {
+          "action": "Dejanje"
+        }
       }
     },
     "error": {
       "invalid_configuration": "Neveljavna konfiguracija, nezdružljiva zbirka ali interval zajema izven dovoljenih mej svežine. Popravi nastavitve; zbirka ni bila nadomeščena.",
-      "storage_unavailable": "Dostop do obstoječe zbirke ni mogoč. Preveri dostop in poskusi znova."
+      "storage_unavailable": "Dostop do obstoječe zbirke ni mogoč. Preveri dostop in poskusi znova.",
+      "invalid_source": "Preveri senzor, enoto in pozitivne omejitve. Enota se mora ujemati z enoto senzorja."
     },
     "abort": {
       "single_instance_allowed": "Podprta je le ena instanca Energy Cost Monitorja.",
@@ -41,6 +75,55 @@
     },
     "error": {
       "invalid_poll_interval": "Vnesi celo število od 5 do 300 sekund, največ do meje svežine virov in najdaljšega razmika poročil."
+    }
+  },
+  "selector": {
+    "source_roles": {
+      "options": {
+        "house": "Poraba hiše",
+        "import": "Prevzem iz omrežja",
+        "export": "Oddaja v omrežje",
+        "pv": "Sončna energija",
+        "charge": "Polnjenje baterije",
+        "discharge": "Praznjenje baterije",
+        "ev": "Energija EV",
+        "heating": "Ogrevanje",
+        "water": "Topla voda",
+        "house_power": "Moč hiše",
+        "grid_power": "Moč omrežja",
+        "pv_power": "Sončna moč",
+        "battery_power": "Moč baterije",
+        "battery_soc": "Napolnjenost baterije",
+        "ev_power": "Moč polnjenja EV",
+        "ev_connected": "Priklop EV"
+      }
+    },
+    "setup_mode": {
+      "options": {
+        "guided": "Voden izbor senzorjev",
+        "advanced": "Napredni uvoz JSON"
+      }
+    },
+    "review_action": {
+      "options": {
+        "save": "Shrani",
+        "restart": "Ponovi izbor"
+      }
+    },
+    "measurement": {
+      "options": {
+        "cumulative_energy_wh": "Skupni energijski števec (Wh)",
+        "cumulative_energy_kwh": "Skupni energijski števec (kWh)",
+        "cumulative_energy_mwh": "Skupni energijski števec (MWh)",
+        "daily_energy_estimate_wh": "Dnevna ocena energije (Wh)",
+        "daily_energy_estimate_kwh": "Dnevna ocena energije (kWh)",
+        "daily_energy_estimate_mwh": "Dnevna ocena energije (MWh)",
+        "power_w": "Moč (W)",
+        "power_kw": "Moč (kW)",
+        "power_mw": "Moč (MW)",
+        "percentage_percent": "Odstotek (%)",
+        "binary_state": "Priklop/odklop"
+      }
     }
   }
 }

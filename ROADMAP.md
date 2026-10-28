@@ -6,7 +6,8 @@ The [configuration-only product goal](docs/product-goal.md) governs the remainin
 work: implement general configurable features, not household patches. HACS
 installation alone does not complete the product.
 
-- [ ] Replace required source JSON entry with guided sensor/capability forms.
+- [x] Replace required source JSON entry for new installations with guided sensor/capability forms (local development, 28 October; [limits](docs/guided-setup.md)).
+- [ ] Add guided reconfiguration/migration of existing source identities and validate browser/mobile UX.
 - [ ] Provide forms for supported pricing, export, regional, EV and study settings.
 - [ ] Provide guided import/recovery and card setup without required code/file edits.
 - [ ] Validate clean installation by another user with different synthetic inputs.

@@ -217,11 +217,11 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         flow.hass = self.hass
         self.assertEqual((await flow.async_step_user())["reason"], "single_instance_allowed")
         self.hass.entries.clear()
-        self.assertEqual((await flow.async_step_user({"source_config": "invalid", "max_gap_seconds": 300}))["errors"],
+        self.assertEqual((await flow.async_step_advanced({"source_config": "invalid", "max_gap_seconds": 300}))["errors"],
                          {"base": "invalid_configuration"})
-        form = await flow.async_step_user()
+        form = await flow.async_step_advanced()
         data = form["data_schema"]({"source_config": json.dumps(self.entry.data["source_config"]), "max_gap_seconds": 300})
-        result = await flow.async_step_user(data)
+        result = await flow.async_step_advanced(data)
         self.assertEqual(result["type"], "create_entry")
         self.assertEqual(result["data"], self.entry.data)
         self.assertFalse(self.adapter.storage_path(self.hass).exists())

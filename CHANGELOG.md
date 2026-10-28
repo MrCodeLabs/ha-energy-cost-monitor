@@ -1,5 +1,13 @@
 # Changelog
 
+## Local development — 2026-10-28 — guided source setup
+
+- Add guided initial setup with sensor selection, measurement units/kinds,
+  freshness limits, optional capabilities and final review; retain optional advanced import.
+- Validate units and source identity without modifying existing measurements.
+- Add English/Slovenian labels, synthetic flow tests and real HA guided-flow coverage.
+- Full tariff/study/EV/import/card workflows and guided reconfiguration remain open.
+
 ## Product direction — 2026-10-26
 
 - Document a reusable HACS integration configured through HA forms alone, with

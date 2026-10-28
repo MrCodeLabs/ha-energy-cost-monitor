@@ -1,5 +1,9 @@
 # Energy Cost Monitor za Home Assistant
 
+**Lokalni razvoj, 28. 10. 2026:** začetna izbira senzorjev je mogoča prek
+[vodenih obrazcev](docs/guided-setup.md), brez JSON-a. Celotna nastavitev aplikacije
+in pripravljenost na produkcijo še nista dokončani; veja še ni objavljena.
+
 **Cilj:** splošna integracija prek HACS, ki jo vsak uporabnik nastavi prek obrazcev
 v Home Assistantu, brez dopisovanja kode ali obveznega urejanja JSON/YAML.
 Osebne nastavitve in podatki ostanejo zasebno v njegovem HA. To je cilj razvoja,
