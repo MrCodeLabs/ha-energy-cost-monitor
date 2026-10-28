@@ -1,5 +1,18 @@
 # Existing solutions and project rationale
 
+## Guided setup follow-up — 28 October 2026
+
+Reopened Dynamic Energy Cost and Powercalc repository/docs, config-flow source,
+issue/PR pages and the separate MFFR Profit Tracker frontend before this change.
+These remain relevant maintained alternatives for cost sensors and balancing-reserve
+reporting. Web issue/PR views have differing cache dates, so no fresh queue counts
+are asserted. The concrete gap is a guided entity/unit/capability mapping into this
+project's existing ledger, without required JSON. Existing sensor cost work still
+belongs upstream; this flow imports no upstream code or frontend.
+Reviewed the official [HA flow steps](https://contributors.home-assistant.io/core/integrations/flow-steps/)
+and upstream [Dynamic Energy Cost config flow](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/config_flow.py)
+and [Powercalc config flow](https://github.com/bramstroker/homeassistant-powercalc/blob/master/custom_components/powercalc/config_flow.py).
+
 ## Legacy conversion follow-up — 26 October 2026
 
 Reopened the Dynamic Energy Cost and Powercalc repositories, READMEs, sensor/cost

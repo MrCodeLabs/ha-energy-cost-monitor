@@ -3,11 +3,10 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configure a development ledger",
-        "description": "Paste a source configuration JSON using your own entity mapping. Use only in an isolated test instance. Existing ledger identity must match; migration is not implemented.",
+        "title": "Set up Energy Cost Monitor",
+        "description": "Choose guided to select sensors without code. Advanced is an optional import. Use this development version in a lab.",
         "data": {
-          "source_config": "Source configuration (JSON)",
-          "max_gap_seconds": "Maximum time between meter reports (seconds)"
+          "setup_mode": "Setup method"
         }
       },
       "reconfigure": {
@@ -17,11 +16,46 @@
           "source_config": "Source configuration (JSON)",
           "max_gap_seconds": "Maximum time between meter reports (seconds)"
         }
+      },
+      "advanced": {
+        "title": "Advanced source import",
+        "description": "Optional JSON entry. Use guided setup for ordinary installation. Existing stores are never replaced.",
+        "data": {
+          "source_config": "Source configuration (JSON)",
+          "max_gap_seconds": "Maximum time between meter reports (seconds)"
+        }
+      },
+      "sources": {
+        "title": "Choose optional measurements",
+        "description": "House consumption and grid import are required. Select only additional measurements you have. Required energy meters for selected capabilities are added automatically.",
+        "data": {
+          "roles": "Additional sources",
+          "max_gap_seconds": "Maximum report gap (s)"
+        }
+      },
+      "source": {
+        "title": "Configure source: {role}",
+        "description": "Choose the sensor, measurement type and actual unit. Cumulative is a total counter; daily is a daily estimate. The power limit checks plausible increments, not device control. Use companion freshness signals only when they reliably prove meter freshness.",
+        "data": {
+          "entity_id": "Sensor",
+          "measurement": "Measurement and unit",
+          "max_age_seconds": "Maximum report age (s)",
+          "max_power_kw": "Maximum plausible power (kW)",
+          "freshness_sources": "Companion freshness signals"
+        }
+      },
+      "review": {
+        "title": "Review selected sources",
+        "description": "{sources}\n\nSave stores these settings; restart repeats selection. Sharing house/import requires identical settings and no solar, battery or export.",
+        "data": {
+          "action": "Action"
+        }
       }
     },
     "error": {
       "invalid_configuration": "Invalid source configuration, incompatible existing ledger, or polling interval outside source freshness limits. Correct the settings; the ledger has not been replaced.",
-      "storage_unavailable": "Cannot access the existing ledger. Check storage access and retry."
+      "storage_unavailable": "Cannot access the existing ledger. Check storage access and retry.",
+      "invalid_source": "Check the sensor, unit and positive limits. The unit must match the sensor unit."
     },
     "abort": {
       "single_instance_allowed": "Only one Energy Cost Monitor instance is supported.",
@@ -41,6 +75,55 @@
     },
     "error": {
       "invalid_poll_interval": "Use an integer from 5 to 300 seconds, no longer than source freshness or maximum report gap."
+    }
+  },
+  "selector": {
+    "source_roles": {
+      "options": {
+        "house": "House",
+        "import": "Import",
+        "export": "Export",
+        "pv": "Pv",
+        "charge": "Charge",
+        "discharge": "Discharge",
+        "ev": "Ev",
+        "heating": "Heating",
+        "water": "Water",
+        "house_power": "House power",
+        "grid_power": "Grid power",
+        "pv_power": "Pv power",
+        "battery_power": "Battery power",
+        "battery_soc": "Battery soc",
+        "ev_power": "Ev power",
+        "ev_connected": "Ev connected"
+      }
+    },
+    "setup_mode": {
+      "options": {
+        "guided": "Guided sensor setup",
+        "advanced": "Advanced JSON import"
+      }
+    },
+    "review_action": {
+      "options": {
+        "save": "Save",
+        "restart": "Start selection again"
+      }
+    },
+    "measurement": {
+      "options": {
+        "cumulative_energy_wh": "Cumulative energy counter (Wh)",
+        "cumulative_energy_kwh": "Cumulative energy counter (kWh)",
+        "cumulative_energy_mwh": "Cumulative energy counter (MWh)",
+        "daily_energy_estimate_wh": "Daily energy estimate (Wh)",
+        "daily_energy_estimate_kwh": "Daily energy estimate (kWh)",
+        "daily_energy_estimate_mwh": "Daily energy estimate (MWh)",
+        "power_w": "Power (W)",
+        "power_kw": "Power (kW)",
+        "power_mw": "Power (MW)",
+        "percentage_percent": "Percentage (%)",
+        "binary_state": "Connected/disconnected"
+      }
     }
   }
 }

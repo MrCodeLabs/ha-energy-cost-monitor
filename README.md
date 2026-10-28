@@ -1,5 +1,9 @@
 # Energy Cost Monitor for Home Assistant
 
+**Local development, 28 October 2026:** new entries can select sensors through a
+[guided setup](docs/guided-setup.md) without source JSON. Full configuration-only
+workflows and production readiness remain unfinished; this branch is unpublished.
+
 **Product goal:** one reusable HACS integration configured entirely through Home
 Assistant forms, without user-written code or required JSON/YAML edits. Household
 settings and data stay private in the user's HA. This is the target experience,

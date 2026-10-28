@@ -74,8 +74,19 @@ async def main():
             result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": "user"})
             assert result["type"] == "form", result
             result = await hass.config_entries.flow.async_configure(result["flow_id"], {
-                "source_config": json.dumps(sources), "max_gap_seconds": 300,
+                "setup_mode": "guided",
             })
+            assert result["step_id"] == "sources"
+            result = await hass.config_entries.flow.async_configure(result["flow_id"], {"roles": [], "max_gap_seconds": 300})
+            for role in ("house", "import"):
+                assert result["step_id"] == "source"
+                source = sources["sources"][role]
+                result = await hass.config_entries.flow.async_configure(result["flow_id"], {
+                    "entity_id": source["entity_id"], "measurement": "cumulative_energy_kwh",
+                    "max_age_seconds": source["max_age_seconds"], "max_power_kw": source["max_power_kw"],
+                })
+            assert result["step_id"] == "review", result
+            result = await hass.config_entries.flow.async_configure(result["flow_id"], {"action": "save"})
             assert result["type"] == "create_entry", result
         await hass.async_block_till_done()
         entries = hass.config_entries.async_entries(DOMAIN)

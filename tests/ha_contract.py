@@ -75,6 +75,17 @@ class TextSelector:
         return value
 
 
+class SelectSelector:
+    def __init__(self, config):
+        self.config = config
+
+    def __call__(self, value):
+        values = value if self.config.get("multiple") else [value]
+        if not isinstance(values, list) or any(v not in self.config["options"] for v in values):
+            raise ValueError("invalid_choice")
+        return value
+
+
 def install_doubles(now):
     modules = {}
 
@@ -95,7 +106,9 @@ def install_doubles(now):
     module("homeassistant.exceptions", ConfigEntryError=ConfigEntryError, ConfigEntryNotReady=ConfigEntryNotReady)
     module("homeassistant.helpers")
     module("homeassistant.helpers.event", async_track_time_interval=lambda hass, action, interval: hass.listen(action))
-    module("homeassistant.helpers.selector", TextSelector=TextSelector, TextSelectorConfig=dict)
+    module("homeassistant.helpers.selector", TextSelector=TextSelector, TextSelectorConfig=dict,
+           EntitySelector=TextSelector, EntitySelectorConfig=dict,
+           SelectSelector=SelectSelector, SelectSelectorConfig=dict)
     module("homeassistant.util")
     module("homeassistant.util.dt", utcnow=lambda: datetime.fromtimestamp(now(), timezone.utc))
     module("homeassistant.components")
