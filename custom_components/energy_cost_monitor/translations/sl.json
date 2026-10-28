@@ -11,10 +11,9 @@
       },
       "reconfigure": {
         "title": "Popravi konfiguracijo",
-        "description": "Meritve ostanejo ohranjene. Viri, enote, pragovi in razmik poročil morajo ustrezati zbirki; njihova sprememba potrebuje prihodnjo migracijo.",
+        "description": "Voden obrazec predizpolni obstoječe vire. Spremembe veljajo šele ob shranjevanju. Obstoječa zgodovina zahteva iste vire, enote in omejitve; sprememba identitete bo zavrnjena. Interval branja spremeni v možnostih integracije.",
         "data": {
-          "source_config": "Konfiguracija virov (JSON)",
-          "max_gap_seconds": "Najdaljši razmik poročil števca (sekunde)"
+          "setup_mode": "Način nastavitve"
         }
       },
       "advanced": {
@@ -55,12 +54,14 @@
     "error": {
       "invalid_configuration": "Neveljavna konfiguracija, nezdružljiva zbirka ali interval zajema izven dovoljenih mej svežine. Popravi nastavitve; zbirka ni bila nadomeščena.",
       "storage_unavailable": "Dostop do obstoječe zbirke ni mogoč. Preveri dostop in poskusi znova.",
-      "invalid_source": "Preveri senzor, enoto in pozitivne omejitve. Enota se mora ujemati z enoto senzorja."
+      "invalid_source": "Preveri senzor, enoto in pozitivne omejitve. Enota se mora ujemati z enoto senzorja.",
+      "incompatible_history": "Nastavitve se ne ujemajo s shranjeno zgodovino. Zgodovina in aktivne nastavitve ostajajo ohranjene. Obnovi prejšnje vrednosti; vodena selitev na druge vire še ni na voljo."
     },
     "abort": {
       "single_instance_allowed": "Podprta je le ena instanca Energy Cost Monitorja.",
       "already_configured": "Energy Cost Monitor je že nastavljen.",
-      "reconfigure_successful": "Konfiguracija je posodobljena."
+      "reconfigure_successful": "Konfiguracija je posodobljena.",
+      "configuration_changed": "Nastavitve je medtem spremenil drug postopek. Ponovno odpri nastavljanje; tvoje spremembe niso bile shranjene."
     }
   },
   "options": {
@@ -95,7 +96,22 @@
         "battery_power": "Moč baterije",
         "battery_soc": "Napolnjenost baterije",
         "ev_power": "Moč polnjenja EV",
-        "ev_connected": "Priklop EV"
+        "ev_connected": "Priklop EV",
+        "ev_mode": "EV Način",
+        "ev_status": "EV Stanje",
+        "ev_deadline_status": "EV Stanje roka",
+        "ev_deadline": "EV Rok",
+        "ev_amp_limit": "EV Tokovna omejitev",
+        "ev_grid_limit": "EV Omrežna tokovna meja",
+        "ev_current_cap": "EV Tokovna kapica",
+        "ev_requested_current": "EV Zahtevani tok",
+        "ev_maximum_current": "EV Največji tok",
+        "ev_cable_current": "EV Tok kabla",
+        "ev_pv_enabled": "EV Sončni način omogočen",
+        "ev_night_enabled": "EV Nočni način omogočen",
+        "ev_night_owned": "EV Nočni nadzor aktiven",
+        "ev_target_soc": "EV Ciljna napolnjenost",
+        "house_daily_reference": "Dnevna referenca hiše"
       }
     },
     "setup_mode": {
@@ -122,7 +138,9 @@
         "power_kw": "Moč (kW)",
         "power_mw": "Moč (MW)",
         "percentage_percent": "Odstotek (%)",
-        "binary_state": "Priklop/odklop"
+        "binary_state": "Priklop/odklop",
+        "text_state": "Besedilno stanje",
+        "current_a": "Tok (A)"
       }
     }
   }

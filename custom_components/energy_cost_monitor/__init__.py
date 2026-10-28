@@ -33,6 +33,7 @@ class Runtime:
         self.hass, self.entry = hass, entry
         self.collector = None
         self.unsubscribers = []
+        self.unsubscribe_stop = None
         self.listeners = set()
         self.reported_failure = False
         self.application = None
@@ -69,6 +70,10 @@ class Runtime:
         self.collector.request()
 
     async def stop(self, _event=None):
+        # HA already removes a one-shot listener before invoking it.
+        unsubscribe, self.unsubscribe_stop = self.unsubscribe_stop, None
+        if unsubscribe is not None and _event is None:
+            unsubscribe()
         for unsubscribe in self.unsubscribers:
             unsubscribe()
         self.unsubscribers.clear()
@@ -115,7 +120,7 @@ async def async_setup_entry(hass, entry):
         await register_api(hass)
         runtime.unsubscribers.append(async_track_time_interval(hass, runtime.tick, timedelta(seconds=poll)))
         runtime.unsubscribers.append(async_track_time_interval(hass, runtime.application.tick, timedelta(minutes=1)))
-        runtime.unsubscribers.append(hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, runtime.stop))
+        runtime.unsubscribe_stop = hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, runtime.stop)
         runtime.unsubscribers.append(entry.add_update_listener(async_reload_entry))
     except BaseException:
         # Shield rollback so setup cancellation cannot leave a reserved runtime,
@@ -144,6 +149,8 @@ async def async_unload_entry(hass, entry):
         if not await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
             return False
         await runtime.stop()
+        from .api import unregister_panel
+        unregister_panel(hass)
         hass.data.pop(DOMAIN, None)
         return True
 

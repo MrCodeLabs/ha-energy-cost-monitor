@@ -16,6 +16,7 @@ CAPABILITIES = frozenset({"solar", "battery", "ev", "heat_pump"})
 # role: (owning capability, allowed input kinds)
 ROLE_RULES = {
     "house": (None, {"cumulative_energy"}),
+    "house_daily_reference": (None, {"daily_energy_estimate"}),
     "import": (None, {"cumulative_energy"}),
     "export": (None, {"cumulative_energy"}),
     "pv": ("solar", {"cumulative_energy"}),
@@ -32,6 +33,15 @@ ROLE_RULES = {
     "ev_power": ("ev", {"power"}),
     "ev_connected": ("ev", {"binary"}),
 }
+
+# Optional, read-only EV context. No service calls or device commands.
+for _role in ("mode", "status", "deadline_status", "deadline"):
+    ROLE_RULES["ev_" + _role] = ("ev", {"text"})
+for _role in ("amp_limit", "grid_limit", "current_cap", "requested_current", "maximum_current", "cable_current"):
+    ROLE_RULES["ev_" + _role] = ("ev", {"current"})
+for _role in ("pv_enabled", "night_enabled", "night_owned"):
+    ROLE_RULES["ev_" + _role] = ("ev", {"binary"})
+ROLE_RULES["ev_target_soc"] = ("ev", {"percentage"})
 
 
 class ConfigurationError(ValueError):
@@ -107,12 +117,14 @@ def parse_config(value: object) -> SourceConfig:
         if not isinstance(kind, str) or kind not in kinds:
             raise ConfigurationError(path + ".kind", "invalid_kind")
         entity = raw.get("entity_id")
-        domain = "binary_sensor" if kind == "binary" else "sensor"
+        domain = ("(?:binary_sensor|input_boolean|switch)" if kind == "binary" else
+                  "(?:sensor|select|input_select|input_datetime)" if kind == "text" else
+                  "(?:sensor|number|input_number)" if kind in {"current", "percentage"} else "sensor")
         if not isinstance(entity, str) or not re.fullmatch(domain + r"\.[a-z0-9_]+", entity):
             raise ConfigurationError(path + ".entity_id", "invalid_entity_id")
         unit = raw.get("unit")
-        units = ENERGY_UNITS if kind in ENERGY_KINDS else POWER_UNITS if kind == "power" else {"%": 1}
-        if kind == "binary":
+        units = ENERGY_UNITS if kind in ENERGY_KINDS else POWER_UNITS if kind == "power" else {"A": 1} if kind == "current" else {"%": 1}
+        if kind in {"binary", "text"}:
             unit_ok = unit is None
         else:
             unit_ok = isinstance(unit, str) and unit in units

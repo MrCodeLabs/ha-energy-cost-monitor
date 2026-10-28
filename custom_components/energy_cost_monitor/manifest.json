@@ -1,9 +1,16 @@
 {
   "domain": "energy_cost_monitor",
   "name": "Energy Cost Monitor",
-  "codeowners": ["@MrCodeLabs"],
+  "codeowners": [
+    "@MrCodeLabs"
+  ],
   "config_flow": true,
-  "dependencies": ["http"],
+  "dependencies": [
+    "file_upload",
+    "frontend",
+    "http",
+    "panel_custom"
+  ],
   "documentation": "https://github.com/MrCodeLabs/ha-energy-cost-monitor",
   "integration_type": "helper",
   "iot_class": "local_polling",

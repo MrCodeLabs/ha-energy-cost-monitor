@@ -15,7 +15,7 @@ DOMAIN = "energy_cost_monitor"
 CONFIG = Path("/config")
 
 
-def prepare_migration():
+def prepare_migration(fixture_only=False):
     """Invent one closed interval; never load any operator data into this lab."""
     from custom_components.energy_cost_monitor._core.migration import TABLES, migrate_legacy
     from custom_components.energy_cost_monitor._core.sources import parse_config
@@ -35,6 +35,8 @@ def prepare_migration():
         old.execute("INSERT INTO profiles VALUES('synthetic',?,?)", (start, json.dumps(profile)))
         old.execute("INSERT INTO reports VALUES('synthetic',?,?,?,?)",
                     (start, start+900, start+900, json.dumps({"csv": "a,b\n1,2", "note": "<script>invented</script>"})))
+    if fixture_only:
+        return
     migrate_legacy(CONFIG / "synthetic-legacy.sqlite3", CONFIG / ".storage/energy_cost_monitor.sqlite3",
                    config, role_mapping={"house": "invented", "import": "invented"}, cutover=start + 900)
     (CONFIG / "historical-start").write_text(str(start))
@@ -100,6 +102,32 @@ async def main():
             assert historical.energy_kwh["import"] == 0.5
         await runtime.collector.request()
         await hass.async_block_till_done()
+        # Exercise actual reconfigure flows, including schema defaults. Merely
+        # opening/reviewing them must not mutate the live entry or stored history.
+        previous_data = dict(entry.data)
+        async def reconfigure_sources(replacement=None):
+            result = await hass.config_entries.flow.async_init(
+                DOMAIN, context={"source": "reconfigure", "entry_id": entry.entry_id})
+            assert result["step_id"] == "reconfigure", result
+            result = await hass.config_entries.flow.async_configure(result["flow_id"], {"setup_mode": "guided"})
+            result = await hass.config_entries.flow.async_configure(result["flow_id"], result["data_schema"]({}))
+            for _role in ("house", "import"):
+                assert result["step_id"] == "source", result
+                row = result["data_schema"]({})
+                if replacement:
+                    row["entity_id"] = replacement
+                result = await hass.config_entries.flow.async_configure(result["flow_id"], row)
+            assert result["step_id"] == "review", result
+            assert dict(entry.data) == previous_data
+            return await hass.config_entries.flow.async_configure(result["flow_id"], {"action": "save"})
+
+        result = await reconfigure_sources()
+        assert result["type"] == "abort" and result["reason"] == "reconfigure_successful", result
+        assert hass.data[DOMAIN] is runtime  # Unchanged settings do not reload.
+        result = await reconfigure_sources("sensor.example_other_counter")
+        assert result["errors"] == {"base": "incompatible_history"}, result
+        assert dict(entry.data) == previous_data and hass.data[DOMAIN] is runtime
+        hass.config_entries.flow.async_abort(result["flow_id"])
         sensor = hass.states.get("sensor.energy_cost_monitor_collection")
         assert sensor and sensor.state == "collecting", sensor
         from custom_components.energy_cost_monitor.api import ApplicationView
@@ -109,6 +137,7 @@ async def main():
             method = "GET"
         admin_request = Request(hass_user=SimpleNamespace(is_admin=True))
         app = runtime.application
+        assert DOMAIN in hass.data.get("frontend_panels", {}), "admin sidebar panel missing"
         # The real HA scheduler must keep this callback on the event loop.
         # A plain sync function is sent to an executor, where create_task fails.
         scheduled = hass.async_run_hass_job(HassJob(app.tick))
@@ -117,6 +146,8 @@ async def main():
         assert app.market_task is not None
         await app.market_task
         assert app.price_error is None
+        await app.study_task
+        assert app.study_error is None
         profile = json.loads(Path("/repo/examples/application-profile.json").read_text())
         if phase == "create":
             await app.call(app.store.save_profile, profile)
@@ -151,6 +182,36 @@ async def main():
                 assert response.status == 200, await response.text()
             async with client.get(base + "/api/energy_cost_monitor/view", headers=headers) as response:
                 assert response.status == 200, await response.text()
+            study_settings = {"timezone": "Europe/Ljubljana", "months": 3,
+                              "warmup_hours": 48, "minimum_coverage": 0.99,
+                              "require_daily_check": True, "daily_absolute_kwh": 0.1,
+                              "daily_relative": 0.01, "reference_age_seconds": 180}
+            async with client.post(base + "/api/energy_cost_monitor/study", json=study_settings, headers=member_headers) as response:
+                assert response.status == 403
+            if phase == "create":
+                async with client.post(base + "/api/energy_cost_monitor/study", json=study_settings, headers=headers) as response:
+                    assert response.status == 200, await response.text()
+            async with client.get(base + "/api/energy_cost_monitor/study", headers=headers) as response:
+                assert response.status == 200
+                assert (await response.json())["state"] == "warmup"
+            if phase == "create" and os.environ.get("ECM_LAB_MIGRATE") != "1":
+                from aiohttp import FormData
+                await hass.async_add_executor_job(prepare_migration, True)
+                body = FormData()
+                raw = await hass.async_add_executor_job((CONFIG / "synthetic-legacy.sqlite3").read_bytes)
+                body.add_field("file", raw, filename="synthetic.sqlite3", content_type="application/octet-stream")
+                async with client.post(base + "/api/file_upload", data=body, headers=headers) as response:
+                    assert response.status == 200, await response.text()
+                    uploaded = await response.json()
+                async with client.post(base + "/api/energy_cost_monitor/history", json={"command": "preview", **uploaded}, headers=headers) as response:
+                    assert response.status == 200, await response.text()
+                    preview = await response.json()
+                request = {"command": "import", "id": preview["id"], "sha256": preview["sha256"],
+                           "mapping": {"house": "invented", "import": "invented"},
+                           "horizon": "2030-01-01", "profile": "synthetic", "confirm": True}
+                async with client.post(base + "/api/energy_cost_monitor/history", json=request, headers=headers) as response:
+                    assert response.status == 200, await response.text()
+                    assert (await response.json())["imported"] is True
             async with client.get(base + "/energy_cost_monitor/energy-cost-monitor-card.js") as response:
                 assert response.status == 200 and "EnergyCostMonitorCard" in await response.text()
         hass.auth.async_remove_refresh_token(admin_refresh)

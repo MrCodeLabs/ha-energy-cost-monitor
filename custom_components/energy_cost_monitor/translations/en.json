@@ -11,10 +11,9 @@
       },
       "reconfigure": {
         "title": "Correct configuration",
-        "description": "Existing measurements are retained. Source identities, units, thresholds and maximum report gap must match the ledger; changing them requires a future migration.",
+        "description": "Guided setup prefills existing sources. Changes apply only after saving. Existing history requires the same sources, units and limits; identity changes are refused. Change polling cadence in integration options.",
         "data": {
-          "source_config": "Source configuration (JSON)",
-          "max_gap_seconds": "Maximum time between meter reports (seconds)"
+          "setup_mode": "Setup method"
         }
       },
       "advanced": {
@@ -55,12 +54,14 @@
     "error": {
       "invalid_configuration": "Invalid source configuration, incompatible existing ledger, or polling interval outside source freshness limits. Correct the settings; the ledger has not been replaced.",
       "storage_unavailable": "Cannot access the existing ledger. Check storage access and retry.",
-      "invalid_source": "Check the sensor, unit and positive limits. The unit must match the sensor unit."
+      "invalid_source": "Check the sensor, unit and positive limits. The unit must match the sensor unit.",
+      "incompatible_history": "These settings do not match stored history. History and active settings are unchanged. Restore the previous values; guided migration to different sources is not available yet."
     },
     "abort": {
       "single_instance_allowed": "Only one Energy Cost Monitor instance is supported.",
       "already_configured": "Energy Cost Monitor is already configured.",
-      "reconfigure_successful": "Configuration updated."
+      "reconfigure_successful": "Configuration updated.",
+      "configuration_changed": "Configuration changed in another flow. Reopen configuration; your draft was not saved."
     }
   },
   "options": {
@@ -95,7 +96,22 @@
         "battery_power": "Battery power",
         "battery_soc": "Battery soc",
         "ev_power": "Ev power",
-        "ev_connected": "Ev connected"
+        "ev_connected": "Ev connected",
+        "ev_mode": "EV mode",
+        "ev_status": "EV status",
+        "ev_deadline_status": "EV deadline status",
+        "ev_deadline": "EV deadline",
+        "ev_amp_limit": "EV amp limit",
+        "ev_grid_limit": "EV grid limit",
+        "ev_current_cap": "EV current cap",
+        "ev_requested_current": "EV requested current",
+        "ev_maximum_current": "EV maximum current",
+        "ev_cable_current": "EV cable current",
+        "ev_pv_enabled": "EV pv enabled",
+        "ev_night_enabled": "EV night enabled",
+        "ev_night_owned": "EV night owned",
+        "ev_target_soc": "EV target soc",
+        "house_daily_reference": "House daily reference"
       }
     },
     "setup_mode": {
@@ -122,7 +138,9 @@
         "power_kw": "Power (kW)",
         "power_mw": "Power (MW)",
         "percentage_percent": "Percentage (%)",
-        "binary_state": "Connected/disconnected"
+        "binary_state": "Connected/disconnected",
+        "text_state": "Text state",
+        "current_a": "Current (A)"
       }
     }
   }

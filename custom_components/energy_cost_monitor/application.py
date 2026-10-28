@@ -14,6 +14,7 @@ from homeassistant.core import callback
 
 from ._core.collector import drain_on_cancel
 from ._core.application import ApplicationStore
+from ._core.study import Study
 from .const import DOMAIN
 
 
@@ -43,6 +44,8 @@ class Application:
         self.next_fetch = 0
         self.price_error = None
         self.cursor = 0
+        self.study_task = None
+        self.study_error = None
 
     async def call(self, function, *args, **kwargs):
         async with self.lock:
@@ -59,13 +62,24 @@ class Application:
         self.stopped = True
         if self.market_task is not None:
             await drain_on_cancel(self.market_task)
+        if self.study_task is not None:
+            await drain_on_cancel(self.study_task)
         async with self.lock:
             pass
 
     @callback
     def tick(self, _now=None):
+        if not self.stopped and (self.study_task is None or self.study_task.done()):
+            self.study_task = asyncio.create_task(self.advance_study())
         if not self.stopped and time.time() >= self.next_fetch and (self.market_task is None or self.market_task.done()):
             self.market_task = asyncio.create_task(self.refresh_prices())
+
+    async def advance_study(self):
+        try:
+            await self.call(Study(self.store).advance, self.runtime.collector.engine, time.time())
+            self.study_error = None
+        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error):
+            self.study_error = "study_unavailable"
 
     async def refresh_prices(self):
         self.next_fetch = time.time() + 3600

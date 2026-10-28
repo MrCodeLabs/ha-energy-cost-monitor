@@ -113,6 +113,10 @@ def install_doubles(now):
     module("homeassistant.util.dt", utcnow=lambda: datetime.fromtimestamp(now(), timezone.utc))
     module("homeassistant.components")
     module("homeassistant.components.http", HomeAssistantView=object)
+    async def register_panel(hass, **kwargs):
+        hass.data.setdefault("frontend_panels", {})[kwargs["frontend_url_path"]] = kwargs
+    module("homeassistant.components.panel_custom", async_register_panel=register_panel)
+    module("homeassistant.components.frontend", async_remove_panel=lambda hass, name: hass.data.get("frontend_panels", {}).pop(name, None))
     module("homeassistant.components.sensor", SensorEntity=SensorEntity, SensorDeviceClass=SimpleNamespace(ENUM="enum"))
     patcher = patch.dict(sys.modules, modules)
     patcher.start()
