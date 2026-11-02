@@ -1,5 +1,8 @@
 # Application workflows — local development, 25 October 2026
 
+Current frontend language: English by default, Slovenian when selected in the HA user profile.
+Older Slovenian-only screenshots/labels below describe their tested revision.
+
 > New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
 > Dated sections below preserve development history; earlier pending/local/manual-setup
 > statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)

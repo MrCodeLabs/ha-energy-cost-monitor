@@ -1,5 +1,13 @@
 # Changelog
 
+## 2 November 2026 — English-first frontend
+
+- Use English as the card/panel source language with Slovenian selected by HA user language.
+- Translate labels, help, actions, accessibility text and errors; preserve drafts on language changes.
+- Align English onboarding with the English controls and retain Slovenian guidance.
+- Add language/fallback/preservation tests; see docs/frontend-language.md for validation limits.
+
+
 ## 2 November 2026 — new-user documentation
 
 - Replace chronological README notices with a current English/Slovenian overview.
