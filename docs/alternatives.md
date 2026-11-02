@@ -190,3 +190,14 @@ documentation linked above. Their price/energy sensor scope remains useful; this
 change fixes stale save results and timer replacement of our own profile/study
 forms over paired stores. It adds no alternative integration or copied frontend.
 The earlier source/frontend survey remains the baseline for the existing features.
+
+### English-first UI — 2 November 2026
+
+Reviewed the official [custom-card contract](https://contributors.home-assistant.io/frontend/custom-ui/card/)
+and Dynamic Energy Cost's current README, component tree and issue/PR pages.
+Some GitHub web results are cached, so they are not proof of current PR status.
+The earlier survey of that author's separate frontend remains the baseline.
+This scoped change localizes ECM's existing forms; a price-sensor integration
+cannot provide translations for ECM's own paired-store/profile/study controls.
+No new integration or copied upstream UI is introduced. HA supplies the user
+language; English is the source/fallback language and Slovenian remains available.

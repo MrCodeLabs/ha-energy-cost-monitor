@@ -21,7 +21,8 @@ default-catalog entry, or a complete utility-bill calculator.
 - Guided import of a supported legacy Energy Cost Monitor SQLite copy.
 
 The supported setup path requires no user-written code or JSON/YAML edits.
-The bundled panel currently uses Slovenian labels and requires an HA administrator.
+The bundled panel defaults to English, follows Slovenian HA user language settings,
+and requires an HA administrator. Other languages fall back to English.
 One integration instance is supported per HA installation.
 
 ## Verified scope and limits
@@ -51,6 +52,7 @@ upload tokens, private logs, invoices, meter identifiers or household databases.
 ## Project documentation
 
 - [User guide](docs/getting-started.md): install, configure, verify, update and recover.
+- [Frontend languages](docs/frontend-language.md): English default, Slovenian translation and validation scope.
 - [Roadmap](ROADMAP.md) and [product goal](docs/product-goal.md): remaining work.
 - [Validation history](docs/validation-status.md) and [changelog](CHANGELOG.md).
 - [Architecture](docs/architecture.md), [development](docs/development.md),

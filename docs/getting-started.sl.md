@@ -46,7 +46,8 @@ Pri minimalni postavitvi brez sončne elektrarne, hranilnika in oddaje lahko ist
 števca. Nedosegljiv senzor ne potrjuje pravilnosti izbrane enote.
 
 Skrbnikom se samodejno prikaže stranska plošča **Energy Cost Monitor**.
-Ročen vpis vira kartice ali YAML ni potreben. Plošča ima trenutno slovenske oznake.
+Ročen vpis vira kartice ali YAML ni potreben. Plošča je privzeto angleška. Za spodnje slovenske oznake izberi slovenščino
+v svojem uporabniškem profilu HA; drugi nepodprti jeziki uporabijo angleščino.
 JSON in ročna kartica Lovelace ostajata izbirni napredni možnosti.
 
 ## 4. Nastavitev funkcij

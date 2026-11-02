@@ -20,8 +20,9 @@ privzetem katalogu HACS ali kalkulator celotnega računa.
   ter uvajanje študije z mesečnimi in končnimi poročili.
 - Voden uvoz podprte kopije SQLite starega Energy Cost Monitorja.
 
-Za podprti postopek ni treba dopisovati kode ali urejati JSON/YAML. Plošča ima
-trenutno slovenske oznake in zahteva skrbniški račun. Podprt je en vnos integracije
+Za podprti postopek ni treba dopisovati kode ali urejati JSON/YAML. Plošča je
+privzeto angleška; slovenski jezik uporabnika HA vključi slovenski prevod.
+Drugi jeziki uporabljajo angleščino. Potreben je skrbniški račun. Podprt je en vnos integracije
 na namestitev HA.
 
 ## Kaj je preverjeno in kaj še manjka

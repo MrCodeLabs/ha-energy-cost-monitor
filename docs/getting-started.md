@@ -46,19 +46,19 @@ house/import with identical settings. Otherwise provide appropriate separate
 counters. An unavailable sensor does not validate its units.
 
 The **Energy Cost Monitor** sidebar panel appears automatically for admins.
-No dashboard resource or manual card YAML is required. Its tabs currently have
-Slovenian labels; the steps below use those exact labels. JSON and manual Lovelace
+No dashboard resource or manual card YAML is required. Its default language is English; choosing Slovenian in your HA user profile
+selects Slovenian labels. Unsupported languages fall back to English. JSON and manual Lovelace
 setup are optional advanced paths, not prerequisites.
 
 ## 4. Configure the functions you need
 
 | Tab | What to do |
 | --- | --- |
-| **Cene** (prices) | Name the profile, add an offer and contract version, enter validity, subscription and import/export price periods. Select units, record sources and confirm only verified prices. Choose **Shrani cenovni profil**. |
-| **Profili** (profiles) | Inspect saved versions or activate a previous version. Changes create new versions; frozen reports retain their original assumptions. The advanced JSON editor is optional. |
-| **EV in obračun** (EV and billing) | Optionally enable counter-level EV calculation and enter gap/power/tolerance thresholds. Under regional settings, add effective dates, block rates, agreed powers, levies, VAT and excess-power mode. Save with **Shrani EV in obračun**. |
-| **Študija** (study) | Choose timezone, months, warm-up, coverage and daily-check settings; select **Začni uvajanje študije**. The required daily household reference is selected in source settings. |
-| **Poročila** (reports) | Choose a view window, then **Zamrzni prikazano obdobje**. Open/download the frozen HTML or CSV report. |
+| **Prices** | Name the profile, add an offer and contract version, enter validity, subscription and import/export price periods. Select units, record sources and confirm only verified prices. Choose **Save price profile**. |
+| **Profiles** | Inspect saved versions or activate a previous version. Changes create new versions; frozen reports retain their original assumptions. The advanced JSON editor is optional. |
+| **EV and billing** | Optionally enable counter-level EV calculation and enter gap/power/tolerance thresholds. Under regional settings, add effective dates, block rates, agreed powers, levies, VAT and excess-power mode. Save with **Save EV and billing**. |
+| **Study** | Choose timezone, months, warm-up, coverage and daily-check settings; select **Start study warm-up**. The required daily household reference is selected in source settings. |
+| **Reports** | Choose a view window, then **Freeze displayed period**. Open/download the frozen HTML or CSV report. |
 
 Price timestamps need an offset, for example `2026-01-01T00:00:00+01:00`; the end
 is exclusive. Use the correct offset for the date. Regional dates are entered as
@@ -69,7 +69,7 @@ EUR/month excluding VAT, with explicit validity dates. Label the source
 “Synthetic example” and leave confirmation unchecked. These are not tariffs or
 recommended household settings; replace them before interpreting real results.
 
-The optional **Referenčni indeks Energy-Charts + pribitek** price mode replaces
+The optional **Energy-Charts reference index + markup** price mode replaces
 entered import prices within contract validity. Select the zone and markup in the
 form. It sends only zone/date requests, not measurements or profiles; the provider
 sees the requesting network address. Fetching/backfill is gradual and not an
@@ -84,7 +84,7 @@ exports energy/supply rows, not an equivalent full regional bill.
 
 ## 5. Optional legacy history import
 
-Skip this for a new installation. **Uvoz zgodovine** accepts a supported legacy
+Skip this for a new installation. **History import** accepts a supported legacy
 Energy Cost Monitor SQLite copy, not an arbitrary HA recorder database or CSV.
 Use a consistent backup, never a live database file copied during writes.
 
@@ -92,7 +92,7 @@ Use a consistent backup, never a live database file copied during writes.
 2. Select the legacy SQLite copy in the import form and review its preview.
 3. Map every requested role, select the source profile and the exclusive end date
    for comparing old prices. Decide whether to activate the converted profile.
-4. Confirm the reviewed mapping, then choose **Uvozi preverjeno zgodovino**.
+4. Confirm the reviewed mapping, then choose **Import reviewed history**.
 5. Check the imported counts, backup identifier, profiles and archived reports.
 
 The upload goes to your HA. Original rows are retained; overlap with native
@@ -106,7 +106,7 @@ review/configure them separately. This is not full HA recovery. See
 
 - Check the collection-quality sensor and the panel's latest sample time.
 - Allow the counters to report and a quarter-hour interval to finish. Initial,
-  stale or incomplete measurements may correctly show **neznano** (unknown).
+  stale or incomplete measurements may correctly show **unknown**.
 - Reopen saved settings and check active profile, periods, units and confirmation.
 - Freeze a test report and verify it remains available after a test restart.
 - Distinguish a known subtotal from a complete total. Neither establishes the
