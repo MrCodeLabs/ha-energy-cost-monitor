@@ -46,4 +46,14 @@ Regional reference totals are not an amount payable: opening credit, carry-forwa
 payouts and invoice reconciliation remain open. The calendar is explicitly 2026.
 Production replacement still requires a reference bill, agreed block powers,
 complete study/regional reconciliation, a fresh full backup and controlled rollback.
-Merge and HACS download evidence must be recorded separately after they happen.
+
+## Merge and HACS update
+
+PR #11 merged into main `532012e42cd920d4df1b5fcea2c2e2d06fb51fea` on 2 November.
+All 22 branch/PR checks and all 11 merged-main checks passed. HACS downloaded
+`532012e` in the isolated lab; its installation record and all 27 component files
+matched the tested candidate. After restart, four profile versions, two reports,
+all 36 preceding samples and the entry identity/settings were preserved; collection
+advanced to 45 samples. The automatic panel and study warm-up remained available.
+The test container and temporary access were stopped, retaining recovery copies.
+This was an update of an existing HACS test installation, not a new HAOS restore.

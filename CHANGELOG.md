@@ -1,5 +1,14 @@
 # Changelog
 
+## 2 November 2026 — new-user documentation
+
+- Replace chronological README notices with a current English/Slovenian overview.
+- Add a single bilingual onboarding path for HACS, forms, import, verification,
+  update, recovery and removal; distinguish preview limitations from tested features.
+- Retain dated technical evidence with links to the current guide and record the
+  completed PR #11/HACS acceptance. Documentation only; no new installation.
+
+
 ## 2 November 2026 — workflow acceptance
 
 - Apply saved profile/study responses immediately and preserve open forms during

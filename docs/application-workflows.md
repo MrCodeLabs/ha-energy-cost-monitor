@@ -1,5 +1,10 @@
 # Application workflows — local development, 25 October 2026
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
 **26 October follow-up:** [offline legacy application conversion](application-migration.md)
 adds supply profiles, archived report downloads and labeled historical sessions.
 Read its horizon, reference-price, HTTP-size and downgrade restrictions before

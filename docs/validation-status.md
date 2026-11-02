@@ -1,5 +1,10 @@
 # Validation status and remaining gates
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
 ## Local continuation — 28 October 2026 — configuration workflows
 
 The current branch is `feature/configuration-only-workflows`; its changes remain

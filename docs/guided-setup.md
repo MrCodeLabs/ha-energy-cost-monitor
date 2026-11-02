@@ -1,5 +1,10 @@
 # Guided source setup — 28 October 2026
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
 New installations can choose **Guided sensor setup** instead of entering source
 JSON. This is one step toward the [configuration-only product goal](product-goal.md),
 not completion of the full product or a supported production release.

@@ -1,5 +1,10 @@
 # Configuration-only continuation — 28 October 2026
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
 Work on `feature/configuration-only-workflows`, based on merged PR #10.
 [2 November acceptance](acceptance-2026-11-02.md) supersedes the earlier test
 limitations below where explicitly verified. This is not a production-readiness statement.

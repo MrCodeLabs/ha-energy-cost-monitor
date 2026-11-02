@@ -1,8 +1,20 @@
 # Roadmap
 
-Local continuation on `feature/configuration-only-workflows` adds initial EV,
-regional and study implementations. Acceptance checkboxes remain open until the
-[remaining verification gates](docs/configuration-workflows.md) pass.
+Updated 2 November 2026. Start with the [user guide](docs/getting-started.md)
+([Slovenščina](docs/getting-started.sl.md)). PR #11 and HACS update acceptance
+are complete; [evidence and limits](docs/acceptance-2026-11-02.md).
+
+## Current acceptance summary
+
+- [x] Guided sources, pricing/EV/regional/study forms, automatic panel and synthetic browser import.
+- [x] HACS custom-repository download, restart and data preservation for main `532012e`.
+- [x] English/Slovenian onboarding and development update/removal/recovery guidance.
+- [ ] Independent-user setup, broader source combinations and full HAOS restore.
+- [ ] Full household study/invoice reconciliation, credit/payouts and 2027 regional rules.
+- [ ] Supported beta, compatibility range, brand registration and default-catalog submission.
+
+The dated milestone checklists below are historical planning records, not the
+current installation instructions. Combined items may retain open subrequirements.
 
 ## Product completion gate — 26 October 2026
 
