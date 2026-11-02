@@ -1,8 +1,11 @@
 # Energy Cost Monitor za Home Assistant
 
-**Lokalni razvoj, 28. 10. 2026:** začetna izbira senzorjev je mogoča prek
-[vodenih obrazcev](docs/guided-setup.md), brez JSON-a. Celotna nastavitev aplikacije
-in pripravljenost na produkcijo še nista dokončani; veja še ni objavljena.
+**Lokalno nadaljevanje, 28. 10. 2026:** nastavljive EV seje, regionalni referenčni
+izračuni, študija in prvi obrazci so v preverjanju. Uvoz prek obrazcev, celoten
+preizkus vmesnika in primerjava z računom še niso zaključeni.
+[Obseg in odprti pogoji](docs/configuration-workflows.md).
+
+**28. 10. 2026:** voden začetni izbor virov je združen prek [PR #10](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/10), CI je uspešen. Lokalno nadaljevanje dodaja predizpolnjeno ponovno nastavitev z zaščito zgodovine; [navodila in omejitve](docs/guided-setup.md). Celoten cilj in pripravljenost na produkcijo ostajata odprta.
 
 **Cilj:** splošna integracija prek HACS, ki jo vsak uporabnik nastavi prek obrazcev
 v Home Assistantu, brez dopisovanja kode ali obveznega urejanja JSON/YAML.

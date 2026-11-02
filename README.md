@@ -1,8 +1,13 @@
 # Energy Cost Monitor for Home Assistant
 
-**Local development, 28 October 2026:** new entries can select sensors through a
-[guided setup](docs/guided-setup.md) without source JSON. Full configuration-only
-workflows and production readiness remain unfinished; this branch is unpublished.
+**Local continuation, 28 October 2026:** configurable EV counter sessions, regional
+reference calculations, study scheduling and initial forms are under verification.
+[Implemented scope and remaining gates](docs/configuration-workflows.md).
+
+**28 October 2026:** [PR #10](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/10)
+merged guided initial source setup after passing CI. A local follow-up adds prefilled
+reconfiguration with history protection; [usage and limits](docs/guided-setup.md).
+Full configuration-only workflows and production readiness remain unfinished.
 
 **Product goal:** one reusable HACS integration configured entirely through Home
 Assistant forms, without user-written code or required JSON/YAML edits. Household

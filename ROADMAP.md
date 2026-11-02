@@ -1,13 +1,18 @@
 # Roadmap
 
+Local continuation on `feature/configuration-only-workflows` adds initial EV,
+regional and study implementations. Acceptance checkboxes remain open until the
+[remaining verification gates](docs/configuration-workflows.md) pass.
+
 ## Product completion gate — 26 October 2026
 
 The [configuration-only product goal](docs/product-goal.md) governs the remaining
 work: implement general configurable features, not household patches. HACS
 installation alone does not complete the product.
 
-- [x] Replace required source JSON entry for new installations with guided sensor/capability forms (local development, 28 October; [limits](docs/guided-setup.md)).
-- [ ] Add guided reconfiguration/migration of existing source identities and validate browser/mobile UX.
+- [x] Replace required source JSON entry for new installations with guided sensor/capability forms (merged PR #10, 28 October; [limits](docs/guided-setup.md)).
+- [x] Add prefilled guided reconfiguration with existing ledger protection (local follow-up, 28 October).
+- [ ] Add versioned migration to different source identities and validate browser/mobile UX.
 - [ ] Provide forms for supported pricing, export, regional, EV and study settings.
 - [ ] Provide guided import/recovery and card setup without required code/file edits.
 - [ ] Validate clean installation by another user with different synthetic inputs.

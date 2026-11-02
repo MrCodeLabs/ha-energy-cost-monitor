@@ -1,9 +1,12 @@
 """Guided setup contracts, synthetic sensors only; not a frontend test."""
 
+from copy import deepcopy
 import tempfile
 import unittest
 
-from ha_contract import Hass, install_doubles
+from ha_contract import Entry, Hass, install_doubles
+from energy_cost_monitor.accounting import AccountingEngine
+from energy_cost_monitor.sources import parse_config
 from test_accounting import START
 
 
@@ -66,3 +69,84 @@ class GuidedSetupTests(unittest.IsolatedAsyncioTestCase):
         await self.flow.async_step_review({"action":"restart"})
         await self.flow.async_step_sources({"roles": [], "max_gap_seconds":300})
         self.assertEqual(self.flow._draft["source_config"]["sources"], {})
+
+    async def begin_reconfigure(self, entry):
+        self.flow.config_entry = entry
+        self.hass.entries.append(entry)
+        form = await self.flow.async_step_reconfigure()
+        self.assertEqual(form["data_schema"]({}), {"setup_mode": "guided"})
+        return await self.flow.async_step_reconfigure({"setup_mode": "guided"})
+
+    async def fill_existing_sources(self, form, **changes):
+        choice = form["data_schema"]({})
+        result = await self.flow.async_step_sources(choice)
+        for _role in self.flow._roles:
+            row = result["data_schema"]({})
+            row.update(changes)
+            result = await self.flow.async_step_source(row)
+        self.assertEqual(result["step_id"], "review")
+
+    async def test_existing_defaults_preserve_history_and_noop_does_not_reload(self):
+        entry = Entry()
+        entry.options = {"poll_seconds": 5}
+        entry.data["max_gap_seconds"] = 300.5
+        for row in entry.data["source_config"]["sources"].values():
+            row["max_age_seconds"] = 15.5
+        entry.update_listeners.append(object())
+        before = deepcopy(entry.data)
+        engine = AccountingEngine(self.adapter.storage_path(self.hass), parse_config(before["source_config"]),
+                                  max_gap_seconds=300.5, sampling_mode="report")
+        original = engine.path.read_bytes()
+        await self.fill_existing_sources(await self.begin_reconfigure(entry))
+        self.assertEqual(entry.data, before)  # No writes while reviewing/cancelling.
+        result = await self.flow.async_step_review({"action": "save"})
+        self.assertEqual(result["reason"], "reconfigure_successful")
+        self.assertEqual(engine.path.read_bytes(), original)
+        self.assertEqual(entry.data, before)
+        self.assertEqual(entry.options, {"poll_seconds": 5})
+        self.assertEqual(self.hass.reload_requests, 0)
+
+    async def test_guided_identity_change_refused_and_restart_prefills_draft(self):
+        entry = Entry()
+        before = deepcopy(entry.data)
+        engine = AccountingEngine(self.adapter.storage_path(self.hass), parse_config(before["source_config"]),
+                                  max_gap_seconds=300, sampling_mode="report")
+        original = engine.path.read_bytes()
+        await self.fill_existing_sources(await self.begin_reconfigure(entry), entity_id="sensor.example_replacement")
+        result = await self.flow.async_step_review({"action": "save"})
+        self.assertEqual(result["errors"], {"base": "incompatible_history"})
+        self.assertEqual(engine.path.read_bytes(), original)
+        self.assertEqual(entry.data, before)
+        self.assertEqual(self.hass.reload_requests, 0)
+        result = await self.flow.async_step_review({"action": "restart"})
+        result = await self.flow.async_step_sources(result["data_schema"]({}))
+        self.assertEqual(result["data_schema"]({})["entity_id"], "sensor.example_replacement")
+
+    async def test_guided_repair_before_store_exists_updates_only_on_save(self):
+        entry = Entry()
+        await self.fill_existing_sources(await self.begin_reconfigure(entry), entity_id="sensor.example_replacement")
+        self.assertNotEqual(entry.data["source_config"]["sources"]["house"]["entity_id"], "sensor.example_replacement")
+        result = await self.flow.async_step_review({"action": "save"})
+        self.assertEqual(result["reason"], "reconfigure_successful")
+        self.assertEqual(entry.data["source_config"]["sources"]["house"]["entity_id"], "sensor.example_replacement")
+        self.assertEqual(len(self.hass.entries), 1)
+        self.assertEqual(self.hass.reload_requests, 1)
+        self.assertFalse(self.adapter.storage_path(self.hass).exists())
+
+    async def test_guided_reconfigure_checks_current_polling_options(self):
+        entry = Entry()
+        entry.options = {"poll_seconds": 120}
+        before = deepcopy(entry.data)
+        await self.fill_existing_sources(await self.begin_reconfigure(entry), max_age_seconds=60)
+        result = await self.flow.async_step_review({"action": "save"})
+        self.assertEqual(result["errors"], {"base": "invalid_configuration"})
+        self.assertEqual(entry.data, before)
+        self.assertEqual(self.hass.reload_requests, 0)
+
+    async def test_concurrent_edit_is_not_overwritten(self):
+        entry = Entry()
+        await self.fill_existing_sources(await self.begin_reconfigure(entry))
+        entry.data = {**entry.data, "max_gap_seconds": 400}
+        result = await self.flow.async_step_review({"action": "save"})
+        self.assertEqual(result["reason"], "configuration_changed")
+        self.assertEqual(entry.data["max_gap_seconds"], 400)

@@ -1,5 +1,15 @@
 # Existing solutions and project rationale
 
+## Guided reconfiguration follow-up — 28 October 2026
+
+The same-day repository, issue/PR and separate frontend review below remains the
+baseline. Re-read Dynamic Energy Cost and Powercalc config-flow implementations
+and official [HA reconfiguration guidance](https://contributors.home-assistant.io/core/integrations/reauth-reconfigure/).
+The gap is editing this project's source mapping while preserving its immutable
+ledger identity and existing entry lifecycle, not a generic cost-sensor feature.
+No upstream implementation was copied. Browser/mobile verification and versioned
+source migrations remain separate gates.
+
 ## Guided setup follow-up — 28 October 2026
 
 Reopened Dynamic Energy Cost and Powercalc repository/docs, config-flow source,
@@ -162,3 +172,21 @@ This is a correction to our own scheduled callback, not a new integration/UI fea
 Reviewed [Core 2026.10.2 HassJob dispatch](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/core.py):
 plain synchronous targets run in the executor; `@callback` marks event-loop work.
 The real scheduler regression is now exercised by the isolated HA lab.
+
+### Configuration-only continuation — 28 October 2026
+
+The same-day review of Dynamic Energy Cost, Powercalc and the author's separate
+MFFR Profit Tracker remains the scoped comparison for the initial wizard and this
+continuation. The gap is configuration and migration over this project's paired
+ledger/application stores, observed EV modes and immutable study reports. No
+upstream implementation was copied. Reviewed Core 2026.10.2 frontend/panel_custom
+registration and the official [file upload implementation](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/file_upload/__init__.py).
+Uploads use HA's authenticated file-upload facility and admin-only import endpoints.
+
+### Browser acceptance correction — 2 November 2026
+
+Rechecked the official Dynamic Energy Cost README and Powercalc cost-sensor
+documentation linked above. Their price/energy sensor scope remains useful; this
+change fixes stale save results and timer replacement of our own profile/study
+forms over paired stores. It adds no alternative integration or copied frontend.
+The earlier source/frontend survey remains the baseline for the existing features.

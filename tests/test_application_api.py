@@ -42,10 +42,26 @@ class ApplicationApiTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_non_admin_and_unauthenticated_cannot_read_or_write(self):
         for admin in (False, None):
-            for action in ("view", "profiles", "reports", "report"):
+            for action in ("view", "profiles", "reports", "report", "study", "history"):
                 with self.assertRaises(web.HTTPForbidden):
                     await self.view.dispatch(Request(admin, "POST"), action, {})
         self.assertEqual(self.runtime.application.store.profiles()["versions"], [])
+
+    async def test_study_settings_persist_and_background_error_is_visible(self):
+        from test_study import settings
+
+        response = await self.view.dispatch(Request(True, "POST"), "study", settings())
+        self.assertEqual(response.status, 200)
+        self.assertEqual(json.loads(response.text)["state"], "warmup")
+        self.runtime.application.study_error = "study_unavailable"
+        response = await self.view.dispatch(Request(True), "study", {})
+        self.assertEqual(json.loads(response.text)["error"], "study_unavailable")
+        await self.adapter.async_unload_entry(self.hass, self.entry)
+        await self.adapter.async_setup_entry(self.hass, self.entry)
+        response = await self.view.dispatch(Request(True), "study", {})
+        self.assertEqual(json.loads(response.text)["state"], "warmup")
+        response = await self.view.dispatch(Request(True, "POST"), "study", {"cancel": True})
+        self.assertEqual(json.loads(response.text)["state"], "cancelled")
 
     async def test_admin_profile_report_and_download_survive_reload(self):
         response = await self.view.dispatch(Request(True, "POST"), "profiles", profile())
@@ -83,6 +99,30 @@ class ApplicationApiTests(unittest.IsolatedAsyncioTestCase):
             await app.call(app.store.save_profile, profile())
         await backup.async_post_backup(self.hass)
         await app.call(app.store.save_profile, profile())
+
+    async def test_backup_waiting_for_import_keeps_collection_paused(self):
+        history = importlib.import_module("custom_components.energy_cost_monitor.history")
+        backup = importlib.import_module("custom_components.energy_cost_monitor.backup")
+        entered, release = threading.Event(), threading.Event()
+        self.addCleanup(release.set)
+        def slow(*args, **kwargs):
+            entered.set()
+            release.wait(5)
+            return {"imported": True}
+        data = {"confirm": True, "id": "synthetic", "sha256": "synthetic",
+                "mapping": {}, "horizon": "2027-01-01", "profile": "synthetic"}
+        with patch.object(history, "staged_path", return_value=Path(self.temp.name) / "synthetic"), patch.object(history, "import_history", side_effect=slow):
+            task = asyncio.create_task(history.apply_import(self.runtime, data))
+            await asyncio.to_thread(entered.wait, 2)
+            saving = asyncio.create_task(backup.async_pre_backup(self.hass))
+            await asyncio.sleep(.02)
+            self.assertFalse(saving.done())
+            release.set()
+            await task
+            await saving
+            self.assertTrue(self.runtime.collector.paused)
+            self.assertIsNone(self.runtime.collector.request())
+            await backup.async_post_backup(self.hass)
 
     async def test_price_failure_does_not_stop_collection_and_later_recovers(self):
         app = self.runtime.application

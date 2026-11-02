@@ -22,7 +22,8 @@ import time
 
 from .accounting import Interval, _bounds, _timestamp
 from .pricing import compare_scenarios, parse_scenario, _money
-from .sessions import reconstruct_sessions
+from .sessions import reconstruct_sessions, counter_sessions
+from .regional import validate_regional, regional_bill
 
 APP_ID = 0x45434D41
 ZONES = {"SI", "AT", "DE-LU", "HR", "IT-North", "HU"}
@@ -47,7 +48,7 @@ def encoded(value):
 
 def validate_profile(profile):
     if (not isinstance(profile, dict) or not {"name", "scenarios", "indexed_import"} <= set(profile)
-            or set(profile) - {"name", "scenarios", "indexed_import", "session_charging_kw"}):
+            or set(profile) - {"name", "scenarios", "indexed_import", "session_charging_kw", "session", "regional"}):
         raise ValueError("invalid_profile_fields")
     if not isinstance(profile["name"], str) or not 1 <= len(profile["name"].strip()) <= 100:
         raise ValueError("invalid_profile_name")
@@ -56,6 +57,13 @@ def validate_profile(profile):
     threshold = profile.get("session_charging_kw", 0.1)
     if type(threshold) not in (int, float) or not math.isfinite(threshold) or not 0 <= threshold <= 1000:
         raise ValueError("invalid_session_charging_threshold")
+    if "session" in profile:
+        limits = profile["session"]
+        if not isinstance(limits, dict) or set(limits) != {"max_gap_seconds", "max_power_kw", "tolerance_kwh", "charging_kw", "charging_delta_kwh"}:
+            raise ValueError("invalid_session_configuration")
+        counter_sessions([], stop=0, **limits)
+    if "regional" in profile:
+        validate_regional(profile["regional"])
     scenarios = [parse_scenario(value) for value in profile["scenarios"]]
     ids = {s.identifier for s in scenarios}
     if len(ids) != len(scenarios):
@@ -194,10 +202,10 @@ class ApplicationStore:
         with self.db() as db:
             return [{"zone": z, "last_fetch": c} for z, c in db.execute("SELECT zone,MAX(captured) FROM fetches GROUP BY zone")]
 
-    def view(self, engine, start, end, *, now=None):
+    def view(self, engine, start, end, *, now=None, include_sessions=True):
         start, end = _bounds(start, end)
-        if end - start > 31 * 86400:
-            raise ValueError("window_exceeds_31_days")
+        if include_sessions and end - start > 32 * 86400:
+            raise ValueError("window_exceeds_32_days")
         now = _timestamp(time.time() if now is None else now)
         if end > now:
             raise ValueError("window_not_closed")
@@ -207,7 +215,7 @@ class ApplicationStore:
             stored = {(ts, role): (energy, seconds) for ts, role, energy, seconds in ledger.execute(
                 "SELECT start,role,kwh,seconds FROM intervals WHERE start>=? AND start<?", (start, end))}
             sample_rows = ledger.execute("SELECT ts,body FROM samples WHERE ts>=? AND ts<=? ORDER BY ts LIMIT ?",
-                                         (start, session_stop, MAX_SAMPLES + 1)).fetchall()
+                                         (start, session_stop, MAX_SAMPLES + 1)).fetchall() if include_sessions else []
             if len(sample_rows) > MAX_SAMPLES:
                 raise ValueError("too_many_samples_choose_shorter_window")
             ev_rows = ledger.execute("SELECT start,kwh,seconds FROM intervals WHERE role='ev' AND start>=? AND start+900<=?",
@@ -215,7 +223,7 @@ class ApplicationStore:
             latest = ledger.execute("SELECT MAX(ts) FROM samples").fetchone()[0]
             archived_sessions = []
             migration = ledger.execute("SELECT value FROM meta WHERE key='migration'").fetchone()
-            if migration:
+            if migration and include_sessions:
                 cutover = json.loads(migration[0])["cutover"]
                 for ident, begin, stop, body in ledger.execute(
                     "SELECT * FROM legacy_sessions WHERE start<? AND (end IS NULL OR end>?) ORDER BY start",
@@ -264,21 +272,30 @@ class ApplicationStore:
                     scenarios.append(parse_scenario(scenario))
             scope = "import_export" if "export" in engine.roles else "import_only"
             comparison = plain(compare_scenarios(intervals, scenarios, start=start, end=end, scope=scope)) if scenarios else None
-        sessions = reconstruct_sessions(((ts, json.loads(body)) for ts, body in sample_rows), ev_rows,
-                                        stop=session_stop, max_gap_seconds=engine.max_gap_seconds, close_open=False,
-                                        charging_kw=profile.get("session_charging_kw", 0.1) if profile else 0.1)
+        if profile and "session" in profile:
+            sessions = counter_sessions(((ts, json.loads(body)) for ts, body in sample_rows),
+                                        stop=session_stop, **profile["session"])
+        else:
+            sessions = reconstruct_sessions(((ts, json.loads(body)) for ts, body in sample_rows), ev_rows,
+                                            stop=session_stop, max_gap_seconds=engine.max_gap_seconds, close_open=False,
+                                            charging_kw=profile.get("session_charging_kw", 0.1) if profile else 0.1)
         sessions = sorted(archived_sessions + sessions, key=lambda item: item["start"])
+        bills = ({result["scenario"]["identifier"]: regional_bill(intervals, result, profile["regional"],
+                    start=start, end=end, export_enabled="export" in engine.roles)
+                  for result in comparison["results"]} if profile and "regional" in profile and comparison else {})
         return {"schema_version": 1, "start": start, "end": end, "as_of": now, "latest_sample": latest,
                 "profile_id": profile_id, "profile": profile, "comparison": comparison,
+                "regional_bills": bills,
+                "sessions_included": include_sessions,
                 "intervals": plain(intervals), "sessions": sessions, "market_provenance": provenance,
-                "limits": ["Supply only, excluding VAT, network charges and levies", "Session edge energy may be unknown",
+                "limits": ["Supply comparison excludes regional components; configured regional estimates are separate and are not an invoice or payment balance", "Session edge energy may be unknown",
                            "Energy-Charts is a reference, not a confirmed supplier billing index"]}
 
-    def freeze(self, engine, start, end, now=None):
+    def freeze(self, engine, start, end, now=None, *, include_sessions=True):
         captured = time.time() if now is None else now
         if end > captured:
             raise ValueError("window_not_closed")
-        data = self.view(engine, start, end, now=end)
+        data = self.view(engine, start, end, now=end, include_sessions=include_sessions)
         data["frozen_at"] = captured
         body = encoded(data)
         ident = hashlib.sha256(body.encode()).hexdigest()
@@ -323,7 +340,7 @@ def render_report(data, format):
             result["coverage"], result["confirmed"])) + "</tr>"
             for result in (data.get("comparison") or {}).get("results", []))
         return ("<!doctype html><meta charset=utf-8><title>Energy Cost Monitor</title>"
-                "<h1>Energy Cost Monitor — frozen evidence</h1><p>Supply only, excluding VAT, network charges and levies. Not a complete bill.</p>"
+                "<h1>Energy Cost Monitor — frozen evidence</h1><p>The supply table excludes regional charges. Any configured regional estimates are retained in the frozen data below. This report is not an invoice or a payment balance.</p>"
                 "<p>Profile version: " + esc(data["profile_id"]) + "</p>"
                 "<table border=1><tr><th>Scenario</th><th>Full covered total EUR</th><th>Known subtotal EUR</th><th>Coverage</th><th>Confirmed</th></tr>"
                 + rows + "</table><h2>Frozen data, sources and assumptions</h2><pre>"

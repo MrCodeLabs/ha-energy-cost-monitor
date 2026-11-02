@@ -1,5 +1,31 @@
 # Changelog
 
+## 2 November 2026 — workflow acceptance
+
+- Apply saved profile/study responses immediately and preserve open forms during
+  timer refreshes; covered by card behavior tests.
+- Verify actual monthly/final study reports and restart idempotence with SQLite.
+- Record clean integration setup and synthetic browser import acceptance; see
+  `docs/acceptance-2026-11-02.md`. Production billing gates remain open.
+
+## Local development — 2026-10-28 — configuration workflows
+
+- Add configurable counter-level EV sessions and observed mode context, dated
+  regional reference calculations and persistent study scheduling.
+- Add automatic admin sidebar, pricing/EV/regional/study forms and guided legacy
+  upload/preview/import with paired backups and atomic append-only publication.
+- Preserve existing measurements and reject overlapping or repeated history imports.
+- Fix removing the already-fired HA shutdown listener twice.
+- Real HA/API import and partial browser checks passed; full configuration-only
+  acceptance, guided recovery and invoice validation remain open. Not published.
+
+## Local development — 2026-10-28 — guided reconfiguration
+
+- Prefill existing sources in the guided flow; apply changes only on final save.
+- Validate against current polling settings, preserve history identity and reject stale concurrent edits.
+- Repair failed configurations before storage exists; keep advanced import optional.
+- PR #10 initial guided setup is merged with passing hosted CI. Migration to different source identities and browser/mobile verification remain open.
+
 ## Local development — 2026-10-28 — guided source setup
 
 - Add guided initial setup with sensor selection, measurement units/kinds,

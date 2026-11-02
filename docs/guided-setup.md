@@ -1,4 +1,4 @@
-# Guided source setup — local development, 28 October 2026
+# Guided source setup — 28 October 2026
 
 New installations can choose **Guided sensor setup** instead of entering source
 JSON. This is one step toward the [configuration-only product goal](product-goal.md),
@@ -22,9 +22,24 @@ solar, battery or export. Configure separate counters otherwise. Limits and
 freshness values are user settings, not device-control commands. Saved entity
 IDs and settings stay in private HA configuration; no household defaults ship.
 
-Advanced JSON import remains optional. Reconfiguration of an existing entry still
-uses the previous advanced form and cannot change stored ledger identity without
-migration. The wizard does not yet cover tariff/regional forms, EV modes, study,
+Advanced JSON import remains optional. Initial guided setup is merged in
+[PR #10](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/10).
+
+## Guided reconfiguration (local follow-up)
+
+In Devices & services, open the integration menu, choose Reconfigure, then guided
+setup. Existing roles, units, limits and companion signals prefill the forms.
+Reviewing or cancelling changes nothing. Restart selection preserves the current
+draft for correction. Save validates against current polling options and the ledger.
+A concurrent settings change aborts the stale draft instead of overwriting it.
+
+Before a ledger exists, this can repair a failed configuration and reload the
+same entry. Once a ledger exists, its source identity is immutable: different
+entities, units, limits, capabilities or report gaps are refused with a specific
+history warning. The database is never reset. Matching settings can be confirmed;
+an unchanged loaded entry is not reloaded. Polling cadence remains editable via
+Options. A versioned migration to genuinely different sources remains future work.
+This local follow-up is not yet published. The wizard does not yet cover tariff/regional forms, EV modes, study,
 guided history import or card installation. It does not fetch prices or alter
 profiles. These remain explicit acceptance gates.
 
@@ -43,5 +58,13 @@ Pri minimalni hiši lahko isti števec uporabiš za house/import z enakimi omeji
 pri sončni elektrarni, bateriji ali oddaji sta potrebna ustrezna ločena vira.
 
 To še ni dokončana nastavitev celotne aplikacije samo z obrazci. Regionalni račun,
-študija, EV razlike, voden uvoz, nastavitev kartice in sprememba obstoječih virov
+študija, EV razlike, voden uvoz, nastavitev kartice in selitev zgodovine na druge vire
 ostajajo odprti. Uporabljaj v ločenem laboratoriju; zasebne nastavitve ne sodijo v Git.
+
+
+**Lokalno nadaljevanje:** v meniju integracije izberi ponovno nastavitev in voden
+način. Obrazci predizpolnijo shranjene vrednosti. Pred shranjevanjem lahko popraviš
+osnutek ali ga zapreš brez sprememb. Pred nastankom zbirke je mogoč popravek
+napačne konfiguracije; po nastanku zgodovine sprememba identitete virov zahteva
+še neizvedeno selitev. Opozorilo to jasno pove in ohrani stare podatke.
+Interval branja spreminjaj v možnostih integracije.
