@@ -10,7 +10,7 @@ class EnergyCostMonitorCard extends HTMLElement {
   getCardSize() { return 7; }
   connectedCallback() {
     this._connected = true;
-    this._timer = setInterval(() => this._refresh(), 30000);
+    this._timer = setInterval(() => this._poll(), 30000);
     this._refresh();
   }
   disconnectedCallback() {
@@ -19,6 +19,12 @@ class EnergyCostMonitorCard extends HTMLElement {
   set hass(hass) { this._hass = hass; if (!this._data) this._refresh(); }
   async _api(method, action, data) {
     return this._hass.callApi(method, `energy_cost_monitor/${action}`, data);
+  }
+  _poll() {
+    // Do not collapse open forms or replace their focused controls on a timer.
+    if (["profiles", "pricing", "settings", "history"].includes(this._tab) ||
+        (this._tab === "study" && !["warmup", "running"].includes(this._study?.state))) return;
+    return this._refresh();
   }
   async _refresh() {
     if (!this._connected || !this._hass || this._loading) return;
@@ -230,7 +236,7 @@ class EnergyCostMonitorCard extends HTMLElement {
       draft.scenarios.push({schema_version:1,id:`offer-${n}`,currency:"EUR",tax_basis:"excluding_vat",timezone:this._hass?.config?.time_zone || "UTC",versions:[]});touch();this._render();
     });
     this._button("Shrani cenovni profil",card,async()=>{
-      touch();try{await this._api("POST","profiles",draft);this._pricingDraft=null;this._error=null;await this._refresh();}
+      touch();try{this._profiles=await this._api("POST","profiles",draft);this._pricingDraft=null;this._error=null;this._render();await this._refresh();}
       catch(_){this._error="Preveri ime, veljavnost, cene in prekrivanje obdobij. Osnutek je ohranjen.";this._render();}
     });
     this._button("Zavrzi cenovne spremembe",card,()=>{this._pricingDraft=null;this._error=null;this._render();});
@@ -336,7 +342,7 @@ class EnergyCostMonitorCard extends HTMLElement {
       touch();this._render();
     });
     this._button("Shrani EV in obračun",card,async()=>{
-      try{await this._api("POST","profiles",draft);this._settingsDraft=null;await this._refresh();}
+      try{this._profiles=await this._api("POST","profiles",draft);this._settingsDraft=null;this._error=null;this._render();await this._refresh();}
       catch(_){this._error="Preveri vse meje, datume veljavnosti in decimalne postavke. Osnutek ostaja ohranjen.";this._render();}
     });
     this._button("Zavrzi spremembe nastavitev",card,()=>{this._settingsDraft=null;this._render();});
@@ -347,14 +353,14 @@ class EnergyCostMonitorCard extends HTMLElement {
     if(status.quality)this._node("p",`Pokritost uvajanja: ${this._number(status.quality.coverage*100,"%")} · dnevna kontrola: ${status.quality.daily.status}`,card);
     if(["warmup","running"].includes(status.state)) {
       this._node("small","Začetek se določi po uspešnem uvajanju ob naslednji lokalni polnoči. Mesečna in končno poročilo se ustvarijo samodejno; končni zbirni pregled brez podvajanja seznamov sej.",card);
-      this._button("Ustavi študijo (ohrani poročila)",card,async()=>{try{await this._api("POST","study",{cancel:true});await this._refresh();}catch(_){this._error="Študije ni bilo mogoče ustaviti.";this._render();}});
+      this._button("Ustavi študijo (ohrani poročila)",card,async()=>{try{this._study=await this._api("POST","study",{cancel:true});this._error=null;this._render();await this._refresh();}catch(_){this._error="Študije ni bilo mogoče ustaviti.";this._render();}});
       return;
     }
     const draft=this._studyDraft || {timezone:this._hass?.config?.time_zone || "Europe/Ljubljana",months:3,warmup_hours:48,minimum_coverage:.99,require_daily_check:true,daily_absolute_kwh:.1,daily_relative:.01,reference_age_seconds:180};
     for(const [key,label,type] of [["timezone","Časovni pas","text"],["months","Število mesecev","number"],["warmup_hours","Uvajanje (ure)","number"],["minimum_coverage","Najmanjša pokritost (delež)","number"],["require_daily_check","Zahtevaj dnevno primerjavo s senzorjem hiše","checkbox"],["daily_absolute_kwh","Dnevna absolutna toleranca (kWh)","number"],["daily_relative","Dnevna relativna toleranca (delež)","number"],["reference_age_seconds","Največja starost dnevne reference (s)","number"]])
       this._field(card,label,draft[key],type,v=>{draft[key]=type==="number"?Number(v):v;this._studyDraft=draft;});
     this._node("small","Dnevno referenco hiše izberi v virih integracije. Brez zahtevane veljavne reference se uvajanje ne zaključi.",card);
-    this._button("Začni uvajanje študije",card,async()=>{try{await this._api("POST","study",draft);this._studyDraft=null;await this._refresh();}catch(_){this._error="Nastavitve študije niso veljavne.";this._render();}});
+    this._button("Začni uvajanje študije",card,async()=>{try{this._study=await this._api("POST","study",draft);this._studyDraft=null;this._error=null;this._render();await this._refresh();}catch(_){this._error="Nastavitve študije niso veljavne.";this._render();}});
     this._button("Zavrzi osnutek študije",card,()=>{this._studyDraft=null;this._render();});
   }
 

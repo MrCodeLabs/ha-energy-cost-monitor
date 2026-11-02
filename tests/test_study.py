@@ -100,3 +100,45 @@ class StudyTests(unittest.TestCase):
         value["minimum_coverage"] = float("nan")
         with self.assertRaises(ValueError):
             validate_study(value)
+
+    def test_real_monthly_and_final_reports_survive_restart_without_duplicates(self):
+        """Exercise real quality, freeze and SQLite persistence, without mocks."""
+        from energy_cost_monitor.application import ApplicationStore
+
+        zone = ZoneInfo("Europe/Ljubljana")
+        now = int(datetime(2026, 1, 30, 12, tzinfo=zone).timestamp())
+        options = settings()
+        options.update(months=1, warmup_hours=1, require_daily_check=False)
+        with self.engine._db(write=True) as db:
+            db.execute("INSERT INTO samples VALUES(?,?)", (now - 7200, "{}"))
+            for timestamp in range(now - 3600, now, 900):
+                for role in self.engine.roles:
+                    db.execute(
+                        "INSERT OR REPLACE INTO intervals VALUES(?,?,?,?)",
+                        (timestamp, role, 0.1, 900),
+                    )
+        study = Study(self.store)
+        study.configure(options)
+        running = study.advance(self.engine, now)
+        self.assertEqual(running["state"], "running")
+        self.assertTrue(running["quality"]["ready"])
+        start, end = running["windows"]
+        with self.engine._db(write=True) as db:
+            for timestamp in range(start, end, 900):
+                for role in self.engine.roles:
+                    db.execute(
+                        "INSERT OR REPLACE INTO intervals VALUES(?,?,?,?)",
+                        (timestamp, role, 0.1, 900),
+                    )
+        complete = Study(ApplicationStore(self.store.path)).advance(self.engine, end)
+        self.assertEqual(complete["state"], "complete")
+        self.assertEqual(set(complete["reports"]), {"month-1", "final"})
+        bodies = {key: self.store.report(ident) for key, ident in complete["reports"].items()}
+        with self.store.db() as db:
+            count = db.execute("SELECT COUNT(*) FROM reports").fetchone()[0]
+        reopened = ApplicationStore(self.store.path)
+        self.assertEqual(Study(reopened).advance(self.engine, end + 3600), complete)
+        for key, ident in complete["reports"].items():
+            self.assertEqual(reopened.report(ident), bodies[key])
+        with reopened.db() as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM reports").fetchone()[0], count)

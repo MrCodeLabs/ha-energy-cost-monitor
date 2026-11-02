@@ -1,7 +1,8 @@
 # Configuration-only continuation — 28 October 2026
 
-Local, unpublished work on `feature/configuration-only-workflows`, based on
-merged PR #10. This is not a production-readiness statement.
+Work on `feature/configuration-only-workflows`, based on merged PR #10.
+[2 November acceptance](acceptance-2026-11-02.md) supersedes the earlier test
+limitations below where explicitly verified. This is not a production-readiness statement.
 
 ## Implemented locally
 

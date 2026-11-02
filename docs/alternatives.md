@@ -182,3 +182,11 @@ ledger/application stores, observed EV modes and immutable study reports. No
 upstream implementation was copied. Reviewed Core 2026.10.2 frontend/panel_custom
 registration and the official [file upload implementation](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/file_upload/__init__.py).
 Uploads use HA's authenticated file-upload facility and admin-only import endpoints.
+
+### Browser acceptance correction — 2 November 2026
+
+Rechecked the official Dynamic Energy Cost README and Powercalc cost-sensor
+documentation linked above. Their price/energy sensor scope remains useful; this
+change fixes stale save results and timer replacement of our own profile/study
+forms over paired stores. It adds no alternative integration or copied frontend.
+The earlier source/frontend survey remains the baseline for the existing features.

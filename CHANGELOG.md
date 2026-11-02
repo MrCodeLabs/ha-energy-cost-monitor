@@ -1,5 +1,13 @@
 # Changelog
 
+## 2 November 2026 — workflow acceptance
+
+- Apply saved profile/study responses immediately and preserve open forms during
+  timer refreshes; covered by card behavior tests.
+- Verify actual monthly/final study reports and restart idempotence with SQLite.
+- Record clean integration setup and synthetic browser import acceptance; see
+  `docs/acceptance-2026-11-02.md`. Production billing gates remain open.
+
 ## Local development — 2026-10-28 — configuration workflows
 
 - Add configurable counter-level EV sessions and observed mode context, dated
