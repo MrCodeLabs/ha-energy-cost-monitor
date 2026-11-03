@@ -75,6 +75,17 @@ class TextSelector:
         return value
 
 
+class SelectSelector:
+    def __init__(self, config):
+        self.config = config
+
+    def __call__(self, value):
+        values = value if self.config.get("multiple") else [value]
+        if not isinstance(values, list) or any(v not in self.config["options"] for v in values):
+            raise ValueError("invalid_choice")
+        return value
+
+
 def install_doubles(now):
     modules = {}
 
@@ -95,11 +106,17 @@ def install_doubles(now):
     module("homeassistant.exceptions", ConfigEntryError=ConfigEntryError, ConfigEntryNotReady=ConfigEntryNotReady)
     module("homeassistant.helpers")
     module("homeassistant.helpers.event", async_track_time_interval=lambda hass, action, interval: hass.listen(action))
-    module("homeassistant.helpers.selector", TextSelector=TextSelector, TextSelectorConfig=dict)
+    module("homeassistant.helpers.selector", TextSelector=TextSelector, TextSelectorConfig=dict,
+           EntitySelector=TextSelector, EntitySelectorConfig=dict,
+           SelectSelector=SelectSelector, SelectSelectorConfig=dict)
     module("homeassistant.util")
     module("homeassistant.util.dt", utcnow=lambda: datetime.fromtimestamp(now(), timezone.utc))
     module("homeassistant.components")
     module("homeassistant.components.http", HomeAssistantView=object)
+    async def register_panel(hass, **kwargs):
+        hass.data.setdefault("frontend_panels", {})[kwargs["frontend_url_path"]] = kwargs
+    module("homeassistant.components.panel_custom", async_register_panel=register_panel)
+    module("homeassistant.components.frontend", async_remove_panel=lambda hass, name: hass.data.get("frontend_panels", {}).pop(name, None))
     module("homeassistant.components.sensor", SensorEntity=SensorEntity, SensorDeviceClass=SimpleNamespace(ENUM="enum"))
     patcher = patch.dict(sys.modules, modules)
     patcher.start()

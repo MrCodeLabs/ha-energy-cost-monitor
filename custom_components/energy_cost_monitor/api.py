@@ -7,8 +7,10 @@ from pathlib import Path
 
 from aiohttp import web
 from homeassistant.components.http import HomeAssistantView
+from homeassistant.components import frontend, panel_custom
 
 from ._core.application import render_report
+from ._core.study import Study
 from .const import DOMAIN
 
 
@@ -60,6 +62,30 @@ class ApplicationView(HomeAssistantView):
             elif action == "market":
                 result = {"cache": await app.call(app.store.market_status), "error": app.price_error,
                           "next_fetch": app.next_fetch}
+            elif action == "study":
+                study = Study(app.store)
+                if request.method == "POST":
+                    result = await app.call(study.cancel if data.get("cancel") is True else study.configure,
+                                            *(() if data.get("cancel") is True else (data,)))
+                else:
+                    result = await app.call(study.status)
+                result = {**result, "error": app.study_error}
+            elif action == "history":
+                from .history import stage_upload, discard_upload, apply_import, list_uploads, resume_upload
+                if request.method == "GET":
+                    result = await app.call(list_uploads, self.hass)
+                elif data.get("command") == "preview":
+                    result = await app.call(stage_upload, self.hass, data["file_id"])
+                    result["roles"] = list(engine.config.required_roles)
+                elif data.get("command") == "resume":
+                    result = await app.call(resume_upload, self.hass, data["id"])
+                    result["roles"] = list(engine.config.required_roles)
+                elif data.get("command") == "discard":
+                    result = await app.call(discard_upload, self.hass, data["id"])
+                elif data.get("command") == "import":
+                    result = await apply_import(runtime, data)
+                else:
+                    raise ValueError("invalid_import_command")
             else:
                 raise web.HTTPNotFound()
         except (ValueError, KeyError, TypeError, OverflowError):
@@ -73,7 +99,7 @@ class ApplicationView(HomeAssistantView):
         return await self.dispatch(request, action, dict(request.query))
 
     async def post(self, request, action):
-        if action not in {"profiles", "reports"}:
+        if action not in {"profiles", "reports", "study", "history"}:
             raise web.HTTPMethodNotAllowed("POST", ["GET"])
         if request.content_length is not None and request.content_length > 256000:
             raise web.HTTPRequestEntityTooLarge(max_size=256000, actual_size=request.content_length)
@@ -114,3 +140,13 @@ async def register_api(hass):
         hass.http.register_view(ApplicationView(hass))
         hass.http.register_view(CardView(content))
         hass.data[f"{DOMAIN}_api_registered"] = True
+    if DOMAIN not in hass.data.get("frontend_panels", {}):
+        await panel_custom.async_register_panel(
+            hass, frontend_url_path=DOMAIN, webcomponent_name="energy-cost-monitor-panel",
+            sidebar_title="Energy Cost Monitor", sidebar_icon="mdi:chart-line",
+            module_url="/energy_cost_monitor/energy-cost-monitor-card.js", require_admin=True,
+        )
+
+
+def unregister_panel(hass):
+    frontend.async_remove_panel(hass, DOMAIN)

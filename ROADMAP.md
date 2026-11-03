@@ -1,12 +1,30 @@
 # Roadmap
 
+Updated 2 November 2026. Start with the [user guide](docs/getting-started.md)
+([Slovenščina](docs/getting-started.sl.md)). PR #11 and HACS update acceptance
+are complete; [evidence and limits](docs/acceptance-2026-11-02.md).
+
+## Current acceptance summary
+
+- [x] Guided sources, pricing/EV/regional/study forms, automatic panel and synthetic browser import.
+- [x] HACS custom-repository download, restart and data preservation for main `532012e`.
+- [x] English/Slovenian onboarding and development update/removal/recovery guidance.
+- [ ] Independent-user setup, broader source combinations and full HAOS restore.
+- [ ] Full household study/invoice reconciliation, credit/payouts and 2027 regional rules.
+- [ ] Supported beta, compatibility range, brand registration and default-catalog submission.
+
+The dated milestone checklists below are historical planning records, not the
+current installation instructions. Combined items may retain open subrequirements.
+
 ## Product completion gate — 26 October 2026
 
 The [configuration-only product goal](docs/product-goal.md) governs the remaining
 work: implement general configurable features, not household patches. HACS
 installation alone does not complete the product.
 
-- [ ] Replace required source JSON entry with guided sensor/capability forms.
+- [x] Replace required source JSON entry for new installations with guided sensor/capability forms (merged PR #10, 28 October; [limits](docs/guided-setup.md)).
+- [x] Add prefilled guided reconfiguration with existing ledger protection (local follow-up, 28 October).
+- [ ] Add versioned migration to different source identities and validate browser/mobile UX.
 - [ ] Provide forms for supported pricing, export, regional, EV and study settings.
 - [ ] Provide guided import/recovery and card setup without required code/file edits.
 - [ ] Validate clean installation by another user with different synthetic inputs.

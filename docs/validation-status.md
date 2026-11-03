@@ -1,5 +1,55 @@
 # Validation status and remaining gates
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
+## Local continuation — 28 October 2026 — configuration workflows
+
+The current branch is `feature/configuration-only-workflows`; its changes remain
+uncommitted. [Current verification and remaining gates](configuration-workflows.md)
+supersede the earlier reconfiguration-only scope below. Real HA/API import and
+hassfest passed. Browser pricing save and study start passed; browser upload was
+declined and therefore remains unverified. No production replacement is approved
+by these partial results.
+
+## Local verification — 28 October 2026 — guided reconfiguration
+
+Initial setup is merged in [PR #10](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/10),
+commit `6ac4aab`, merge `2954f21`. Both branch/PR CI and main run 40653711083
+passed. The following continuation is uncommitted on `feature/guided-source-reconfigure`.
+
+185 Python tests and Ruff passed. Pinned hassfest reported one integration and
+zero invalid. Real HA 2026.10.2 passed all five phases (fresh 6/12 samples,
+migrated 6/12/18). Each phase now verifies real guided reconfiguration with schema
+defaults, same-entry confirmation without reload and refusal of a changed meter
+against stored history. Unit tests additionally cover fractional settings,
+nondefault polling limits, draft isolation, pre-ledger repair, unchanged database
+bytes and concurrent config edits. Temporary containers were removed.
+
+This does not prove browser/mobile layout, a HACS update to this new branch or
+migration to different source identities. The immutable ledger guard is retained.
+Full pricing/EV/study/regional forms, guided import/card setup and independent-user
+configuration-only acceptance remain open. Standard HA custom-integration and
+upstream rich warnings appeared without failed assertions.
+
+## Local verification — 28 October 2026 — guided initial sources
+
+Branch `feature/guided-source-setup`, based on main `1342c7b`. All 180 local
+Python tests and Ruff passed. After normalizing selector translation keys,
+the four focused wizard tests, Ruff, pinned hassfest (one integration, zero
+invalid) and all five real HA 2026.10.2 phases passed again: fresh 6/12 samples,
+migrated 6/12/18 including restore. Temporary containers were removed.
+Standard custom-integration and upstream rich warnings appeared without test failures.
+
+The fresh lab flow now selects roles and individual sensors through guided steps,
+without source JSON. This is an integration-flow test, not browser/mobile visual
+verification or a HACS installation of this unpublished branch. Existing-entry
+reconfiguration remains advanced. Full regional billing, study, EV parity, guided
+import and card setup remain open. See [guided setup and limits](guided-setup.md).
+Main CI run 40386095060 succeeded; this local branch has no hosted CI result yet.
+
 ## Local verification — 26 October 2026 — application migration
 
 Branch `feature/legacy-application-migration`, based on merged main `3d086d5`.

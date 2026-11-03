@@ -1,5 +1,28 @@
 # Existing solutions and project rationale
 
+## Guided reconfiguration follow-up — 28 October 2026
+
+The same-day repository, issue/PR and separate frontend review below remains the
+baseline. Re-read Dynamic Energy Cost and Powercalc config-flow implementations
+and official [HA reconfiguration guidance](https://contributors.home-assistant.io/core/integrations/reauth-reconfigure/).
+The gap is editing this project's source mapping while preserving its immutable
+ledger identity and existing entry lifecycle, not a generic cost-sensor feature.
+No upstream implementation was copied. Browser/mobile verification and versioned
+source migrations remain separate gates.
+
+## Guided setup follow-up — 28 October 2026
+
+Reopened Dynamic Energy Cost and Powercalc repository/docs, config-flow source,
+issue/PR pages and the separate MFFR Profit Tracker frontend before this change.
+These remain relevant maintained alternatives for cost sensors and balancing-reserve
+reporting. Web issue/PR views have differing cache dates, so no fresh queue counts
+are asserted. The concrete gap is a guided entity/unit/capability mapping into this
+project's existing ledger, without required JSON. Existing sensor cost work still
+belongs upstream; this flow imports no upstream code or frontend.
+Reviewed the official [HA flow steps](https://contributors.home-assistant.io/core/integrations/flow-steps/)
+and upstream [Dynamic Energy Cost config flow](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/config_flow.py)
+and [Powercalc config flow](https://github.com/bramstroker/homeassistant-powercalc/blob/master/custom_components/powercalc/config_flow.py).
+
 ## Legacy conversion follow-up — 26 October 2026
 
 Reopened the Dynamic Energy Cost and Powercalc repositories, READMEs, sensor/cost
@@ -149,3 +172,32 @@ This is a correction to our own scheduled callback, not a new integration/UI fea
 Reviewed [Core 2026.10.2 HassJob dispatch](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/core.py):
 plain synchronous targets run in the executor; `@callback` marks event-loop work.
 The real scheduler regression is now exercised by the isolated HA lab.
+
+### Configuration-only continuation — 28 October 2026
+
+The same-day review of Dynamic Energy Cost, Powercalc and the author's separate
+MFFR Profit Tracker remains the scoped comparison for the initial wizard and this
+continuation. The gap is configuration and migration over this project's paired
+ledger/application stores, observed EV modes and immutable study reports. No
+upstream implementation was copied. Reviewed Core 2026.10.2 frontend/panel_custom
+registration and the official [file upload implementation](https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/file_upload/__init__.py).
+Uploads use HA's authenticated file-upload facility and admin-only import endpoints.
+
+### Browser acceptance correction — 2 November 2026
+
+Rechecked the official Dynamic Energy Cost README and Powercalc cost-sensor
+documentation linked above. Their price/energy sensor scope remains useful; this
+change fixes stale save results and timer replacement of our own profile/study
+forms over paired stores. It adds no alternative integration or copied frontend.
+The earlier source/frontend survey remains the baseline for the existing features.
+
+### English-first UI — 2 November 2026
+
+Reviewed the official [custom-card contract](https://contributors.home-assistant.io/frontend/custom-ui/card/)
+and Dynamic Energy Cost's current README, component tree and issue/PR pages.
+Some GitHub web results are cached, so they are not proof of current PR status.
+The earlier survey of that author's separate frontend remains the baseline.
+This scoped change localizes ECM's existing forms; a price-sensor integration
+cannot provide translations for ECM's own paired-store/profile/study controls.
+No new integration or copied upstream UI is introduced. HA supplies the user
+language; English is the source/fallback language and Slovenian remains available.

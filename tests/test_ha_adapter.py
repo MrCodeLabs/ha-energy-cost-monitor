@@ -49,6 +49,14 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
             await self.adapter.async_setup_entry(self.hass, Entry("another-entry"))
         self.assertIs(self.hass.data[DOMAIN], runtime)
 
+    async def test_stop_event_does_not_remove_already_fired_once_listener(self):
+        runtime = await self.setup()
+        self.hass.listeners.remove(runtime.stop)
+        await runtime.stop(object())
+        self.assertEqual(self.hass.listeners, [])
+        self.assertIsNone(runtime.unsubscribe_stop)
+        await runtime.stop()
+
     async def test_backup_blocks_a_new_writer_until_post_backup(self):
         self.hass.data[f"{DOMAIN}_backup_in_progress"] = True
         with self.assertRaises(ConfigEntryNotReady):
@@ -217,11 +225,11 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         flow.hass = self.hass
         self.assertEqual((await flow.async_step_user())["reason"], "single_instance_allowed")
         self.hass.entries.clear()
-        self.assertEqual((await flow.async_step_user({"source_config": "invalid", "max_gap_seconds": 300}))["errors"],
+        self.assertEqual((await flow.async_step_advanced({"source_config": "invalid", "max_gap_seconds": 300}))["errors"],
                          {"base": "invalid_configuration"})
-        form = await flow.async_step_user()
+        form = await flow.async_step_advanced()
         data = form["data_schema"]({"source_config": json.dumps(self.entry.data["source_config"]), "max_gap_seconds": 300})
-        result = await flow.async_step_user(data)
+        result = await flow.async_step_advanced(data)
         self.assertEqual(result["type"], "create_entry")
         self.assertEqual(result["data"], self.entry.data)
         self.assertFalse(self.adapter.storage_path(self.hass).exists())
@@ -243,7 +251,8 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         raw = json.loads(json.dumps(self.entry.data["source_config"]))
         for source in raw["sources"].values():
             source["entity_id"] = "sensor.example_different_meter"
-        result = await flow.async_step_reconfigure({"source_config": json.dumps(raw), "max_gap_seconds": 300})
+        await flow.async_step_reconfigure({"setup_mode": "advanced"})
+        result = await flow.async_step_advanced({"source_config": json.dumps(raw), "max_gap_seconds": 300})
         self.assertEqual(result["errors"], {"base": "invalid_configuration"})
         self.assertEqual(path.read_bytes(), before)
         self.assertEqual(self.hass.reload_requests, 0)
@@ -255,7 +264,8 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
             await self.setup()
         flow = self.flow_module.EnergyCostMonitorConfigFlow()
         flow.hass, flow.config_entry = self.hass, self.entry
-        result = await flow.async_step_reconfigure({"source_config": json.dumps(valid["source_config"]),
+        await flow.async_step_reconfigure({"setup_mode": "advanced"})
+        result = await flow.async_step_advanced({"source_config": json.dumps(valid["source_config"]),
                                                     "max_gap_seconds": 300})
         self.assertEqual(result["reason"], "reconfigure_successful")
         self.assertEqual(self.hass.reload_requests, 1)

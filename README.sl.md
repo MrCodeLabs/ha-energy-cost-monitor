@@ -1,54 +1,57 @@
 # Energy Cost Monitor za Home Assistant
 
-**Cilj:** splošna integracija prek HACS, ki jo vsak uporabnik nastavi prek obrazcev
-v Home Assistantu, brez dopisovanja kode ali obveznega urejanja JSON/YAML.
-Osebne nastavitve in podatki ostanejo zasebno v njegovem HA. To je cilj razvoja,
-ne trditev o že dokončani funkcionalnosti. [Merila dokončanosti](docs/product-goal.md).
+Primerjaj dobavne ponudbe elektrike, spremljaj meritve in EV seje ter shrani
+ponovljiva poročila iz obstoječih senzorjev Home Assistanta. Integracija podatke
+bere in ne krmili naprav.
 
-**26. 10. 2026:** PR #5 je združen; CI in dejanska namestitev prek HACS v ločenem laboratoriju sta uspešna. [Dokazi in omejitve](docs/hacs-lab.md).
+**Razvojni predogled — posodobljeno 2. 11. 2026.** Namesti ga prek HACS kot
+repozitorij po meri v ločeni testni namestitvi. To še ni stabilna izdaja, vnos v
+privzetem katalogu HACS ali kalkulator celotnega računa.
 
-**Lokalni razvoj, 25. 10. 2026:** dodani so prikaz sej, izbirni cenovni zajem, različice profilov, zamrznjena HTML/CSV poročila in skrbniški API/kartica. [Uporaba, kopije in preostale omejitve](docs/application-workflows.md). Razvoj poteka na veji `feature/application-workflows`; to še ni izdaja.
+**[Začni tukaj: namestitev in uporabniški vodič](docs/getting-started.sl.md)** ·
+[English](README.md)
 
-Samostojen projekt za primerjavo dobavnih scenarijev elektrike, prikaz kakovosti meritev in ponovljiva poročila na podlagi podatkov Home Assistanta.
+## Kaj lahko nastaviš
 
-**Stanje 23. 10. 2026: nastavljivi viri, trajno merilno jedro, dobavni scenariji in razvojni HA adapter za eno instanco.** Adapter ima izolirane teste življenjskega cikla in uspešne preizkuse v pravem HA 2026.10.2 brez grafičnega vmesnika. Javne izdaje in podprte HACS bete še ni; razvojna kartica je dodana v zgoraj opisanem lokalnem nadaljevanju.
+- Voden izbor senzorjev; sončna elektrarna, hranilnik, EV in TČ so izbirni.
+- Samodejno skrbniško ploščo z obrazci za cene, profile in poročila.
+- Obdobja cen prevzema/oddaje, naročnino in izbirne referenčne cene.
+- EV izračun iz števca, opažene načine, regionalne postavke za Slovenijo 2026
+  ter uvajanje študije z mesečnimi in končnimi poročili.
+- Voden uvoz podprte kopije SQLite starega Energy Cost Monitorja.
 
-Lastnik je potrdil lastno avtorstvo in dovolil pregledani prenos pod MIT. [Razvojni model virov](docs/source-configuration.md) je povezan z [merilnim jedrom](docs/accounting.md): prirastki, ocenjena četrturna razporeditev, pokritost, vrzeli, ponastavitve in ločena zbirka SQLite. Primer minimalne hiše ne potrebuje EV, hranilnika, sončne elektrarne ali TČ.
+Za podprti postopek ni treba dopisovati kode ali urejati JSON/YAML. Plošča je
+privzeto angleška; slovenski jezik uporabnika HA vključi slovenski prevod.
+Drugi jeziki uporabljajo angleščino. Potreben je skrbniški račun. Podprt je en vnos integracije
+na namestitev HA.
 
-[Dobavni scenariji](docs/pricing.md) dodajajo veljavnost cen prevzema/oddaje, naročnino, negativne cene in primerjavo na istih pokritih intervalih. Manjkajoči podatki ostanejo označeni. Izračun je v EUR brez DDV, omrežnine in dajatev; ni celoten račun.
+## Kaj je preverjeno in kaj še manjka
 
-[HA adapter](docs/ha-adapter.md) uporablja čase dejanskih poročil senzorjev, ločeno zbirko SQLite ter nastavitvene obrazce in diagnostični senzor zajema. Reload/unload počaka na zapis v zbirko in odstrani poslušalce. Spremembe identitete virov brez migracije so zavrnjene; možnosti omogočajo spremembo intervala zajema. Osnovni preizkus v pravem HA je uspešen; celotna nadgradnja in aplikacijska obnova ostajata odprti.
+Funkcije so združene v `main` (`532012e`) prek
+[PR #11](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/11).
+V ločenem HA 2026.10.2 so preverjeni obrazci, sintetični uvoz, izdelava poročila,
+krmilni elementi študije ter prenos prek HACS in ponovni zagon. Posodobitev je
+ohranila stare meritve, štiri različice profilov in dve poročili; vseh 27 datotek
+paketa se je ujemalo s preverjeno kodo. Uspešnih je 207 Python testov in CI na
+veji, PR ter main. [Dokazi in omejitve](docs/acceptance-2026-11-02.md).
 
-## Prva ciljna različica
+To ne potrjuje vseh različic HA ali obnove celotnega HAOS. Odprti ostajajo
+primerjava z računom, začetno/preneseno dobroimetje, izplačila, regionalna pravila
+za 2027 ter preverjanje pri neodvisnem uporabniku. Manjkajoče vrednosti ostanejo
+neznane. **Obstoječe produkcijske integracije še ne zamenjuj.**
 
-- Branje obstoječih senzorjev, brez krmiljenja naprav.
-- Nastavljivi energijski viri; EV, hranilnik in TČ so izbirne zmožnosti, ne obvezna oprema vsakega uporabnika.
-- Slovenski tarifni model z jasno veljavnostjo in izvorom cenikov.
-- Primerjava prevzema, oddaje in naročnin; ostale postavke le ob ustreznih podatkih.
-- Vidne vrzeli, ponastavitve števcev, referenčne cene in negotove ocene.
-- Poročila, ki ohranijo takratne podatke in predpostavke.
+## Zasebnost in pomoč
 
-Podroben [razvojni načrt](ROADMAP.md) loči že vzpostavljen projekt od prihodnjih funkcij. [Primerjava obstoječih rešitev](docs/alternatives.md) pojasni predvideni obseg. [Dnevnik izkušenj](docs/experience.md) bo ločil meritve, simulacije, predpostavke in še nepreverjene rezultate.
+Nastavitve, meritve in poročila ostanejo v tvojem HA. Izbirni zajem Energy-Charts
+pošlje območje/datum ponudniku, ki vidi tudi omrežni naslov odjemalca. Javni repo
+vsebuje splošno kodo in izmišljene primere.
 
-## Zasebnost in izvor
+Pri [prijavi težave](https://github.com/MrCodeLabs/ha-energy-cost-monitor/issues)
+navedi različici HA/HACS, nameščeni commit in anonimizirane korake. Ne prilagaj
+žetonov, zasebnih dnevnikov, računov, identifikatorjev merilnih mest ali hišnih baz.
 
-Javna razvojna kopija vsebuje samo pregledano splošno kodo in izmišljene primere. Hišne nastavitve, zbirke, računi, dostopi in zasebna zgodovina ostanejo zunaj javnega repozitorija. Produkcijska namestitev se ob vzpostavitvi tega projekta ne spreminja.
-
-Navodila adapterja so namenjena samo ločenemu razvojnemu laboratoriju z izmišljenimi senzorji. Produkcijskega prototipa ne prepisuj. Za osnovne stroškovne senzorje najprej preveri Dynamic Energy Cost in Powercalc, povezana v [angleškem README](README.md).
-
-## Razvojna preverjanja
-
-GitHub Actions CI preverja kodo z Ruff in izvaja sintetične teste na Linuxu/Windowsu s Python 3.12–3.14. Dependabot tedensko predlaga posodobitve razvojnih odvisnosti in Actions; združitev ostaja ročna. Prvi razvojni korak je imel 81 uspešnih testov, [prvi PR zagon na GitHubu](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) pa je 20. 10. 2026 uspešno zaključil celotno matriko.
-
-CI nima produkcijske namestitve. PR #4 ima uspešne preverbe pravega HA, hassfest in HACS (brez Brands). Nove lokalne migracijske spremembe imajo 134 uspešnih testov; njihov hosted CI še ni izveden. Aktivno pravilo `main-ci` za vejo `main` zahteva PR, posodobljeno osnovo in uspešen rezultat `CI result`. Pravilo je nastavitev repozitorija; sam workflow je ne vključi v drugih kopijah projekta. Ukazi za lokalno preverjanje in omejitve so v [razvojnih navodilih](docs/development.md#continuous-integration).
-
-### Laboratorij — 23. 10. 2026
-
-Pravi HA 2026.10.2 in hassfest sta uspešno preverjena v ločenem laboratoriju.
-Preizkušeni so ustvarjanje vnosa, senzor, manjkajoči podatki, reload in ponovni
-zagon z ohranjeno zgodovino. [Dokazi in omejitve](docs/lab-validation.md).
-Nova CI opravila so objavljena v PR #4 in uspešna. Offline migracija je preverjena lokalno; popolna aplikacijska migracija in produkcijska zamenjava nista izvedeni.
-
-Razvojno nadaljevanje: [offline migracija in backup hooki](docs/migration.md) ohranijo
-izvirne vrstice in preslikajo intervale. Celotna funkcionalna zamenjava in povratek
-novih meritev v staro aplikacijo še nista končana.
+Razvojne podrobnosti: [načrt](ROADMAP.md), [zgodovina preverjanj](docs/validation-status.md),
+[spremembe](CHANGELOG.md), [arhitektura](docs/architecture.md),
+[razvoj](docs/development.md) in [izvor kode](docs/provenance.md).
+Licenca: [MIT](LICENSE). Datirani starejši zapisi so razvojna zgodovina;
+za prvo namestitev uporabi zgornji uporabniški vodič.

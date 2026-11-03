@@ -1,5 +1,10 @@
 # HACS development package
 
+> New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
+> Dated sections below preserve development history; earlier pending/local/manual-setup
+> statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
+> supersedes them where explicitly verified.
+
 ## Interactive installation verified — 26 October 2026
 
 [PR #5](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/5) merged as

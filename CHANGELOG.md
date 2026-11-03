@@ -1,5 +1,56 @@
 # Changelog
 
+## 2 November 2026 — English-first frontend
+
+- Use English as the card/panel source language with Slovenian selected by HA user language.
+- Translate labels, help, actions, accessibility text and errors; preserve drafts on language changes.
+- Align English onboarding with the English controls and retain Slovenian guidance.
+- Add language/fallback/preservation tests; see docs/frontend-language.md for validation limits.
+
+
+## 2 November 2026 — new-user documentation
+
+- Replace chronological README notices with a current English/Slovenian overview.
+- Add a single bilingual onboarding path for HACS, forms, import, verification,
+  update, recovery and removal; distinguish preview limitations from tested features.
+- Retain dated technical evidence with links to the current guide and record the
+  completed PR #11/HACS acceptance. Documentation only; no new installation.
+
+
+## 2 November 2026 — workflow acceptance
+
+- Apply saved profile/study responses immediately and preserve open forms during
+  timer refreshes; covered by card behavior tests.
+- Verify actual monthly/final study reports and restart idempotence with SQLite.
+- Record clean integration setup and synthetic browser import acceptance; see
+  `docs/acceptance-2026-11-02.md`. Production billing gates remain open.
+
+## Local development — 2026-10-28 — configuration workflows
+
+- Add configurable counter-level EV sessions and observed mode context, dated
+  regional reference calculations and persistent study scheduling.
+- Add automatic admin sidebar, pricing/EV/regional/study forms and guided legacy
+  upload/preview/import with paired backups and atomic append-only publication.
+- Preserve existing measurements and reject overlapping or repeated history imports.
+- Fix removing the already-fired HA shutdown listener twice.
+- Real HA/API import and partial browser checks passed; full configuration-only
+  acceptance, guided recovery and invoice validation remain open. Not published.
+
+## Local development — 2026-10-28 — guided reconfiguration
+
+- Prefill existing sources in the guided flow; apply changes only on final save.
+- Validate against current polling settings, preserve history identity and reject stale concurrent edits.
+- Repair failed configurations before storage exists; keep advanced import optional.
+- PR #10 initial guided setup is merged with passing hosted CI. Migration to different source identities and browser/mobile verification remain open.
+
+## Local development — 2026-10-28 — guided source setup
+
+- Add guided initial setup with sensor selection, measurement units/kinds,
+  freshness limits, optional capabilities and final review; retain optional advanced import.
+- Validate units and source identity without modifying existing measurements.
+- Add English/Slovenian labels, synthetic flow tests and real HA guided-flow coverage.
+- Full tariff/study/EV/import/card workflows and guided reconfiguration remain open.
+
 ## Product direction — 2026-10-26
 
 - Document a reusable HACS integration configured through HA forms alone, with

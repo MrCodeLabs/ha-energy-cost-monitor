@@ -1,56 +1,63 @@
 # Energy Cost Monitor for Home Assistant
 
-**Product goal:** one reusable HACS integration configured entirely through Home
-Assistant forms, without user-written code or required JSON/YAML edits. Household
-settings and data stay private in the user's HA. This is the target experience,
-not a completed capability claim. [Goal and acceptance criteria](docs/product-goal.md).
+Compare electricity supply offers, follow energy measurements and EV sessions,
+and save reproducible reports using existing Home Assistant sensors. The
+integration reads data; it does not control your devices.
 
-**26 October 2026:** PR #5 is merged; branch/main CI and the real HACS custom-repository installation passed. [Interactive lab evidence and limits](docs/hacs-lab.md).
+**Development preview — updated 2 November 2026.** Install through a HACS custom
+repository in a separate test instance. This is not a stable release, a HACS
+default-catalog entry, or a complete utility-bill calculator.
 
-**Local development, 25 October 2026:** live session views, optional reference-price fetches,
-versioned profiles, frozen HTML/CSV reports and an admin API/card are implemented on
-`feature/application-workflows`. See [usage, backup boundary and remaining gates](docs/application-workflows.md).
-No production deployment or public release is implied.
+**[Start here: installation and user guide](docs/getting-started.md)** ·
+**[Slovenska navodila](README.sl.md)**
 
+## What you can configure
 
-A project for comparing electricity supply scenarios and explaining energy costs using Home Assistant measurements, with visible data quality and reproducible reports.
+- Guided sensor selection; solar, battery, EV and heat-pump sources are optional.
+- An automatic admin sidebar panel with pricing, profile and report forms.
+- Effective-dated import/export prices, subscriptions and optional reference prices.
+- EV counter-session settings, observed modes, Slovenian 2026 regional references
+  and study warm-up/monthly/final reporting.
+- Guided import of a supported legacy Energy Cost Monitor SQLite copy.
 
-**Status, 23 October 2026: configurable sources, persistent metering, supply-scenario comparison and a single-instance HA development adapter.** The adapter has isolated lifecycle contract tests and a successful headless lab test on real Home Assistant 2026.10.2; see [lab evidence and limits](docs/lab-validation.md). There is no public release or supported HACS beta; a local development card is now available (see the current status above).
+The supported setup path requires no user-written code or JSON/YAML edits.
+The bundled panel defaults to English, follows Slovenian HA user language settings,
+and requires an HA administrator. Other languages fall back to English.
+One integration instance is supported per HA installation.
 
-[Slovenska navodila](README.sl.md) · [Roadmap](ROADMAP.md) · [Design](docs/architecture.md) · [Alternatives](docs/alternatives.md) · [Experience journal](docs/experience.md)
+## Verified scope and limits
 
-## Intended scope
+[PR #11](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/11) merged these
+workflows into `main` (`532012e`). The isolated HA 2026.10.2 laboratory verified
+setup forms, synthetic import, report creation, study controls and HACS download
+and restart. Earlier data, four profile versions and two reports survived the
+update; all 27 package files matched the tested code. All 207 Python tests and
+branch/PR/main CI checks passed. See [acceptance evidence](docs/acceptance-2026-11-02.md).
 
-- Read existing energy measurements without controlling chargers, batteries, heating or other devices.
-- Compare import and export costs under multiple supply contracts, including fixed charges and effective dates.
-- Preserve missing data, counter resets, uncertain prices and estimated allocations as explicit quality information.
-- Produce interval summaries, EV session summaries and frozen HTML/CSV comparison reports.
-- Start with a documented Slovenian tariff model and configurable source entities. Support for other countries is future work.
+This does not establish compatibility with every HA version or a full HAOS
+restore. Complete invoice reconciliation, opening/carry-forward credit, payouts,
+2027 regional rules and independent-user acceptance remain open. Missing values
+stay unknown. **Do not replace an existing production implementation yet.**
 
-These describe the intended public product. They are not a compatibility claim or a promise of a complete utility bill.
+## Privacy and help
 
-## What exists today
+Settings, measurements and reports stay in your HA storage. Optional Energy-Charts
+requests send a zone/date to the provider, which can see your network address.
+The public repository contains general code and synthetic examples.
 
-This development tree connects an HA-independent [source configuration boundary](docs/source-configuration.md) and observation validation to a [cumulative-meter ledger](docs/accounting.md). It stores counter deltas, estimated UTC interval allocations, anomalies and coverage in a separate SQLite database. Solar, battery, EV and heat-pump inputs are optional. Synthetic tests cover continuity, restarts and transaction rollback.
+For [issues](https://github.com/MrCodeLabs/ha-energy-cost-monitor/issues), include
+HA/HACS versions, the installed commit and sanitized reproduction steps. Do not
+upload tokens, private logs, invoices, meter identifiers or household databases.
 
-The [supply-scenario model](docs/pricing.md) applies explicitly versioned import/export prices and monthly subscriptions to the same covered intervals across offers. It preserves missing prices, reference status and partial coverage. Calculations use decimal arithmetic and exclude VAT, network charges and levies.
+## Project documentation
 
-The [HA adapter](docs/ha-adapter.md) collects using per-meter report timestamps, preserves gaps and drains pending database writes during unload/reload. It provides setup/reconfigure/options flows and a collection-quality sensor. Sources and storage identity are explicit; prices remain independent of collection.
+- [User guide](docs/getting-started.md): install, configure, verify, update and recover.
+- [Frontend languages](docs/frontend-language.md): English default, Slovenian translation and validation scope.
+- [Roadmap](ROADMAP.md) and [product goal](docs/product-goal.md): remaining work.
+- [Validation history](docs/validation-status.md) and [changelog](CHANGELOG.md).
+- [Architecture](docs/architecture.md), [development](docs/development.md),
+  [alternatives](docs/alternatives.md) and [provenance](docs/provenance.md).
 
-The owner has authorized reviewed prototype transfers under MIT; the extraction is documented in the [provenance record](docs/provenance.md). Offline archival migration, SQLite snapshot and HA backup hooks are implemented locally; full application rollback and feature parity remain pending, alongside live price adapters, regional tariff calendars and broader HA validation. Household configuration, databases, invoices and private Git history will not be imported.
-
-## Choose an existing tool where it fits
-
-For an energy sensor plus a price sensor, consider [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost) or [Powercalc cost sensors](https://docs.powercalc.nl/sensor-types/cost-sensor/). The intended distinction here is a combined contract-comparison and reporting workflow, rather than another basic cost sensor. See the dated [comparison](docs/alternatives.md).
-
-## Installation and contribution
-
-The self-contained component is for disposable development labs only; see the [lab procedure and limits](docs/ha-adapter.md). Do not overwrite a production prototype. HACS packaging is being validated for disposable labs only; see [the HACS lab procedure](docs/hacs-lab.md). A supported beta still requires broader HA lifecycle/UI testing, full application migration/restore checks and complete upgrade/rollback instructions.
-
-Issues may discuss the scope and design. Use synthetic examples; do not upload access tokens, private logs, account or meter identifiers, invoices, or production databases. See [development guidance](docs/development.md).
-
-GitHub Actions checks Python lint and synthetic tests on Linux/Windows with Python 3.12–3.14, with weekly Dependabot update proposals. The [first hosted PR run](https://github.com/MrCodeLabs/ha-energy-cost-monitor/actions/runs/39472304035) passed on 20 October 2026; this is not an HA compatibility check or a deployment pipeline. See [CI setup and local commands](docs/development.md#continuous-integration).
-
-## License
-
-New content in this repository is licensed under the [MIT License](LICENSE). Any future imported code must have its origin and license reviewed and its required notices retained.
+Licensed under [MIT](LICENSE); retained source attribution is documented in the
+provenance record. Historical development records describe their tested revision,
+not the current installation procedure.

@@ -48,3 +48,11 @@ New owner-authored MIT code implements a compatibility export and conservative s
 ### Legacy application adapter — 26 October 2026
 
 New conversion code was written against the owner-authorized legacy schema and pricing semantics. No household configuration, stored database, identifiers, tariff values or private history was copied into this repository. Fixtures are invented. Original archived rows retain their provenance; conversion does not certify regional tariffs or third-party price licensing.
+
+### Configurable workflows — 28 October 2026
+
+Reviewed the owner-authorized prototype session and study semantics under the
+existing MIT transfer permission. Thresholds and source mappings are explicit
+configuration, not copied household defaults. Regional reference code and import
+orchestration were written for this repository; public tests are synthetic.
+Private contract photographs and comparison outputs remain outside the repository.

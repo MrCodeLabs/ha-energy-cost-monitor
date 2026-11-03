@@ -1,5 +1,9 @@
 # Design and extraction boundary
 
+The 28 October local continuation adds optional counter-level sessions, regional
+reference calculations and persisted study scheduling over the existing stores.
+See [scope, semantics and remaining verification](configuration-workflows.md).
+
 ## Configuration boundary — direction confirmed 26 October 2026
 
 The [product goal](product-goal.md) requires one shared HACS package and a

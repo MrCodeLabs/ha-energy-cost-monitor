@@ -21,7 +21,7 @@ class Observation:
 
 @dataclass(frozen=True)
 class Reading:
-    value: float | bool | None
+    value: float | bool | str | None
     unit: str | None
     quality: str
 
@@ -72,6 +72,10 @@ def _read(role: str, source: Source, observation: Observation | None, now: float
         return invalid("stale")
     if observation.unit != source.unit:
         return invalid("unit_mismatch")
+    if source.kind == "text":
+        if not isinstance(value, str) or len(value) > 256 or any(ord(c) < 32 for c in value):
+            return invalid("invalid_value")
+        return Reading(value, None, "valid")
     if source.kind == "binary":
         if value == "on" or value is True:
             return Reading(True, None, "valid")
