@@ -41,16 +41,21 @@ def inspect_legacy(path):
         if not 1 <= len(profiles) <= 100:
             raise ValueError("expected_legacy_profiles")
         counts = {name: db.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0] for name in TABLES}
+        study_available = db.execute(
+            "SELECT 1 FROM meta WHERE key='study' AND value NOT IN ('null','')"
+        ).fetchone() is not None
     return {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "metrics": sorted(metrics), "profiles": profiles, "counts": counts,
+            "study_available": study_available,
             "cutover": math.ceil(end / 900) * 900}
 
 
 def import_history(source, engine, store, backup_dir, *, expected_sha256,
-                   role_mapping, horizon, active_profile, activate=False):
+                   role_mapping, horizon, active_profile, activate=False, resume_study=False):
     """Merge a validated snapshot; attached rollback-journal DBs commit atomically."""
     evidence = inspect_legacy(source)
-    if evidence["sha256"] != expected_sha256 or type(activate) is not bool:
+    if (evidence["sha256"] != expected_sha256 or type(activate) is not bool
+            or type(resume_study) is not bool or (resume_study and not activate)):
         raise ValueError("import_changed_or_invalid")
     backup_dir = Path(backup_dir)
     backup_dir.mkdir(mode=0o700, parents=True, exist_ok=False)
@@ -61,7 +66,8 @@ def import_history(source, engine, store, backup_dir, *, expected_sha256,
         ledger, application = Path(temporary) / "ledger.sqlite3", Path(temporary) / "application.sqlite3"
         manifest = migrate_legacy(source, ledger, engine.config, role_mapping=role_mapping,
                                   cutover=evidence["cutover"], max_gap_seconds=engine.max_gap_seconds)
-        converted = migrate_application(source, application, horizon=horizon, active_profile=active_profile)
+        converted = migrate_application(source, application, horizon=horizon,
+                                        active_profile=active_profile, resume_study=resume_study)
         imported = ApplicationStore(application)
         with imported.db() as check:
             imported_active = imported.active_profile(check)[0]
@@ -85,6 +91,8 @@ def import_history(source, engine, store, backup_dir, *, expected_sha256,
                     raise ValueError("history_overlaps_native_collection")
                 if db.execute("SELECT 1 FROM app.settings WHERE key='legacy_conversion'").fetchone():
                     raise ValueError("application_history_already_imported")
+                if resume_study and db.execute("SELECT 1 FROM app.settings WHERE key='study'").fetchone():
+                    raise ValueError("study_already_configured")
                 for name, definition in TABLES.items():
                     db.execute(f'CREATE TABLE "legacy_{name}"({definition})')
                     db.execute(f'INSERT INTO "legacy_{name}" SELECT * FROM incoming."legacy_{name}"')
@@ -97,6 +105,8 @@ def import_history(source, engine, store, backup_dir, *, expected_sha256,
                         raise ValueError("conflicting_import_content")
                     db.execute(f"INSERT OR IGNORE INTO app.{name} SELECT * FROM incoming_app.{name}")
                 db.execute("INSERT INTO app.settings SELECT * FROM incoming_app.settings WHERE key='legacy_conversion'")
+                if resume_study:
+                    db.execute("INSERT INTO app.settings SELECT * FROM incoming_app.settings WHERE key='study'")
                 if activate:
                     db.execute("INSERT OR REPLACE INTO app.settings VALUES('active_profile',?)", (imported_active,))
                 db.execute("PRAGMA main.user_version=2")
@@ -107,4 +117,4 @@ def import_history(source, engine, store, backup_dir, *, expected_sha256,
     return {"imported": True, "cutover": evidence["cutover"],
             "converted_role_intervals": manifest["converted_role_intervals"],
             "profiles": len(converted["profiles"]), "reports": len(converted["reports"]),
-            "backup": backup_dir.name, "activated": activate}
+            "backup": backup_dir.name, "activated": activate, "study_resumed": resume_study}

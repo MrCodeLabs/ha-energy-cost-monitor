@@ -215,3 +215,14 @@ battery reserve revenue. Neither reviewed workflow supplies period-level netting
 for the dated excise component in this integration's regional estimate.
 The configurable basis follows the import/export distinction in
 [ZTro-1, Article 90(6)](https://pisrs.si/pregledPredpisa?id=ZAKO7128).
+
+### Legacy study continuity — 12 November 2026
+
+Rechecked [Dynamic Energy Cost](https://github.com/martinarva/dynamic_energy_cost),
+its [sensor source](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/sensor.py),
+[issues](https://github.com/martinarva/dynamic_energy_cost/issues) and
+[PRs](https://github.com/martinarva/dynamic_energy_cost/pulls), along with the
+author's separate [MFFR Profit Tracker](https://github.com/martinarva/MFFR-Profit-Tracker).
+Their cost sensors and reserve revenue reports do not handle this integration's
+legacy SQLite format, study dates or archived reports. The continuation uses the
+existing history importer and study scheduler.

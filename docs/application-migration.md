@@ -1,5 +1,13 @@
 # Legacy application migration — 26 October 2026
 
+The history form can optionally continue a validated legacy study. Select the
+study option and activate the converted supply profile during import. The
+original monthly and final boundaries are retained. Existing legacy reports
+stay archived and are linked to the schedule. Outstanding reports use the
+current integration and its actual measurement and price coverage. An existing
+study in the destination blocks this option. The offline converter offers the
+same choice via `--resume-study`.
+
 This offline tool creates a **new** application database from a legacy snapshot.
 It never writes the source, overwrites an output, activates HA or contacts a price
 provider. Use it alongside ledger migration and keep the complete original archive.
@@ -38,7 +46,7 @@ previous code with its matching paired backup separately; never erase new sample
 
 ## Remaining differences
 
-VAT, network tariffs, levies, study progress/checks and EV modes remain in the
+VAT, network tariffs, levies, detailed warm-up checks and EV modes remain in the
 original archive; they are **not equivalent new workflows**. Archived mode fields
 do not implement new event capture. Daily heat-pump estimates are not cumulative
 meters; old interval rows remain archived rather than silently reinterpreted.
@@ -70,6 +78,7 @@ new live-price equivalence, production deployment or release is implied.
 ## Slovenščina
 
 Pretvorba pripravi novo zasebno aplikacijsko zbirko. Prenese dobavne profile in
-stare zamrznjene izračune; omrežnine, dajatev, študije in zajema EV načinov še ne
-nadomesti. Uporabi isto zaključeno obdobje in izvorno urno/četrturno metodo cen.
+stare zamrznjene izračune. Z izbiro nadaljevanja ohrani tudi urnik stare študije.
+Omrežnino, dajatve in zajem načinov EV nastavi posebej. Uporabi isto zaključeno
+obdobje in izvorno urno oziroma četrturno metodo cen.
 Izvirnik ostane ohranjen. Pred aktivacijo preveri dejanske vire, pri obnovi pa obe zbirki.

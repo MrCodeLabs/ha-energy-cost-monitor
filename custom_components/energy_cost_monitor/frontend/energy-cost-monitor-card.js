@@ -86,7 +86,10 @@ const ECM_SL = {
   "Check the name, validity, prices and overlapping periods. The draft is retained.": "Preveri ime, veljavnost, cene in prekrivanje obdobij. Osnutek je ohranjen.",
   "Discard price changes": "Zavrzi cenovne spremembe",
   "Select a consistent legacy Energy Cost Monitor SQLite backup. The file is uploaded only to your HA. Import retains original records and adds history preceding native collection; overlap is refused. Both current stores are privately backed up before writing.": "Izberi konsistentno kopijo SQLite starega Energy Cost Monitorja. Datoteka se naloži samo v tvoj HA. Uvoz ohrani originalne zapise in doda zgodovino pred začetkom novih meritev; prekrivanje je zavrnjeno. Pred zapisom se zasebno shranita kopiji obeh trenutnih zbirk.",
-  "Import transfers measurements, supply profiles and archived sessions/reports. Legacy study and regional settings are not activated automatically. Full HA recovery still uses HA backups.": "Uvoz prenese meritve, dobavne profile ter arhiv sej in poročil. Stara študija in regionalne nastavitve se ne aktivirajo samodejno. Obnova celotnega HA še vedno uporablja njegove varnostne kopije.",
+  "Import transfers measurements, supply profiles and archived sessions and reports. Regional settings require separate setup.": "Uvoz prenese meritve, dobavne profile ter arhiv sej in poročil. Regionalne nastavitve nastaviš ločeno.",
+  "Continue the legacy study with its original report dates": "Nadaljuj staro študijo z izvirnimi datumi poročil",
+  "To continue the study, also activate the converted supply profile.": "Za nadaljevanje študije aktiviraj tudi pretvorjeni dobavni profil.",
+  "Legacy study schedule restored.": "Urnik stare študije je obnovljen.",
   "Show uploaded backups": "Prikaži že naložene kopije",
   "List unavailable.": "Seznam ni dosegljiv.",
   "Resume backup preview": "Nadaljuj pregled kopije",
@@ -465,8 +468,9 @@ class EnergyCostMonitorCard extends HTMLElement {
   }
   _historyForm(card) {
     this._node("p",this._t("Select a consistent legacy Energy Cost Monitor SQLite backup. The file is uploaded only to your HA. Import retains original records and adds history preceding native collection; overlap is refused. Both current stores are privately backed up before writing."),card);
-    this._node("small",this._t("Import transfers measurements, supply profiles and archived sessions/reports. Legacy study and regional settings are not activated automatically. Full HA recovery still uses HA backups."),card);
+    this._node("small",this._t("Import transfers measurements, supply profiles and archived sessions and reports. Regional settings require separate setup."),card);
     if(this._importResult)this._node("p",this._t`Import successful: ${this._importResult.converted_role_intervals} measurement records, ${this._importResult.profiles} profiles, ${this._importResult.reports} reports. Pre-import backup: ${this._importResult.backup}`,card);
+    if(this._importResult?.study_resumed)this._node("p",this._t("Legacy study schedule restored."),card);
     if(!this._importDraft){
       this._button(this._t("Show uploaded backups"),card,async()=>{
         try{this._uploads=await this._api("GET","history");this._render();}
@@ -514,12 +518,15 @@ class EnergyCostMonitorCard extends HTMLElement {
     profile.value=draft.profile;profile.addEventListener("change",()=>{draft.profile=profile.value;});
     this._field(card,this._t("Legacy price comparison end (exclusive date)"),draft.horizon,"date",v=>draft.horizon=v);
     this._field(card,this._t("Activate converted supply profile after import"),draft.activate,"checkbox",v=>draft.activate=v);
+    if(draft.study_available)
+      this._field(card,this._t("Continue the legacy study with its original report dates"),!!draft.resumeStudy,"checkbox",v=>draft.resumeStudy=v);
     this._field(card,this._t("I reviewed the mapping and confirm importing this backup"),draft.confirm,"checkbox",v=>draft.confirm=v);
     const submit=this._button(this._t("Import reviewed history"),card,async()=>{
       if(!draft.confirm || draft.roles.some(r=>!draft.mapping[r]) || !draft.horizon){this._error="Complete all mappings and the date, then confirm the review.";this._render();return;}
+      if(draft.resumeStudy && !draft.activate){this._error="To continue the study, also activate the converted supply profile.";this._render();return;}
       submit.disabled=true;
       try{
-        this._importResult=await this._api("POST","history",{command:"import",id:draft.id,sha256:draft.sha256,mapping:draft.mapping,horizon:draft.horizon,profile:draft.profile,activate:draft.activate,confirm:true});
+        this._importResult=await this._api("POST","history",{command:"import",id:draft.id,sha256:draft.sha256,mapping:draft.mapping,horizon:draft.horizon,profile:draft.profile,activate:draft.activate,resume_study:!!draft.resumeStudy,confirm:true});
         this._importDraft=null;this._error=null;await this._refresh();
       }catch(_){this._error="Import failed. Possible reasons include overlap with native collection, previously imported history or invalid settings. Check the data; existing stores are not overwritten.";this._render();}
     });

@@ -103,8 +103,11 @@ Use a consistent backup, never a live database file copied during writes.
 The upload goes to your HA. Original rows are retained; overlap with native
 collection, unsupported or already-imported history is refused. Both stores get a
 pre-import backup. A staged upload can be resumed/discarded without changing your
-original file. Old study and regional settings are not activated automatically;
-review/configure them separately. This is not full HA recovery. See
+original file. If the preview offers **Continue the legacy study with its
+original report dates**, select it and activate the converted supply profile to
+keep the schedule and existing reports. The import refuses to overwrite a
+configured study. Review price coverage for future reports and configure regional
+settings separately. This is not full HA recovery. See
 [migration details and limits](application-migration.md).
 
 ## 6. Check the result

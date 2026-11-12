@@ -15,8 +15,10 @@ from pathlib import Path
 import tempfile
 from zoneinfo import ZoneInfo
 
+from .accounting import _timestamp
 from .application import ApplicationStore, encoded, validate_profile
 from .migration import _publish, _ro, _validate_legacy
+from .study import Study, add_months
 from .pricing import _money
 
 
@@ -117,12 +119,48 @@ def convert_profile(legacy, prices, *, horizon):
     return validate_profile(result)
 
 
-def migrate_application(source, destination, *, horizon, active_profile):
+def _resume_study(original, store, profile_timezone, archived):
+    row = original.execute("SELECT value FROM meta WHERE key='study'").fetchone()
+    legacy = json.loads(row[0]) if row else None
+    if not isinstance(legacy, dict) or not isinstance(legacy.get("windows"), list):
+        raise ValueError("missing_legacy_study")
+    if len(legacy["windows"]) != 4:
+        raise ValueError("invalid_legacy_study_windows")
+    start = _timestamp(legacy.get("start"))
+    validated = _timestamp(legacy.get("validated_at"))
+    windows = [_timestamp(value) for value in legacy["windows"]]
+    local = datetime.fromtimestamp(start, ZoneInfo(profile_timezone))
+    if (local.time() != time.min or
+            windows != [add_months(local, n).timestamp() for n in range(4)] or
+            any(value % 900 for value in windows) or
+            _timestamp(legacy.get("end")) != windows[-1] or validated > start):
+        raise ValueError("invalid_legacy_study_windows")
+
+    bounds = {f"month-{n+1}": (windows[n], windows[n+1]) for n in range(3)}
+    bounds["final"] = (windows[0], windows[-1])
+    reports = {}
+    for ident, first, last in original.execute("SELECT id,start,end FROM reports"):
+        if ident in bounds:
+            if (first, last) != bounds[ident]:
+                raise ValueError("invalid_legacy_study_report_window")
+            reports[ident] = archived[ident]
+    if "final" in reports and reports.keys() != bounds.keys():
+        raise ValueError("incomplete_legacy_final_study")
+    Study(store).save({"state": "complete" if "final" in reports else "running",
+                       "origin": "legacy", "timezone": profile_timezone,
+                       "validated_at": validated, "windows": [int(value) for value in windows],
+                       "reports": reports})
+
+
+def migrate_application(source, destination, *, horizon, active_profile, resume_study=False):
     """Build a fresh app store; publish only after every source row is processed.
 
     Caller supplies an offline legacy snapshot and the chosen original profile
-    hash. Existing destinations and the original database are never modified.
+    hash. Resuming the original study schedule is opt-in. Existing destinations
+    and the original database are never modified.
     """
+    if type(resume_study) is not bool:
+        raise ValueError("invalid_resume_study")
     destination = Path(destination).absolute()
     if destination.exists():
         raise FileExistsError(destination)
@@ -138,8 +176,12 @@ def migrate_application(source, destination, *, horizon, active_profile):
         prices = original.execute("SELECT ts,duration,eur_kwh,captured FROM prices ORDER BY ts").fetchall()
         store = ApplicationStore(Path(temporary) / "application.sqlite3")
         mapping = {}
+        profile_timezone = None
         for ident, captured, body in profiles:
-            profile = convert_profile(json.loads(body), prices, horizon=horizon)
+            legacy = json.loads(body)
+            profile = convert_profile(legacy, prices, horizon=horizon)
+            if ident == active_profile:
+                profile_timezone = legacy["timezone"]
             mapping[ident] = store.save_profile(profile, now=captured)
         store.activate(mapping[active_profile])
         reports = {}
@@ -158,9 +200,12 @@ def migrate_application(source, destination, *, horizon, active_profile):
                 key = hashlib.sha256(serialized.encode()).hexdigest()
                 target.execute("INSERT INTO reports VALUES(?,?,?)", (key, generated, serialized))
                 reports[ident] = key
+        if resume_study:
+            _resume_study(original, store, profile_timezone, reports)
         evidence = {"version": 1, "horizon_exclusive_local_date": horizon, "profiles": mapping, "reports": reports,
                     "price_rounding": "12 decimal places, ROUND_HALF_UP; original REAL values retained in archive",
                     "live_price_fetch_enabled": False, "regional_bill_converted": False,
+                    "study_resumed": resume_study,
                     "original_archive_required": True}
         with store.db(True) as target:
             target.execute("INSERT INTO settings VALUES('legacy_conversion',?)", (encoded(evidence),))
@@ -175,8 +220,10 @@ def main():
     parser.add_argument("destination", type=Path)
     parser.add_argument("--horizon", required=True, help="Exclusive local YYYY-MM-DD; not a new contract expiry")
     parser.add_argument("--active-profile", required=True, help="Original profile hash to select explicitly")
+    parser.add_argument("--resume-study", action="store_true", help="Keep the original study schedule and archived reports")
     args = parser.parse_args()
-    evidence = migrate_application(args.source, args.destination, horizon=args.horizon, active_profile=args.active_profile)
+    evidence = migrate_application(args.source, args.destination, horizon=args.horizon,
+                                    active_profile=args.active_profile, resume_study=args.resume_study)
     print(json.dumps({"result": "PASS", "profiles": len(evidence["profiles"]), "reports": len(evidence["reports"])}))
 
 

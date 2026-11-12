@@ -104,8 +104,11 @@ Uporabi konsistentno kopijo; datoteke ne kopiraj med aktivnim pisanjem vanjo.
 Datoteka se naloži v tvoj HA. Izvirne vrstice se ohranijo; prekrivanje z novimi
 meritvami, nepodprta ali že uvožena zgodovina se zavrne. Pred uvozom se kopirata obe
 shrambi. Naloženi osnutek lahko nadaljuješ ali zavržeš brez spremembe izvirne
-lokalne datoteke. Stara študija in regionalne nastavitve se ne aktivirajo samodejno;
-preglej in nastavi jih ločeno. To ni obnova celotnega HA.
+lokalne datoteke. Če predogled ponudi **Nadaljuj staro študijo z izvirnimi datumi
+poročil**, izberi to možnost in aktiviraj pretvorjeni dobavni profil. Uvoz
+ohrani urnik in obstoječa poročila ter zavrne prepis že nastavljene študije.
+Preveri pokritost cen za prihodnja poročila in ločeno nastavi regionalne postavke.
+To ni obnova celotnega HA.
 [Tehnične omejitve uvoza](application-migration.md).
 
 ## 6. Preverjanje delovanja
