@@ -166,6 +166,11 @@ const ECM_SL = {
   "{0} · coverage {1}": "{0} · pokritost {1}",
   "Known subtotal: {0} · {1}": "Znani del: {0} · {1}",
   "{0} · regional estimate": "{0} · regionalna ocena",
+  "Excise basis": "Osnova za trošarino",
+  "Imported energy": "Prevzeta energija",
+  "Net imported energy over the billing period": "Neto prevzeta energija v obračunskem obdobju",
+  "Full billing period for net excise": "Celotno obračunsko obdobje za neto trošarino",
+  "Complete import and export readings for net excise": "Popolne meritve prevzema in oddaje za neto trošarino",
   "Total: {0} · known subtotal: {1}": "Celota: {0} · znani del: {1}",
   "Missing: {0}": "Manjka: {0}",
   "Common offer coverage: {0}": "Skupna pokritost ponudb: {0}",
@@ -304,7 +309,12 @@ class EnergyCostMonitorCard extends HTMLElement {
         this._node("strong",this._t`${name} · regional estimate`,row);
         this._node("p",this._t`Total: ${this._number(bill.total_gross,"EUR")} · known subtotal: ${this._number(bill.known_reference_gross,"EUR")}`,row);
         for(const [key,value] of Object.entries(bill.components))this._node("small",`${key}: ${this._number(value,"EUR")}`,row);
-        this._node("small",bill.missing.length?this._t`Missing: ${bill.missing.join(", ")}`:this._t("Estimate based on HA measurements, not an amount payable."),row,"muted");
+        const missingLabels={
+          excise_partial_period:this._t("Full billing period for net excise"),
+          excise_coverage:this._t("Complete import and export readings for net excise"),
+        };
+        const missing=bill.missing.map(key=>Object.hasOwn(missingLabels,key)?missingLabels[key]:key);
+        this._node("small",missing.length?this._t`Missing: ${missing.join(", ")}`:this._t("Estimate based on HA measurements, not an amount payable."),row,"muted");
       }
       if(data.comparison) this._node("p",this._t`Common offer coverage: ${this._number(data.comparison.common_coverage*100,"%")}`,card);
       for(const source of Object.values(data.market_provenance || {})) this._node("small",`${source.source} · ${source.license}`,card,"muted");
@@ -543,6 +553,14 @@ class EnergyCostMonitorCard extends HTMLElement {
           this._field(box,this._t`Block ${block}: ${label}`,version[key][block],"number",v=>{version[key][block]=v===""?null:v;touch();});
       for(const [key,label] of [["vat",this._t("Import VAT (fraction, e.g. 0.22)")],["export_vat",this._t("Export VAT (fraction)")],["operator_kwh",this._t("Operator EUR/kWh")],["efficiency_kwh",this._t("Efficiency EUR/kWh")],["excise_kwh",this._t("Excise EUR/kWh")],["renewables_kw",this._t("Renewables/CHP basis (kW)")],["renewables_kw_month",this._t("Renewables/CHP EUR/kW/month")],["excess_factor",this._t("Excess-power factor")]])
         this._field(box,label,version[key],"number",v=>{version[key]=v===""?null:v;touch();});
+      const exciseLabel=this._node("label",this._t("Excise basis"),box);
+      const exciseSelect=this._node("select",undefined,exciseLabel);
+      for(const [value,label] of [["import",this._t("Imported energy")],["net_import",this._t("Net imported energy over the billing period")]]) {
+        const option=this._node("option",label,exciseSelect);
+        option.value=value;
+        option.selected=(version.excise_basis ?? "import")===value;
+      }
+      exciseSelect.addEventListener("change",()=>{version.excise_basis=exciseSelect.value;touch();});
       const label=this._node("label",this._t("Excess-power mode"),box),select=this._node("select",undefined,label);
       for(const [value,text] of [["unknown",this._t("Unconfirmed")],["informative",this._t("Informative, not charged")],["charged",this._t("Charged")]]){const option=this._node("option",text,select);option.value=value;option.selected=version.excess_mode===value;}
       select.addEventListener("change",()=>{version.excess_mode=select.value;touch();});

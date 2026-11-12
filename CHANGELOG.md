@@ -1,5 +1,13 @@
 # Changelog
 
+## 12 November 2026 — Regional excise basis
+
+- Add an optional net-import excise basis to dated regional settings. Existing
+  profiles continue to use gross import. Net excise uses complete import and
+  export readings within each calendar month and rate period.
+- Leave excise and the full regional total unknown for incomplete netting periods.
+  The estimate does not calculate supplier credit or payouts.
+
 ## 2 November 2026 — English-first frontend
 
 - Use English as the card/panel source language with Slovenian selected by HA user language.

@@ -110,6 +110,28 @@ const profiles={active:null,versions:[]};
   localized.hass={locale:{language:'en'},language:'sl'};
   assert.equal(localized._number(null),'unknown');
   assert.equal(localized._number(1234.5,'kWh'),'1,234.5 kWh');
+  // Old regional profiles show the existing basis. Changing it saves the new basis.
+  const billing = new Card();
+  billing._data = data;
+  billing._profiles = {active:'billing',versions:[{id:'billing',profile:{...profile,regional:[{
+    energy:{},power:{},agreed_kw:{},excess_mode:'informative',
+  }]}}]};
+  billing.hass = {language:'en',callApi:async(method,action,payload)=>{
+    saved = payload;
+    return billing._profiles;
+  }};
+  billing._tab = 'settings';
+  billing._render();
+  const excise = nodes(billing.shadowRoot,'label').find(n=>n.textContent==='Excise basis');
+  const basis = nodes(excise,'select')[0];
+  assert.equal(nodes(basis,'option').find(n=>n.selected).value,'import');
+  basis.value = 'net_import';
+  basis.events.change();
+  billing.hass = {language:'sl',callApi:billing._hass.callApi};
+  const translatedExcise = nodes(billing.shadowRoot,'label').find(n=>n.textContent==='Osnova za trošarino');
+  assert.equal(nodes(translatedExcise,'option').find(n=>n.selected).value,'net_import');
+  await nodes(billing.shadowRoot,'button').find(n=>n.textContent==='Shrani EV in obračun').events.click();
+  assert.equal(saved.regional[0].excise_basis,'net_import');
   // Native config forms already use English source strings with matching translations.
   const base=JSON.parse(readFileSync('custom_components/energy_cost_monitor/strings.json','utf8'));
   const en=JSON.parse(readFileSync('custom_components/energy_cost_monitor/translations/en.json','utf8'));

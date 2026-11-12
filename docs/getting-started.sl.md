@@ -64,6 +64,12 @@ JSON in ročna kartica Lovelace ostajata izbirni napredni možnosti.
 izključen. Uporabi pravi odmik za izbrani datum. Regionalna obdobja vnašaš kot
 datume. Priključna moč **ni** dogovorjena obračunska moč po blokih.
 
+Pri samooskrbi pod **Osnova za trošarino** izberi **Neto prevzeta energija v
+obračunskem obdobju**, če račun trošarino obračuna od razlike prevzema in oddaje.
+Ocena potrebuje popolne meritve prevzema in oddaje za koledarski mesec, omejen
+na datume veljavnosti postavk. Za obračun od celotnega prevzema izberi
+**Prevzeta energija**.
+
 Za izmišljeno vajo lahko vneseš prevzem `0.15` EUR/kWh in naročnino `2` EUR/mesec
 brez DDV z izrecnimi datumi veljavnosti. Vir označi »Izmišljeni primer« in pusti
 potrditev izključeno. To niso dejanske tarife ali priporočene hišne nastavitve;

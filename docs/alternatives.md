@@ -201,3 +201,17 @@ This scoped change localizes ECM's existing forms; a price-sensor integration
 cannot provide translations for ECM's own paired-store/profile/study controls.
 No new integration or copied upstream UI is introduced. HA supplies the user
 language; English is the source/fallback language and Slovenian remains available.
+
+### Regional excise basis — 12 November 2026
+
+Rechecked [Dynamic Energy Cost's README](https://github.com/martinarva/dynamic_energy_cost),
+[sensor source](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/sensor.py),
+[releases](https://github.com/martinarva/dynamic_energy_cost/releases),
+[issues](https://github.com/martinarva/dynamic_energy_cost/issues) and
+[PRs](https://github.com/martinarva/dynamic_energy_cost/pulls). Its price-sensor
+model tracks cumulative costs. The author's separate
+[MFFR Profit Tracker](https://github.com/martinarva/MFFR-Profit-Tracker) addresses
+battery reserve revenue. Neither reviewed workflow supplies period-level netting
+for the dated excise component in this integration's regional estimate.
+The configurable basis follows the import/export distinction in
+[ZTro-1, Article 90(6)](https://pisrs.si/pregledPredpisa?id=ZAKO7128).

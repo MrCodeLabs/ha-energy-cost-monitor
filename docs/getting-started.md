@@ -64,6 +64,11 @@ Price timestamps need an offset, for example `2026-01-01T00:00:00+01:00`; the en
 is exclusive. Use the correct offset for the date. Regional dates are entered as
 dates. Connection power is **not** agreed billing power for tariff blocks.
 
+For self-consumption, choose **Net imported energy over the billing period** under
+**Excise basis** if your invoice applies excise to import minus export. The estimate
+needs complete import and export readings for each calendar month, limited to the
+dates of the relevant rate period. Choose **Imported energy** for gross-import excise.
+
 For an invented practice offer, use EUR/kWh, import `0.15` and subscription `2`
 EUR/month excluding VAT, with explicit validity dates. Label the source
 “Synthetic example” and leave confirmation unchecked. These are not tariffs or
