@@ -1,6 +1,7 @@
 """Synthetic dated network/levy arithmetic, never a household bill."""
 
 import unittest
+from dataclasses import replace
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from energy_cost_monitor.regional import block_2026, regional_bill, validate_regional
@@ -91,6 +92,61 @@ class RegionalTests(unittest.TestCase):
         settings = config()
         settings[0]["until"] = "2028-01-01"
         with self.assertRaises(ValueError):
+            validate_regional(settings)
+
+    def test_net_excise_offsets_export_across_intervals_and_leaves_other_levies(self):
+        settings = config()
+        settings[0].update(
+            {"from": "2026-03-28", "until": "2026-03-30", "excise_basis": "net_import"}
+        )
+        rows, supply, start, end = window("2026-03-28", "2026-03-30", energy=2)
+        rows = [
+            replace(
+                row,
+                energy_kwh={"import": 2, "export": 3 if i % 2 else 0},
+                complete={"import": True, "export": True},
+            )
+            for i, row in enumerate(rows)
+        ]
+        for price in supply["intervals"]:
+            price["export_credit"] = "0"
+        def bill():
+            return regional_bill(rows, supply, settings, start=start, end=end, export_enabled=True)
+
+        net = bill()
+        self.assertEqual(len(rows), 188)  # Spring clock change.
+        self.assertEqual(net["components"]["excise_net"], "0.28")
+        self.assertIsNotNone(net["total_gross"])
+        settings[0].pop("excise_basis")
+        gross = bill()
+        self.assertEqual(gross["components"]["excise_net"], "1.13")
+        self.assertEqual(net["components"]["levies_net"], gross["components"]["levies_net"])
+        self.assertEqual(net["components"]["network_energy_net"], gross["components"]["network_energy_net"])
+        self.assertAlmostEqual(
+            float(gross["components"]["vat_import"]) - float(net["components"]["vat_import"]),
+            0.17,
+        )
+
+        settings[0]["excise_basis"] = "net_import"
+        rows[:] = [replace(row, energy_kwh={"import": 2, "export": 3}) for row in rows]
+        self.assertEqual(bill()["components"]["excise_net"], "0.00")
+
+    def test_net_excise_requires_the_whole_period_and_both_measurements(self):
+        settings = config()
+        settings[0]["excise_basis"] = "net_import"
+        rows, supply, start, end = window("2026-10-02", "2026-10-03")
+        partial = regional_bill(rows, supply, settings, start=start, end=end, export_enabled=True)
+        self.assertIn("excise_partial_period", partial["missing"])
+        self.assertIsNone(partial["components"]["excise_net"])
+        settings[0].update({"from": "2026-10-02", "until": "2026-10-03"})
+        for data, enabled in [(rows, False), (rows, True), (rows[1:], True)]:
+            with self.subTest(rows=len(data), export_enabled=enabled):
+                incomplete = regional_bill(data, supply, settings, start=start, end=end, export_enabled=enabled)
+                self.assertIn("excise_coverage", incomplete["missing"])
+                self.assertIsNone(incomplete["components"]["excise_net"])
+                self.assertIsNone(incomplete["total_gross"])
+        settings[0]["excise_basis"] = "invalid"
+        with self.assertRaisesRegex(ValueError, "invalid_excise_basis"):
             validate_regional(settings)
 
     def test_excess_is_monthly_root_sum_square_and_partial_month_is_flagged(self):

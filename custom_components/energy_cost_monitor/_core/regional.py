@@ -19,6 +19,7 @@ SCALARS = (
     "excess_factor",
 )
 ZERO = Decimal(0)
+EXCISE_BASES = ("import", "net_import")
 
 
 def validate_regional(config):
@@ -33,7 +34,7 @@ def validate_regional(config):
         raise ValueError("invalid_regional_dates")
     previous = None
     for version in sorted(config, key=lambda v: v.get("from", "")):
-        if not isinstance(version, dict) or set(version) != {
+        if set(version) - {"excise_basis"} != {
             "from",
             "until",
             "source",
@@ -67,6 +68,8 @@ def validate_regional(config):
             raise ValueError("invalid_regional_provenance")
         if version["excess_mode"] not in ("unknown", "informative", "charged"):
             raise ValueError("invalid_excess_mode")
+        if version.get("excise_basis", "import") not in EXCISE_BASES:
+            raise ValueError("invalid_excise_basis")
         for key in ("energy", "power", "agreed_kw"):
             if not isinstance(version[key], dict) or set(version[key]) != set(BLOCKS):
                 raise ValueError("expected_five_blocks")
@@ -115,6 +118,7 @@ def regional_bill(intervals, supply, versions, *, start, end, export_enabled):
     validate_regional(versions)
     zone = ZoneInfo("Europe/Ljubljana")
     components, known, missing, exceedances = {}, set(), set(), {}
+    net_excise = {}
 
     def add(key, value):
         if value is None:
@@ -173,7 +177,21 @@ def regional_bill(intervals, supply, versions, *, start, end, export_enabled):
         )
         taxed("levies_net", product(energy, num(version, "operator_kwh")), vat)
         taxed("levies_net", product(energy, num(version, "efficiency_kwh")), vat)
-        taxed("excise_net", product(energy, num(version, "excise_kwh")), vat)
+        if version.get("excise_basis", "import") == "import":
+            taxed("excise_net", product(energy, num(version, "excise_kwh")), vat)
+        else:
+            export = (
+                interval.energy_kwh.get("export")
+                if export_enabled and interval.complete.get("export")
+                else None
+            )
+            key = (local.year, local.month, version["from"])
+            _, deltas = net_excise.setdefault(key, (version, []))
+            deltas.append(
+                Decimal(str(energy)) - Decimal(str(export))
+                if energy is not None and export is not None
+                else None
+            )
         # Same local-day accrual as supply subscriptions, including DST days.
         midnight = datetime.combine(local.date(), time.min, zone)
         tomorrow = datetime.combine(local.date() + timedelta(days=1), time.min, zone)
@@ -240,6 +258,22 @@ def regional_bill(intervals, supply, versions, *, start, end, export_enabled):
             ),
             num(version, "vat"),
         )
+    for (year, month, _), (version, deltas) in net_excise.items():
+        month_start = date(year, month, 1)
+        month_end = month_start + timedelta(days=calendar.monthrange(year, month)[1])
+        first = max(month_start, date.fromisoformat(version["from"]))
+        last = min(month_end, date.fromisoformat(version["until"]))
+        first_ts = datetime.combine(first, time.min, zone).timestamp()
+        last_ts = datetime.combine(last, time.min, zone).timestamp()
+        if start > first_ts or end < last_ts:
+            missing.add("excise_partial_period")
+            taxed("excise_net", None, num(version, "vat"))
+        elif len(deltas) != (last_ts - first_ts) // 900 or None in deltas:
+            missing.add("excise_coverage")
+            taxed("excise_net", None, num(version, "vat"))
+        else:
+            base = max(ZERO, sum(deltas, ZERO))
+            taxed("excise_net", product(base, num(version, "excise_kwh")), num(version, "vat"))
     keys = (
         "supply_net",
         "export_net",
