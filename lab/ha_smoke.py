@@ -1,12 +1,15 @@
 """Run inside the pinned HA container; only synthetic states, no HA doubles."""
 
 import asyncio
+from contextlib import nullcontext
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
 import sqlite3
 import sys
 import time
+from unittest.mock import patch
 
 from homeassistant import bootstrap, loader
 from homeassistant.core import HomeAssistant, HassJob
@@ -20,6 +23,7 @@ def prepare_migration(fixture_only=False):
     from custom_components.energy_cost_monitor._core.migration import TABLES, migrate_legacy
     from custom_components.energy_cost_monitor._core.sources import parse_config
     from custom_components.energy_cost_monitor._core.application_migration import migrate_application
+    from custom_components.energy_cost_monitor._core.study import add_months
     config = parse_config(json.loads(Path("/repo/examples/minimal.json").read_text()))
     start = int(time.time() // 900) * 900 - 3600
     with sqlite3.connect(CONFIG / "synthetic-legacy.sqlite3") as old:
@@ -33,6 +37,12 @@ def prepare_migration(fixture_only=False):
                        "import_net": .2, "export_net": .05, "monthly_net": 3, "discount_net": 0,
                        "source": "Synthetic laboratory"}]}}
         old.execute("INSERT INTO profiles VALUES('synthetic',?,?)", (start, json.dumps(profile)))
+        month = datetime.fromtimestamp(start, timezone.utc).replace(day=1, hour=0, minute=0)
+        windows = [int(add_months(month, n).timestamp()) for n in range(4)]
+        old.execute("INSERT INTO meta VALUES('study',?)", (json.dumps({
+            "start": windows[0], "end": windows[-1], "windows": windows,
+            "validated_at": windows[0] - 3600,
+        }),))
         old.execute("INSERT INTO reports VALUES('synthetic',?,?,?,?)",
                     (start, start+900, start+900, json.dumps({"csv": "a,b\n1,2", "note": "<script>invented</script>"})))
     if fixture_only:
@@ -42,7 +52,7 @@ def prepare_migration(fixture_only=False):
     (CONFIG / "historical-start").write_text(str(start))
     evidence = migrate_application(CONFIG / "synthetic-legacy.sqlite3",
                                    CONFIG / ".storage/energy_cost_monitor_application.sqlite3",
-                                   horizon="2030-01-01", active_profile="synthetic")
+                        horizon="2030-01-01", active_profile="synthetic", resume_study=True)
     (CONFIG / "legacy-report-id").write_text(evidence["reports"]["synthetic"])
 
 
@@ -54,6 +64,7 @@ def rows():
 
 async def main():
     phase = sys.argv[1]
+    migrated = os.environ.get("ECM_LAB_MIGRATE") == "1"
     hass = HomeAssistant(str(CONFIG))
     hass.config.skip_pip = True
     loader.async_setup(hass)
@@ -88,8 +99,18 @@ async def main():
                     "max_age_seconds": source["max_age_seconds"], "max_power_kw": source["max_power_kw"],
                 })
             assert result["step_id"] == "review", result
-            result = await hass.config_entries.flow.async_configure(result["flow_id"], {"action": "save"})
-            assert result["type"] == "create_entry", result
+            before_cutover = nullcontext()
+            if migrated:
+                from custom_components.energy_cost_monitor import Runtime
+                cutover = int((CONFIG / "historical-start").read_text()) + 900
+                read_snapshot = Runtime.read_snapshot
+                before_cutover = patch.object(
+                    Runtime, "read_snapshot", lambda self: (cutover - 1, read_snapshot(self)[1])
+                )
+            with before_cutover:
+                result = await hass.config_entries.flow.async_configure(result["flow_id"], {"action": "save"})
+                assert result["type"] == "create_entry", result
+                await hass.async_block_till_done()
         await hass.async_block_till_done()
         entries = hass.config_entries.async_entries(DOMAIN)
         assert len(entries) == 1
@@ -100,7 +121,12 @@ async def main():
             start = int((CONFIG / "historical-start").read_text())
             historical = await hass.async_add_executor_job(runtime.collector.engine.summary, start, start + 900)
             assert historical.energy_kwh["import"] == 0.5
+            if phase == "create":
+                assert runtime.collector.latest is None and not runtime.collector.failed
+                # The collector holds the bound method it received during setup.
+                runtime.collector.read_snapshot = runtime.read_snapshot
         await runtime.collector.request()
+        assert runtime.collector.latest is not None
         await hass.async_block_till_done()
         # Exercise actual reconfigure flows, including schema defaults. Merely
         # opening/reviewing them must not mutate the live entry or stored history.
@@ -188,12 +214,15 @@ async def main():
                               "daily_relative": 0.01, "reference_age_seconds": 180}
             async with client.post(base + "/api/energy_cost_monitor/study", json=study_settings, headers=member_headers) as response:
                 assert response.status == 403
-            if phase == "create":
+            if phase == "create" and not migrated:
                 async with client.post(base + "/api/energy_cost_monitor/study", json=study_settings, headers=headers) as response:
                     assert response.status == 200, await response.text()
             async with client.get(base + "/api/energy_cost_monitor/study", headers=headers) as response:
                 assert response.status == 200
-                assert (await response.json())["state"] == "warmup"
+                status = await response.json()
+                assert status["state"] == ("running" if migrated else "warmup")
+                if migrated:
+                    assert status["origin"] == "legacy" and len(status["windows"]) == 4
             if phase == "create" and os.environ.get("ECM_LAB_MIGRATE") != "1":
                 from aiohttp import FormData
                 await hass.async_add_executor_job(prepare_migration, True)
@@ -206,6 +235,7 @@ async def main():
                 async with client.post(base + "/api/energy_cost_monitor/history", json={"command": "preview", **uploaded}, headers=headers) as response:
                     assert response.status == 200, await response.text()
                     preview = await response.json()
+                    assert preview["study_available"] is True
                 request = {"command": "import", "id": preview["id"], "sha256": preview["sha256"],
                            "mapping": {"house": "invented", "import": "invented"},
                            "horizon": "2030-01-01", "profile": "synthetic", "confirm": True}

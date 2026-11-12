@@ -7,7 +7,7 @@ from collections.abc import Callable
 from functools import partial
 import sqlite3
 
-from .accounting import AccountingEngine
+from .accounting import AccountingEngine, BeforeMigrationCutover
 from .sources import parse_config
 
 
@@ -106,6 +106,10 @@ class Collector:
         try:
             now, observations = self.read_snapshot()
             self.latest = await drain_on_cancel(self.execute(partial(self._write, now, observations)))
+        except BeforeMigrationCutover:
+            # History is readable now; the next periodic request can collect
+            # as soon as the aligned boundary is reached.
+            self.failed = False
         except (OSError, sqlite3.Error, ValueError):
             self.failed = True
             self._needs_break = True

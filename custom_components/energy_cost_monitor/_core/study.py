@@ -157,8 +157,8 @@ class Study:
         state = self.status()
         if state["state"] not in ("warmup", "running"):
             return state
-        settings = state["settings"]
         if state["state"] == "warmup":
+            settings = state["settings"]
             state["quality"] = quality(engine, settings, now)
             if not state["quality"]["ready"]:
                 return self.save(state)

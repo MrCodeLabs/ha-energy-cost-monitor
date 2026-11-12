@@ -28,6 +28,10 @@ SCHEMA_VERSION = 1
 MIGRATED_SCHEMA_VERSION = 2
 
 
+class BeforeMigrationCutover(ValueError):
+    """Native collection has not reached the imported history boundary."""
+
+
 def _timestamp(value: float) -> float:
     if type(value) not in (int, float):
         raise ValueError("invalid_timestamp")
@@ -182,7 +186,7 @@ class AccountingEngine:
         with self._db(write=True) as db:
             cutover = db.execute("SELECT value FROM meta WHERE key='collection_not_before'").fetchone()
             if cutover is not None and timestamp < float(cutover[0]):
-                raise ValueError("sample_precedes_migration_cutover")
+                raise BeforeMigrationCutover("sample_precedes_migration_cutover")
             latest = db.execute("SELECT MAX(ts) FROM samples").fetchone()[0]
             if latest is not None and timestamp <= latest:
                 return False

@@ -1,5 +1,12 @@
 # Changelog
 
+## 12 November 2026 — Continue a legacy study
+
+- Load imported history before the collection boundary. Native samples start
+  on or after that boundary.
+- Optionally restore the original study dates and link archived reports during
+  import. The study generates outstanding reports on the original schedule.
+
 ## 12 November 2026 — Regional excise basis
 
 - Add an optional net-import excise basis to dated regional settings. Existing

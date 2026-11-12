@@ -79,7 +79,8 @@ async def apply_import(runtime, data):
                 return import_history(source, runtime.collector.engine, app.store, backup,
                                       expected_sha256=data["sha256"], role_mapping=data["mapping"],
                                       horizon=data["horizon"], active_profile=data["profile"],
-                                      activate=data.get("activate", False))
+                                      activate=data.get("activate", False),
+                                      resume_study=data.get("resume_study", False))
             return await drain_on_cancel(hass.async_add_executor_job(run))
         finally:
             # A HA backup may have paused collection while waiting for app.lock.

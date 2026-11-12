@@ -132,6 +132,31 @@ const profiles={active:null,versions:[]};
   assert.equal(nodes(translatedExcise,'option').find(n=>n.selected).value,'net_import');
   await nodes(billing.shadowRoot,'button').find(n=>n.textContent==='Shrani EV in obračun').events.click();
   assert.equal(saved.regional[0].excise_basis,'net_import');
+  const history = new Card();
+  history._data = data;
+  history._tab = 'history';
+  history._importDraft = {id:'invented',sha256:'fixture',counts:{intervals:1,sessions:0},
+    roles:['import'],metrics:['meter'],profiles:['fixture'],mapping:{import:'meter'},
+    profile:'fixture',horizon:'2027-01-01',cutover:900,study_available:true,confirm:true};
+  history._hass = {language:'en',callApi:async(method,action,payload)=>{
+    saved = payload;
+    return {study_resumed:true};
+  }};
+  const historyCheckbox = label => nodes(nodes(history.shadowRoot,'label').find(n=>n.textContent===label),'input')[0];
+  const submitHistory = () => nodes(history.shadowRoot,'button').find(n=>n.textContent==='Import reviewed history');
+  history._render();
+  const resumeStudy = historyCheckbox('Continue the legacy study with its original report dates');
+  assert.equal(resumeStudy.checked,false);
+  resumeStudy.checked = true;
+  resumeStudy.events.input();
+  saved = undefined;
+  await submitHistory().events.click();
+  assert.equal(saved,undefined);
+  const activateProfile = historyCheckbox('Activate converted supply profile after import');
+  activateProfile.checked = true;
+  activateProfile.events.input();
+  await submitHistory().events.click();
+  assert.equal(saved.resume_study,true);
   // Native config forms already use English source strings with matching translations.
   const base=JSON.parse(readFileSync('custom_components/energy_cost_monitor/strings.json','utf8'));
   const en=JSON.parse(readFileSync('custom_components/energy_cost_monitor/translations/en.json','utf8'));
