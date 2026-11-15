@@ -1,15 +1,40 @@
+<div align="center">
+
+<img src="custom_components/energy_cost_monitor/brand/icon.png" alt="Energy Cost Monitor" width="160" />
+
 # Energy Cost Monitor za Home Assistant
+
+[![Marketplace: repozitorij po meri](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
+[![0.1.0-beta.1](https://img.shields.io/badge/beta-0.1.0--beta.1-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1)
+[![Licenca MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
+[![Podpri prek Revoluta](https://img.shields.io/badge/Revolut-podpri-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
+[![Podpri prek PayPala](https://img.shields.io/badge/PayPal-podpri-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
+[![Odpri Energy Cost Monitor v Home Assistantu](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MrCodeLabs&repository=ha-energy-cost-monitor&category=integration)
+
+</div>
 
 Primerjaj dobavne ponudbe elektrike, spremljaj meritve in EV seje ter shrani
 ponovljiva poročila iz obstoječih senzorjev Home Assistanta. Integracija podatke
 bere in ne krmili naprav.
 
-**Razvojni predogled — posodobljeno 2. 11. 2026.** Namesti ga prek HACS kot
-repozitorij po meri v ločeni testni namestitvi. To še ni stabilna izdaja, vnos v
-privzetem katalogu HACS ali kalkulator celotnega računa.
+**Javna beta.** Dodaj Energy Cost Monitor kot repozitorij po meri v Home Assistant
+Marketplaceu in vključi predizdaje. Za beto uporabi ločeno testno namestitev.
 
 **[Začni tukaj: namestitev in uporabniški vodič](docs/getting-started.sl.md)** ·
 [English](README.md)
+
+## Kaj je novega v različici 0.1.0-beta.1
+
+- **Vodena nastavitev.** Izberi obstoječe senzorje energije in odpri ploščo,
+  ki se samodejno doda v stransko vrstico.
+- **Primerjava dobavnih ponudb.** Nastavi cene in naročnine ter shrani poročila
+  v obliki HTML ali CSV.
+- **Spremljanje polnjenja EV.** Beleži seje z ustreznim kumulativnim števcem.
+- **Nadaljevanje uvožene študije.** Ob uvozu podprte kopije SQLite obnovi prvotni
+  razpored in poveži arhivirana poročila.
+
+[Opombe izdaje](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1) ·
+[Dnevnik sprememb](CHANGELOG.md)
 
 ## Kaj lahko nastaviš
 

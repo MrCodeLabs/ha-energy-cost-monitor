@@ -1,14 +1,12 @@
 # New user guide
 
-Updated 2 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
+Updated 15 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
 
 ## 1. Before you install
 
-This is a development integration for a separate test HA, not an add-on. The
-verified environment is HA Core 2026.10.2 with HACS 2.0.5; other versions are not
-established by that test. You need an HA administrator, working HACS and existing
-energy sensors. Follow the [official HACS setup](https://www.hacs.dev/docs/use/)
-if HACS is not installed. Do not copy production credentials into a test instance.
+Use a separate Home Assistant test instance, an administrator account and existing
+energy sensors. Home Assistant 2026.11 and later include Marketplace. On
+2026.10.2, use [HACS](https://www.hacs.dev/docs/use/).
 
 Prepare cumulative household-consumption and grid-import counters, their actual
 units and plausible power/freshness limits. Optional capabilities need their own
@@ -17,22 +15,22 @@ You can start with sources only and add prices later. Prepare contract validity,
 import/export prices, subscription and, if needed, agreed block powers and regional
 rates privately. Blank prices mean unknown; zero means an actual zero charge.
 
-**Do not install over an existing `energy_cost_monitor` component.** HACS replaces
+**Do not install over an existing `energy_cost_monitor` component.** The installer replaces
 that same component directory. Back up the test HA before installation; migrating
 a production prototype is a separate procedure. Only one ECM entry is supported.
 
-## 2. Download through HACS
+## 2. Install the beta
 
-1. Open HACS, then its top-right menu → **Custom repositories**.
-2. Add `https://github.com/MrCodeLabs/ha-energy-cost-monitor`, type **Integration**.
-3. Open **Energy Cost Monitor (development)** and download it. Record the commit
-   shown by HACS; `532012e` is the revision verified on 2 November. A later `main`
-   download may contain newer work, and an open PR is not included automatically.
-4. Restart the test Home Assistant.
-5. Open **Settings → Devices & services → Add integration → Energy Cost Monitor**.
+1. In **Settings → Marketplace**, choose **Add from link**. Connect GitHub if
+   prompted and add `https://github.com/MrCodeLabs/ha-energy-cost-monitor` as an
+   **Integration**.
+2. Open **Energy Cost Monitor**, enable **Pre-release** from the repository menu,
+   and select **0.1.0-beta.1**. Follow the install and restart prompts.
+3. Open **Settings → Devices & services → Add integration → Energy Cost Monitor**.
 
-This follows the [official custom-repository procedure](https://www.hacs.dev/docs/faq/custom_repositories/).
-There is no stable release tag or default-catalog listing at this milestone.
+On HA 2026.10.2, add the same URL under **HACS → Custom repositories**. Enable
+beta versions when selecting the download, choose **0.1.0-beta.1** and restart HA.
+[Home Assistant Marketplace instructions](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Select sources and open the panel
 
@@ -122,21 +120,21 @@ settings separately. This is not full HA recovery. See
 
 ## 7. Updates, backups and removal
 
-Before updating, record the installed commit and take a consistent HA backup with
+Before updating, record the installed version and take a consistent HA backup with
 configuration and **both** private files: `.storage/energy_cost_monitor.sqlite3`
 and `.storage/energy_cost_monitor_application.sqlite3`. For filesystem copies,
 stop the integration/HA first. The old meter-only recovery ZIP omits the application
 store. Export useful reports too; exports are not a complete backup.
 
-Update through HACS, restart HA, then repeat the checks above and verify that
-previous measurements, profiles and reports remain. Avoid automatic updates for
-this development package. To roll back, stop collection, retain the current stores
+Update through Marketplace or HACS, restart HA, then repeat the checks above and
+verify that previous measurements, profiles and reports remain. To roll back,
+stop collection, retain the current stores
 including new measurements, and restore a compatible code/configuration/paired
 store backup. An older code version may not read a newer schema. Never delete a
 database to bypass that check; full HAOS restore has not been established here.
 
 To stop using ECM, disable its entry in Devices & services. For removal, preserve
-the backup, remove the entry, then remove the package through HACS and restart.
+the backup, remove the entry, then remove the package in Marketplace or HACS and restart.
 Removing the entry retains stored history; removing code is not a data purge or a
 migration back to a legacy app. Source identity changes after collection require
 a migration that is not provided by the reconfiguration form.
@@ -145,14 +143,14 @@ a migration that is not provided by the reconfiguration form.
 
 | Symptom | Check |
 | --- | --- |
-| Integration/panel missing | Confirm HACS download, restart, add the integration, use an admin account and reload the browser. |
+| Integration/panel missing | Confirm the Marketplace or HACS download, restart, add the integration, use an admin account and reload the browser. |
 | Unknown totals | Sensor freshness/units, completed intervals, coverage, price dates and missing/unconfirmed rates. |
 | Study stays in warm-up | Coverage and required daily-reference quality; waiting can be the correct result. |
 | Reconfiguration/import refused | Read identity/overlap restrictions; retain data and correct the mapping instead of deleting stores. |
 | Form rejected | Check numbers, units, timestamp offsets, validity and overlapping periods. |
 
 Report a [sanitized issue](https://github.com/MrCodeLabs/ha-energy-cost-monitor/issues)
-with HA/HACS versions, commit, steps and expected/actual behavior. Use invented
+with the Home Assistant and Energy Cost Monitor versions, steps and expected/actual behavior. Use invented
 examples; omit personal data, tokens, private logs, invoices and databases.
 [Acceptance evidence](acceptance-2026-11-02.md) and [roadmap](../ROADMAP.md) define
 the current limits. Historical technical notes are not the first-install guide.
