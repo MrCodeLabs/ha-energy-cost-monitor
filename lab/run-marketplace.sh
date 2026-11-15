@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 LAB=$(mktemp -d)
 trap 'rm -rf -- "$LAB"' EXIT
-IMAGE=ghcr.io/home-assistant/home-assistant:2026.11.0
+IMAGE=ghcr.io/home-assistant/home-assistant@sha256:c6c1ca9931036bf3a2c4cc088d8db25dfea3b33935a5ecc83c40349462e2f69e
 BASELINE=$1
 CANDIDATE=$2
 

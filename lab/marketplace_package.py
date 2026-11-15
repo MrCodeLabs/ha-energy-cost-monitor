@@ -27,6 +27,7 @@ async def install(ref: str, expected_tree: Path | None) -> None:
     try:
         entry = ConfigEntry(
             data={CONF_TOKEN: os.environ["ECM_LAB_GITHUB_TOKEN"]},
+            discovery_keys={},
             domain="marketplace",
             minor_version=1,
             options={},
