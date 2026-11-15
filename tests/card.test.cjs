@@ -26,6 +26,65 @@ const profiles={active:null,versions:[]};
   let calls=0;
   card._hass={callApi:async(method,action)=>{calls++;return action.includes('/view')?data:action.endsWith('/profiles')?profiles:[];}};
   await card._refresh();assert.equal(calls,4);assert.equal(card._data,data);
+
+  const overview = new Card();
+  overview._data = {
+    ...data,
+    intervals: [
+      {energy_kwh:{import:2,export:0},complete:{import:true,export:true}},
+      {energy_kwh:{import:0.5,export:null},complete:{import:false,export:false}},
+    ],
+    comparison: {
+      common_intervals:1,common_coverage:0.5,common_totals:{a:'-2.00',b:'3.00'},
+      results:[
+        {scenario:{identifier:'a'},total:null,known_net_subtotal:'10.00',coverage:0.5},
+        {scenario:{identifier:'b'},total:'1.00',known_net_subtotal:'1.00',coverage:1,confirmed:true},
+      ],
+    },
+    regional_bills:{a:{total_gross:null,known_reference_gross:'7.00',components:{excise_net:null},missing:['excise_partial_period']}},
+  };
+  overview._render();
+  const withClass = (tag, cls) => nodes(overview.shadowRoot,tag).filter(node=>node.className===cls);
+  const values = () => withClass('strong','metric-value').map(node=>node.textContent);
+  assert.deepEqual(values(),[overview._money('-2'),overview._number(2.5,'kWh'),overview._number(50,'%')]);
+  assert.deepEqual(withClass('span','offer-value').map(node=>node.textContent),[overview._money('-2'),overview._money('3')]);
+  assert.deepEqual(withClass('span','cost-bar').map(node=>[node.style.insetInlineStart,node.style.width]),[['0%','40%'],['40%','60%']]);
+  assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Partial meter readings'));
+  assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Comparable intervals: 1 of 2'));
+  assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Known subtotal including VAT'));
+  const regional = () => nodes(overview.shadowRoot,'details').find(node=>node.id==='ecm-regional-a');
+  regional().open = true;
+  overview._render();
+  assert.equal(regional().open,true,'refresh preserves expanded estimate details');
+  assert.equal(nodes(regional(),'dd')[0].textContent,'unknown');
+  overview._data.comparison.common_totals = {a:null,b:null};
+  overview._data.intervals = [{energy_kwh:{import:null},complete:{import:false}}];
+  overview.hass = {language:'sl'};
+  assert.deepEqual(values().slice(0,2),['neznano','neznano']);
+  assert.equal(withClass('span','cost-bar').length,0);
+  assert(nodes(overview.shadowRoot,'p').some(node=>node.textContent==='Ni skupnih intervalov z znano ceno'));
+
+  const period = new Card();
+  period._connected = true;
+  let finishFirstView;
+  const requestedDays = [];
+  period._hass = {callApi:async (_,path)=>{
+    if (!path.startsWith('energy_cost_monitor/view?')) return [];
+    const url = new URL(path,'http://example.test/');
+    const days = (Number(url.searchParams.get('end'))-Number(url.searchParams.get('start')))/86400;
+    requestedDays.push(days);
+    return days === 1 ? new Promise(resolve=>{finishFirstView=resolve;}) : {...data,start:days};
+  }};
+  const firstRefresh = period._refresh();
+  period._render();
+  await nodes(period.shadowRoot,'button').find(node=>node.id==='ecm-days-7').events.click();
+  await nodes(period.shadowRoot,'button').find(node=>node.id==='ecm-days-30').events.click();
+  finishFirstView({...data,start:1});
+  await firstRefresh;
+  assert.deepEqual(requestedDays,[1,30],'an in-flight response must refresh the latest selection');
+  assert.equal(period._data.start,30);
+  assert.equal(nodes(period.shadowRoot,'button').find(node=>node.id==='ecm-days-30').attrs['aria-pressed'],'true');
+
   for(const tab of ['pricing','settings','history','study']) {
     card._tab=tab;await card._poll();assert.equal(calls,4,'timer must preserve open forms');
   }
@@ -163,5 +222,5 @@ const profiles={active:null,versions:[]};
   const sl=JSON.parse(readFileSync('custom_components/energy_cost_monitor/translations/sl.json','utf8'));
   const paths=(value,prefix='')=>Object.entries(value).flatMap(([key,item])=>typeof item==='object'?paths(item,prefix+key+'.'):[prefix+key]).sort();
   assert.deepEqual(base,en);assert.deepEqual(paths(en),paths(sl));
-  console.log('Card behavior: PASS (workflows, English/Slovenian, fallback, draft/file retention, translation parity)');
+  console.log('Card behavior: PASS (overview, period selection, workflows, English/Slovenian, draft/file retention)');
 })().catch(error=>{console.error(error);process.exitCode=1;});

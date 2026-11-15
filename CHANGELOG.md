@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Redesign the default cost overview with supply, grid and coverage summaries.
+  Compare offers across shared intervals and expand separate regional estimates
+  for the calculation details. The layout follows the Home Assistant theme and
+  stacks on narrow panels.
+- Keep the displayed period linked to its data when a new selection arrives
+  during a refresh.
+
 ## 0.1.0-beta.1 — 15 November 2026
 
 - First public beta. Includes guided sensor setup, the automatic panel, offer

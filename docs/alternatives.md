@@ -1,5 +1,23 @@
 # Existing solutions and project rationale
 
+## Cost overview redesign — 15 November 2026
+
+[Home Assistant Energy cards](https://www.home-assistant.io/dashboards/energy/)
+already cover energy balances, charts and date selection. Dynamic Energy Cost
+and Powercalc remain sensor integrations. The review checked their current
+[cost sensor implementation](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/sensor.py),
+[Powercalc cost implementation](https://github.com/bramstroker/homeassistant-powercalc/blob/master/custom_components/powercalc/sensors/cost.py),
+[import/export issue](https://github.com/martinarva/dynamic_energy_cost/issues/243)
+and [standalone cost flow PR](https://github.com/bramstroker/homeassistant-powercalc/pull/4265),
+along with the separate [MFFR frontend](https://github.com/martinarva/MFFR-Profit-Tracker)
+and [Powercalc library viewer](https://github.com/bramstroker/powercalc-library-ui).
+Both primary repositories are listed as non-archived. The separate frontends
+focus on balancing-reserve revenue and the Powercalc library, respectively.
+
+The design change exposes this project's existing common-interval tariff
+comparison and separate regional estimate on the same panel. It uses the
+existing API and measurements, with no upstream code or UI dependency.
+
 ## Marketplace presentation — 12 November 2026
 
 The [TNB Calculator README](https://github.com/salihinsaealal/home-assistant-tnb-calculator/blob/master/README.md)
