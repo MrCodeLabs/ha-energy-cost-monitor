@@ -5,6 +5,23 @@
 > statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
 > supersedes them where explicitly verified.
 
+## Local verification — 15 November 2026 — cost overview
+
+The `0.1.0-beta.2` candidate uses the existing view API for the selected
+cost overview. Supply bars use common-interval totals and
+support negative values. Grid subtotals disclose partial coverage, and
+regional estimates retain unknown components. The 1-, 7- and 30-day views
+show their actual date range while a pending selection loads.
+
+The card tests, 211 Python tests and Ruff passed. The card test covers common
+totals, signed values, partial and missing readings, disclosure state,
+Slovenian text and queued period changes. The bundled component was checked
+locally with synthetic responses
+in a wide light panel and a 360 px dark panel. In the wide panel, selecting
+seven days refreshed the metrics and opening the regional calculation showed
+the unknown excise value and its reason. The check did not use a running HA
+instance. A packaged update and a test HA install remain the release steps.
+
 ## Local continuation — 28 October 2026 — configuration workflows
 
 The current branch is `feature/configuration-only-workflows`; its changes remain

@@ -12,6 +12,38 @@ const ECM_SL = {
   "unknown": "neznano",
   "still open": "še odprta",
   "Overview": "Pregled",
+  "Cost overview": "Pregled stroškov",
+  "Reporting period": "Obračunsko obdobje",
+  "Updating period …": "Osvežujem izbrano obdobje …",
+  "Lowest supply estimate": "Najnižja ocena dobave",
+  "Supply estimate": "Ocena dobave",
+  "{0} offers share the lowest estimate": "{0} ponudb ima enako najnižjo oceno",
+  "{0} · excluding VAT": "{0} · brez DDV",
+  "Grid import": "Prevzem iz omrežja",
+  "Export: {0}": "Oddaja: {0}",
+  "Partial meter readings": "Delna pokritost meritev",
+  "Shared offer coverage": "Skupna pokritost ponudb",
+  "Comparable intervals: {0} of {1}": "Primerljivi intervali: {0} od {1}",
+  "Coverage: {0}": "Pokritost: {0}",
+  "Supply comparison": "Primerjava dobave",
+  "Estimates on shared intervals · excluding VAT": "Ocene na skupnih intervalih · brez DDV",
+  "No shared priced intervals": "Ni skupnih intervalov z znano ceno",
+  "Regional estimate": "Regionalna ocena",
+  "Configure regional rates under EV and billing.": "Regionalne postavke nastavi v zavihku EV in obračun.",
+  "Known subtotal including VAT": "Znani del z DDV",
+  "Estimated total including VAT": "Ocenjena celota z DDV",
+  "Partial estimate": "Delna ocena",
+  "Calculation details": "Podrobnosti izračuna",
+  "Supply": "Dobava",
+  "Export credit": "Vrednost oddaje",
+  "Subscription": "Naročnina",
+  "Network energy charge": "Omrežnina za energijo",
+  "Network power charge": "Omrežnina za moč",
+  "Excess power charge": "Strošek presežne moči",
+  "Levies": "Prispevki",
+  "Excise duty": "Trošarina",
+  "Import VAT": "DDV prevzema",
+  "Export VAT": "DDV oddaje",
   "EV sessions": "EV seje",
   "Reports": "Poročila",
   "Profiles": "Profili",
@@ -26,7 +58,6 @@ const ECM_SL = {
   "Add a supply-scenario profile to compare costs.": "Dodaj profil dobavnih scenarijev za primerjavo stroškov.",
   "confirmed supply rates": "potrjene dobavne postavke",
   "reference or incomplete data": "referenčni ali nepopolni podatki",
-  "Estimate based on HA measurements, not an amount payable.": "Ocena po HA meritvah, ne znesek za plačilo.",
   "Energy-Charts.info: reference index; agreement with the supplier invoice is not confirmed.": "Energy-Charts.info: referenčni indeks; ujemanje z dobaviteljevim računom ni potrjeno.",
   "No EV sessions detected in the selected period.": "V izbranem obdobju ni zaznanih EV sej.",
   "Archived legacy session · original calculation": "Arhivirana seja stare aplikacije · prvotni izračun",
@@ -166,17 +197,14 @@ const ECM_SL = {
   "{0} days": "{0} dni",
   "Period: {0} – {1}": "Obdobje: {0} – {1}",
   "Latest sample: {0}": "Zadnji vzorec: {0}",
-  "{0} · coverage {1}": "{0} · pokritost {1}",
   "Known subtotal: {0} · {1}": "Znani del: {0} · {1}",
-  "{0} · regional estimate": "{0} · regionalna ocena",
   "Excise basis": "Osnova za trošarino",
   "Imported energy": "Prevzeta energija",
   "Net imported energy over the billing period": "Neto prevzeta energija v obračunskem obdobju",
   "Full billing period for net excise": "Celotno obračunsko obdobje za neto trošarino",
   "Complete import and export readings for net excise": "Popolne meritve prevzema in oddaje za neto trošarino",
-  "Total: {0} · known subtotal: {1}": "Celota: {0} · znani del: {1}",
+  "Whole-period total: {0}": "Celota za izbrano obdobje: {0}",
   "Missing: {0}": "Manjka: {0}",
-  "Common offer coverage: {0}": "Skupna pokritost ponudb: {0}",
   "{0} · charging {1} · paused {2}": "{0} · polnjenje {1} · premor {2}",
   "Import successful: {0} measurement records, {1} profiles, {2} reports. Pre-import backup: {3}": "Uvoz uspešen: {0} merilnih zapisov, {1} profilov, {2} poročil. Kopija pred uvozom: {3}",
   "Uploaded: {0}": "Naloženo: {0}",
@@ -187,11 +215,116 @@ const ECM_SL = {
   "Study state: {0}": "Stanje študije: {0}",
   "Warm-up coverage: {0} · daily check: {1}": "Pokritost uvajanja: {0} · dnevna kontrola: {1}"
 };
+
+const ECM_STYLES = `
+  :host { display: block; }
+  ha-card {
+    --ecm-text: var(--primary-text-color, #17282d);
+    --ecm-muted: var(--secondary-text-color, #516568);
+    --ecm-surface: var(--card-background-color, #fff);
+    --ecm-base: var(--primary-background-color, #f2f5f5);
+    --ecm-border: var(--divider-color, #d5e1e1);
+    --ecm-accent: var(--primary-color, #007b69);
+    --ecm-tint: color-mix(in srgb, var(--ecm-accent) 10%, var(--ecm-surface));
+    display: block;
+    color: var(--ecm-text);
+    font: 400 14px/1.45 var(--paper-font-body1_-_font-family, system-ui, sans-serif);
+    background: var(--ecm-base);
+    border-radius: var(--ha-card-border-radius, 16px);
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  h2, h3, h4, p { margin: 0; }
+  small { display: block; line-height: 1.5; }
+  .masthead { padding: 18px clamp(14px, 3cqw, 28px) 0; background: var(--ecm-surface); border-bottom: 1px solid var(--ecm-border); }
+  .masthead h2 { font-size: 1.25rem; line-height: 1.25; overflow-wrap: anywhere; }
+  .content { padding: clamp(14px, 3cqw, 28px); }
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 16px; }
+  .toolbar h3 { font-size: clamp(1.3rem, 3.7cqw, 1.95rem); letter-spacing: -.025em; line-height: 1.15; margin-bottom: 4px; }
+  .toolbar small + small { margin-top: 3px; }
+  .periods { display: flex; flex-wrap: wrap; gap: 3px; padding: 3px; border: 1px solid var(--ecm-border); border-radius: 12px; background: var(--ecm-surface); }
+  .periods button { border-color: transparent; padding: 6px 10px; white-space: nowrap; }
+  nav { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 12px; }
+  button { cursor: pointer; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--ecm-border); background: var(--ecm-surface); color: inherit; font: inherit; }
+  button[aria-pressed=true] { background: var(--ecm-tint); border-color: var(--ecm-accent); font-weight: 650; }
+  nav button { padding: 9px 2px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; color: var(--ecm-muted); }
+  nav button[aria-current=true] { color: var(--ecm-text); border-bottom-color: var(--ecm-accent); font-weight: 650; }
+  button:focus-visible, summary:focus-visible { outline: 2px solid var(--ecm-accent); outline-offset: 2px; }
+  .muted { color: var(--ecm-muted); }
+  .error { color: var(--error-color, #b00020); margin-bottom: 10px; }
+  .metrics, .overview-grid { display: grid; gap: 12px; }
+  .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 12px; }
+  .overview-grid { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); align-items: start; }
+  .overview-grid > section, .metric {
+    background: var(--ecm-surface); border: 1px solid var(--ecm-border); border-radius: 14px;
+    min-width: 0; padding: clamp(12px, 2.25cqw, 21px); overflow-wrap: anywhere;
+  }
+  .metric:first-child { background: var(--ecm-tint); }
+  .metric-label { font-weight: 600; }
+  .metric-value, .regional-value { display: block; font-size: clamp(1.18rem, 3.85cqw, 2rem); line-height: 1.2; letter-spacing: -.035em; margin: 5px 0; }
+  .metric-value, .regional-value, .offer-value, dd { font-variant-numeric: tabular-nums; }
+  .overview-grid h4 { font-size: 1rem; margin-bottom: 4px; }
+  .offer { display: grid; gap: 5px; margin-top: 14px; }
+  .offer-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+  .offer-value { flex-shrink: 0; }
+  .cost-track { position: relative; height: 6px; border-radius: 4px; background: var(--ecm-base); }
+  .cost-bar { position: absolute; height: 100%; border-radius: inherit; background: var(--ecm-accent); }
+  .cost-zero { position: absolute; height: 100%; width: 1px; background: var(--ecm-muted); }
+  .regional-offer { padding: 10px 0; }
+  .regional-offer + .regional-offer { border-top: 1px solid var(--ecm-border); }
+  .overview-grid details { margin-top: 4px; }
+  summary { cursor: pointer; }
+  .overview-grid dl { margin: 6px 0; }
+  .overview-grid dl div { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; }
+  .overview-grid dd { margin: 0; text-align: end; }
+  .overview-note { margin-top: 10px; }
+  article { padding: 12px 0; border-top: 1px solid var(--ecm-border); }
+  textarea { box-sizing: border-box; width: 100%; min-height: 180px; font: 12px monospace; color: inherit; background: var(--ecm-surface); border: 1px solid var(--ecm-border); padding: 10px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  @container (max-width: 580px) {
+    .overview-grid { grid-template-columns: minmax(0, 1fr); }
+    .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .metric:first-child { grid-column: 1 / -1; }
+  }
+  @container (max-width: 290px) {
+    .metrics { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (pointer: coarse) {
+    button, summary { min-height: 44px; }
+  }
+`;
+
+const REGIONAL_COMPONENTS = new Map([
+  ["supply_net", "Supply"], ["export_net", "Export credit"], ["subscription_net", "Subscription"],
+  ["network_energy_net", "Network energy charge"], ["network_power_net", "Network power charge"],
+  ["excess_power_net", "Excess power charge"], ["levies_net", "Levies"], ["excise_net", "Excise duty"],
+  ["vat_import", "Import VAT"], ["vat_export", "Export VAT"],
+]);
+
+function amount(value) {
+  if (typeof value !== "number" && (typeof value !== "string" || !value.trim())) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function gridEnergy(intervals, role) {
+  let total = null;
+  let present = false;
+  let complete = true;
+  for (const interval of intervals) {
+    const value = interval.energy_kwh?.[role];
+    present ||= value !== undefined;
+    complete &&= interval.complete?.[role] === true && Number.isFinite(value);
+    if (Number.isFinite(value)) total = (total ?? 0) + value;
+  }
+  return {total, present, complete};
+}
 /* Energy Cost Monitor development card. MIT, Copyright 2026 MrCodeLabs. */
 class EnergyCostMonitorCard extends HTMLElement {
   constructor() {
     super(); this.attachShadow({mode: "open"}); this._tab = "overview";
     this._connected = false; this._loading = false; this._generation = 0; this._days = 1; this._draft = null;
+    this._dataDays = this._days;
   }
   setConfig(config) {
     this._config = {...config}; this._render();
@@ -249,15 +382,26 @@ class EnergyCostMonitorCard extends HTMLElement {
   async _refresh() {
     if (!this._connected || !this._hass || this._loading) return;
     if ((this._tab === "profiles" && this._draft !== null) || this._importDraft || this._pricingDraft || this._settingsDraft || this._studyDraft) return;
-    this._loading = true; const generation = this._generation;
+    this._loading = true;
+    const generation = this._generation;
+    const days = this._days;
     try {
       const end = Math.floor(Date.now()/900000)*900;
       const [data, profiles, reports, study] = await Promise.all([
-        this._api("GET", `view?start=${end-this._days*86400}&end=${end}`), this._api("GET", "profiles"), this._api("GET", "reports"), this._api("GET", "study")]);
-      if (generation !== this._generation) return;
-      this._data = data; this._profiles = profiles; this._reports = reports; this._study = study; this._error = null;
-    } catch (_) { this._error = "Data unavailable. An administrator account and a loaded integration are required."; }
-    finally { this._loading = false; if (this._connected) this._render(); }
+        this._api("GET", `view?start=${end - days * 86400}&end=${end}`), this._api("GET", "profiles"), this._api("GET", "reports"), this._api("GET", "study")]);
+      if (generation === this._generation && days === this._days) {
+        this._data = data; this._profiles = profiles; this._reports = reports; this._study = study; this._error = null;
+        this._dataDays = days;
+      }
+    } catch (_) {
+      if (generation === this._generation && days === this._days) {
+        this._error = "Data unavailable. An administrator account and a loaded integration are required.";
+      }
+    } finally {
+      this._loading = false;
+      if (this._connected) this._render();
+    }
+    if (this._connected && (generation !== this._generation || days !== this._days)) return this._refresh();
   }
   _node(tag, text, parent, className) {
     const node = document.createElement(tag);
@@ -271,57 +415,38 @@ class EnergyCostMonitorCard extends HTMLElement {
     button.addEventListener("click", action); return button;
   }
   _number(value, unit="") { return value === null || value === undefined ? this._t("unknown") : `${Number(value).toLocaleString(this._locale(), {maximumFractionDigits: 3})} ${unit}`; }
+  _money(value) {
+    const number = amount(value);
+    return number === null ? this._t("unknown") : number.toLocaleString(this._locale(), {style: "currency", currency: "EUR"});
+  }
   _time(value) { return value === null || value === undefined ? this._t("still open") : new Date(value*1000).toLocaleString(this._locale()); }
   _render() {
-    const root = this.shadowRoot; root.replaceChildren();
+    const root = this.shadowRoot;
+    const focusedId = root.activeElement?.id;
+    const expanded = new Set([...root.querySelectorAll("details")].filter(node => node.open && node.id).map(node => node.id));
+    root.replaceChildren();
     const style = this._node("style", undefined, root);
-    style.textContent = `:host{display:block}ha-card{padding:20px;color:var(--primary-text-color);font-family:var(--paper-font-body1_-_font-family,system-ui)}h2{margin:0 0 6px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}button{cursor:pointer;padding:9px 12px;border-radius:8px;border:1px solid var(--divider-color,#bbb);background:var(--card-background-color,#fff);color:inherit}button[aria-current=true]{background:var(--primary-color,#176b68);color:white}p{line-height:1.5}.muted{color:var(--secondary-text-color)}.error{color:var(--error-color,#b00020)}article{padding:12px 0;border-top:1px solid var(--divider-color,#ddd)}textarea{box-sizing:border-box;width:100%;min-height:180px;font:12px monospace;color:inherit;background:var(--secondary-background-color,#f5f5f5);border:1px solid var(--divider-color,#bbb);padding:10px}small{display:block;line-height:1.5} .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}`;
-    const card = this._node("ha-card", undefined, root);
-    this._node("h2", this._config?.title || "Energy Cost Monitor", card);
-    this._node("small", this._t("Supply costs and separate regional estimate \u00b7 not an invoice or amount payable"), card, "muted");
-    const periods = this._node("div", undefined, card, "actions");
-    for (const days of [1,7,30]) {
-      const button = this._button(days === 1 ? this._t("1 day") : this._t`${days} days`, periods, ()=>{this._days=days;this._refresh();});
-      button.setAttribute("aria-current",String(this._days===days));
-    }
-    const nav = this._node("nav", undefined, card);
+    style.textContent = ECM_STYLES;
+    const shell = this._node("ha-card", undefined, root);
+    const header = this._node("header", undefined, shell, "masthead");
+    this._node("h2", this._config?.title || "Energy Cost Monitor", header);
+    const nav = this._node("nav", undefined, header);
+    nav.setAttribute("aria-label", "Energy Cost Monitor");
     for (const [tab,label] of [["overview",this._t("Overview")],["sessions",this._t("EV sessions")],["reports",this._t("Reports")],["profiles",this._t("Profiles")],["pricing",this._t("Prices")],["settings",this._t("EV and billing")],["study",this._t("Study")],["history",this._t("History import")]]) {
       const button = this._button(label,nav,()=>{this._tab=tab;this._render();});
+      button.id = `ecm-tab-${tab}`;
       button.setAttribute("aria-current",String(this._tab===tab));
     }
+    const card = this._node("div", undefined, shell, "content");
+    if (["overview", "sessions", "reports"].includes(this._tab)) this._renderPeriod(card);
     if(this._error) this._node("p",this._t(this._error),card,"error");
-    if(!this._data){this._node("p",this._t("Waiting for data \u2026"),card);return;}
     const data=this._data;
-    if(this._tab==="history") { this._historyForm(card);
+    if (!data) this._node("p", this._t("Waiting for data …"), card);
+    else if(this._tab==="history") { this._historyForm(card);
     } else if(this._tab==="pricing") { this._pricingForm(card);
     } else if(this._tab==="settings") { this._settingsForm(card);
     } else if(this._tab==="study") { this._studyForm(card);
-    } else if(this._tab==="overview") {
-      this._node("p",this._t`Period: ${this._time(data.start)} – ${this._time(data.end)}`,card);
-      this._node("small",this._t`Latest sample: ${this._time(data.latest_sample)}`,card,"muted");
-      if(data.price_error) this._node("p",this._t("Price source currently unavailable. Measurement collection continues."),card,"error");
-      if(!data.comparison) this._node("p",this._t("Add a supply-scenario profile to compare costs."),card);
-      for(const result of data.comparison?.results || []) {
-        const row=this._node("article",undefined,card);
-        this._node("strong",result.scenario.identifier,row);
-        this._node("p",this._t`${this._number(result.total,"EUR")} · coverage ${this._number(result.coverage*100,"%")}`,row);
-        this._node("small",this._t`Known subtotal: ${this._number(result.known_net_subtotal,"EUR")} · ${result.confirmed?this._t("confirmed supply rates"):this._t("reference or incomplete data")}`,row,"muted");
-      }
-      for(const [name,bill] of Object.entries(data.regional_bills || {})) {
-        const row=this._node("article",undefined,card);
-        this._node("strong",this._t`${name} · regional estimate`,row);
-        this._node("p",this._t`Total: ${this._number(bill.total_gross,"EUR")} · known subtotal: ${this._number(bill.known_reference_gross,"EUR")}`,row);
-        for(const [key,value] of Object.entries(bill.components))this._node("small",`${key}: ${this._number(value,"EUR")}`,row);
-        const missingLabels={
-          excise_partial_period:this._t("Full billing period for net excise"),
-          excise_coverage:this._t("Complete import and export readings for net excise"),
-        };
-        const missing=bill.missing.map(key=>Object.hasOwn(missingLabels,key)?missingLabels[key]:key);
-        this._node("small",missing.length?this._t`Missing: ${missing.join(", ")}`:this._t("Estimate based on HA measurements, not an amount payable."),row,"muted");
-      }
-      if(data.comparison) this._node("p",this._t`Common offer coverage: ${this._number(data.comparison.common_coverage*100,"%")}`,card);
-      for(const source of Object.values(data.market_provenance || {})) this._node("small",`${source.source} · ${source.license}`,card,"muted");
-      this._node("small",this._t("Energy-Charts.info: reference index; agreement with the supplier invoice is not confirmed."),card,"muted");
+    } else if(this._tab==="overview") { this._renderOverview(card, data, expanded);
     } else if(this._tab==="sessions") {
       if(!data.sessions.length)this._node("p",this._t("No EV sessions detected in the selected period."),card);
       for(const session of [...data.sessions].reverse()) {
@@ -339,7 +464,7 @@ class EnergyCostMonitorCard extends HTMLElement {
       this._button(this._t("Freeze displayed period"),card,async()=>{
         try{await this._api("POST","reports",{start:data.start,end:data.end});await this._refresh();}
         catch(_){this._error="Could not save the report.";this._render();}
-      });
+      }).disabled = this._days !== this._dataDays;
       for(const report of this._reports || []) {
         const row=this._node("article",undefined,card);
         if(report.legacy)this._node("small",this._t("Archived report \u00b7 not recalculated"),row,"muted");
@@ -388,6 +513,156 @@ class EnergyCostMonitorCard extends HTMLElement {
         });
       }
     }
+    if (focusedId) root.getElementById(focusedId)?.focus({preventScroll: true});
+  }
+
+  _renderPeriod(parent) {
+    const toolbar = this._node("div", undefined, parent, "toolbar");
+    const heading = this._node("div", undefined, toolbar);
+    const labels = {overview: "Cost overview", sessions: "EV sessions", reports: "Reports"};
+    this._node("h3", this._t(labels[this._tab]), heading);
+    if (this._data) {
+      const {start, end, latest_sample: latest} = this._data;
+      this._node("small", this._t`Period: ${this._time(start)} – ${this._time(end)}`, heading, "muted");
+      if (this._tab === "overview") {
+        this._node("small", this._t`Latest sample: ${latest == null ? this._t("unknown") : this._time(latest)}`, heading, "muted");
+      }
+    }
+    if (this._dataDays !== this._days && !this._error) {
+      this._node("small", this._t("Updating period …"), heading, "muted").setAttribute("role", "status");
+    }
+    const periods = this._node("div", undefined, toolbar, "periods");
+    periods.setAttribute("role", "group");
+    periods.setAttribute("aria-label", this._t("Reporting period"));
+    for (const days of [1, 7, 30]) {
+      const button = this._button(days === 1 ? this._t("1 day") : this._t`${days} days`, periods, () => {
+        if (this._days === days && !this._error) return;
+        this._days = days;
+        this._error = null;
+        this._render();
+        return this._refresh();
+      });
+      button.id = `ecm-days-${days}`;
+      button.setAttribute("aria-pressed", String(this._days === days));
+    }
+  }
+
+  _renderOverview(parent, data, expanded) {
+    const {comparison, intervals = [], price_error: priceError} = data;
+    const totals = comparison?.common_totals ?? {};
+    const offers = (comparison?.results ?? []).map(result => {
+      const id = result.scenario.identifier;
+      return {id, result, cost: Object.hasOwn(totals, id) ? amount(totals[id]) : null};
+    });
+    const costs = offers.flatMap(offer => offer.cost === null ? [] : [offer.cost]);
+    const lowest = costs.length ? Math.min(...costs) : null;
+    const leaders = lowest === null ? [] : offers.filter(offer => offer.cost === lowest);
+    const coverage = amount(comparison?.common_coverage);
+    const imported = gridEnergy(intervals, "import");
+    const exported = gridEnergy(intervals, "export");
+
+    if (priceError) this._node("p", this._t("Price source currently unavailable. Measurement collection continues."), parent, "error");
+    const metrics = this._node("div", undefined, parent, "metrics");
+    const metric = (label, value) => {
+      const tile = this._node("div", undefined, metrics, "metric");
+      this._node("span", this._t(label), tile, "metric-label");
+      this._node("strong", value, tile, "metric-value");
+      return tile;
+    };
+    const offerMetric = metric(offers.length > 1 ? "Lowest supply estimate" : "Supply estimate", this._money(lowest));
+    if (leaders.length) {
+      const label = leaders.length === 1 ? leaders[0].id : this._t`${leaders.length} offers share the lowest estimate`;
+      this._node("small", this._t`${label} · excluding VAT`, offerMetric, "muted");
+    }
+    const gridMetric = metric("Grid import", this._number(imported.total, "kWh"));
+    if (exported.present) {
+      this._node("small", this._t`Export: ${this._number(exported.total, "kWh")}`, gridMetric, "muted");
+    }
+    if ((imported.total !== null && !imported.complete) || (exported.total !== null && !exported.complete)) {
+      this._node("small", this._t("Partial meter readings"), gridMetric, "muted");
+    }
+    const coverageMetric = metric("Shared offer coverage", this._number(coverage === null ? null : coverage * 100, "%"));
+    if (Number.isInteger(comparison?.common_intervals) && intervals.length) {
+      this._node("small", this._t`Comparable intervals: ${comparison.common_intervals} of ${intervals.length}`, coverageMetric, "muted");
+    }
+
+    const grid = this._node("div", undefined, parent, "overview-grid");
+    this._renderSupply(grid, offers, costs, expanded);
+    this._renderRegional(grid, data.regional_bills ?? {}, expanded);
+
+    this._node("small", this._t("Supply costs and separate regional estimate · not an invoice or amount payable"), parent, "muted overview-note");
+    const sources = Object.values(data.market_provenance ?? {});
+    for (const source of sources) this._node("small", `${source.source} · ${source.license}`, parent, "muted");
+    if (sources.length || priceError) {
+      this._node("small", this._t("Energy-Charts.info: reference index; agreement with the supplier invoice is not confirmed."), parent, "muted");
+    }
+  }
+
+  _renderSupply(parent, offers, costs, expanded) {
+    const supply = this._node("section", undefined, parent);
+    this._node("h4", this._t("Supply comparison"), supply);
+    if (!offers.length) {
+      this._node("p", this._t("Add a supply-scenario profile to compare costs."), supply, "muted");
+      return;
+    }
+    this._node("small", this._t("Estimates on shared intervals · excluding VAT"), supply, "muted");
+    if (!costs.length) this._node("p", this._t("No shared priced intervals"), supply, "overview-note");
+    const min = Math.min(0, ...costs);
+    const max = Math.max(0, ...costs);
+    const position = value => 100 * (value - min) / (max - min);
+    for (const {id, result, cost} of offers) {
+      const offer = this._node("div", undefined, supply, "offer");
+      const heading = this._node("div", undefined, offer, "offer-heading");
+      this._node("strong", id, heading);
+      this._node("span", this._money(cost), heading, "offer-value");
+      if (cost !== null && max > min) {
+        const track = this._node("div", undefined, offer, "cost-track");
+        track.setAttribute("aria-hidden", "true");
+        const bar = this._node("span", undefined, track, "cost-bar");
+        bar.style.insetInlineStart = `${position(Math.min(cost, 0))}%`;
+        bar.style.width = `${Math.abs(position(cost) - position(0))}%`;
+        if (min < 0 && max > 0) this._node("span", undefined, track, "cost-zero").style.insetInlineStart = `${position(0)}%`;
+      }
+      const details = this._overviewDetails(offer, `ecm-supply-${id}`, expanded);
+      this._node("small", this._t`Whole-period total: ${this._money(result.total)}`, details, "muted");
+      const pricedCoverage = amount(result.coverage);
+      const quality = result.confirmed ? this._t("confirmed supply rates") : this._t("reference or incomplete data");
+      this._node("small", this._t`Known subtotal: ${this._money(result.known_net_subtotal)} · ${quality}`, details, "muted");
+      this._node("small", this._t`Coverage: ${this._number(pricedCoverage === null ? null : pricedCoverage * 100, "%")}`, details, "muted");
+    }
+  }
+
+  _renderRegional(parent, estimates, expanded) {
+    const regional = this._node("section", undefined, parent);
+    this._node("h4", this._t("Regional estimate"), regional);
+    const bills = Object.entries(estimates);
+    if (!bills.length) this._node("p", this._t("Configure regional rates under EV and billing."), regional, "muted");
+    for (const [id, bill] of bills) {
+      const row = this._node("div", undefined, regional, "regional-offer");
+      this._node("strong", id, row);
+      const total = amount(bill.total_gross);
+      this._node("small", this._t(total === null ? "Known subtotal including VAT" : "Estimated total including VAT"), row, "muted");
+      this._node("strong", this._money(total ?? bill.known_reference_gross), row, "regional-value");
+      if (total === null) this._node("small", this._t("Partial estimate"), row, "muted");
+      const details = this._overviewDetails(row, `ecm-regional-${id}`, expanded);
+      const list = this._node("dl", undefined, details);
+      for (const [key, value] of Object.entries(bill.components ?? {})) {
+        const item = this._node("div", undefined, list);
+        this._node("dt", this._t(REGIONAL_COMPONENTS.get(key) ?? key), item);
+        this._node("dd", this._money(value), item);
+      }
+      const missingLabels = {excise_partial_period: "Full billing period for net excise", excise_coverage: "Complete import and export readings for net excise"};
+      const missing = (bill.missing ?? []).map(key => Object.hasOwn(missingLabels, key) ? this._t(missingLabels[key]) : key);
+      if (missing.length) this._node("small", this._t`Missing: ${missing.join(", ")}`, details, "muted");
+    }
+  }
+
+  _overviewDetails(parent, id, expanded) {
+    const details = this._node("details", undefined, parent);
+    details.id = id;
+    details.open = expanded.has(id);
+    this._node("summary", this._t("Calculation details"), details).id = `${id}-summary`;
+    return details;
   }
 
   _field(parent, label, value, type, change) {
