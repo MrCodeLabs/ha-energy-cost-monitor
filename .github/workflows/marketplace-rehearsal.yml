@@ -1,0 +1,23 @@
+name: Marketplace release rehearsal
+
+on:
+  push:
+    branches: ["release/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  marketplace:
+    name: Install and upgrade on Home Assistant 2026.11
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Exercise the Marketplace package on synthetic data
+        env:
+          ECM_LAB_GITHUB_TOKEN: ${{ github.token }}
+        run: bash lab/run-marketplace.sh 6456ac3943e0522110d8955fcb7c7b119283f096 "$GITHUB_SHA"

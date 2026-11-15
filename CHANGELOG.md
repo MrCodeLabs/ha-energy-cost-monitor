@@ -1,13 +1,20 @@
 # Changelog
 
-## 12 November 2026 — Continue a legacy study
+## 0.1.0-beta.1 — 15 November 2026
+
+- First public beta. Includes guided sensor setup, the automatic panel, offer
+  comparison, EV sessions and frozen HTML/CSV reports.
+- Add the approved logo, Marketplace link and Revolut and PayPal links to the
+  English and Slovenian README headers. Package the icon at 256 and 512 px.
+- Document the Marketplace custom repository and pre-release switch, with HACS
+  instructions for earlier versions of Home Assistant.
+
+### Legacy study and regional calculation
 
 - Load imported history before the collection boundary. Native samples start
   on or after that boundary.
 - Optionally restore the original study dates and link archived reports during
   import. The study generates outstanding reports on the original schedule.
-
-## 12 November 2026 — Regional excise basis
 
 - Add an optional net-import excise basis to dated regional settings. Existing
   profiles continue to use gross import. Net excise uses complete import and

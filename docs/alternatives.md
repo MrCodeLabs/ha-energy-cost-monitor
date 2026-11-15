@@ -1,5 +1,12 @@
 # Existing solutions and project rationale
 
+## Marketplace presentation — 12 November 2026
+
+The [TNB Calculator README](https://github.com/salihinsaealal/home-assistant-tnb-calculator/blob/master/README.md)
+is the reference for placing the logo above the title and grouping the badges.
+Energy Cost Monitor uses its own icon, beta version and maintainer
+support links. Its packaged brand assets follow the [Marketplace integration guide](https://contributors.home-assistant.io/marketplace/guides/integrations/#brand-images).
+
 ## Guided reconfiguration follow-up — 28 October 2026
 
 The same-day repository, issue/PR and separate frontend review below remains the

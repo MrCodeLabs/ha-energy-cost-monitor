@@ -1,15 +1,40 @@
+<div align="center">
+
+<img src="custom_components/energy_cost_monitor/brand/icon.png" alt="Energy Cost Monitor" width="160" />
+
 # Energy Cost Monitor for Home Assistant
+
+[![Marketplace: Custom repository](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
+[![0.1.0-beta.1](https://img.shields.io/badge/beta-0.1.0--beta.1-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1)
+[![License: MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
+[![Support via Revolut](https://img.shields.io/badge/Revolut-support-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
+[![Support via PayPal](https://img.shields.io/badge/PayPal-support-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
+[![Open Energy Cost Monitor in Home Assistant](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MrCodeLabs&repository=ha-energy-cost-monitor&category=integration)
+
+</div>
 
 Compare electricity supply offers, follow energy measurements and EV sessions,
 and save reproducible reports using existing Home Assistant sensors. The
 integration reads data; it does not control your devices.
 
-**Development preview — updated 2 November 2026.** Install through a HACS custom
-repository in a separate test instance. This is not a stable release, a HACS
-default-catalog entry, or a complete utility-bill calculator.
+**Public beta.** Add Energy Cost Monitor as a custom repository in Home Assistant
+Marketplace and enable pre-releases. Use a separate test instance for the beta.
 
 **[Start here: installation and user guide](docs/getting-started.md)** ·
 **[Slovenska navodila](README.sl.md)**
+
+## What's new in 0.1.0-beta.1
+
+- **Guided setup.** Select existing energy sensors and open the automatically
+  added Energy Cost Monitor panel.
+- **Compare electricity offers.** Configure prices and subscriptions and save
+  reports as HTML or CSV.
+- **Follow EV charging.** Track sessions using a cumulative energy counter.
+- **Continue an imported study.** Recover the original schedule and link
+  archived reports when importing a supported SQLite backup.
+
+[Release notes](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1) ·
+[Changelog](CHANGELOG.md)
 
 ## What you can configure
 

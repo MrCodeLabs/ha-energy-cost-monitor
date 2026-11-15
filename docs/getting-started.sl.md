@@ -1,14 +1,12 @@
 # Vodič za nove uporabnike
 
-Posodobljeno 2. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
+Posodobljeno 15. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
 
 ## 1. Pred namestitvijo
 
-To je razvojna integracija za ločen testni HA, ne dodatek (add-on). Preverjeno
-okolje je HA Core 2026.10.2 s HACS 2.0.5; preizkus ne potrjuje drugih različic.
-Potrebuješ skrbniški račun HA, delujoč HACS in obstoječe energijske senzorje.
-Če HACS še nimaš, uporabi [uradna navodila](https://www.hacs.dev/docs/use/).
-Produkcijskih poverilnic ne kopiraj v testno namestitev.
+Uporabi ločeno testno namestitev Home Assistanta, skrbniški račun in obstoječe
+senzorje energije. Home Assistant od 2026.11 vključuje Marketplace. V različici
+2026.10.2 uporabi [HACS](https://www.hacs.dev/docs/use/).
 
 Pripravi kumulativna števca hišne porabe in prevzema iz omrežja, njuni dejanski
 enoti ter smiselne meje moči in svežine. Izbirne zmožnosti potrebujejo ustrezne
@@ -17,22 +15,22 @@ cene pa dodaš pozneje. Zasebno pripravi veljavnost pogodbe, cene prevzema/oddaj
 naročnino ter po potrebi dogovorjene moči in regionalne postavke.
 Prazno pomeni neznano; ničla pomeni dejansko ničelno postavko.
 
-**Ne nameščaj čez obstoječo komponento `energy_cost_monitor`.** HACS zamenja isti
+**Ne nameščaj čez obstoječo komponento `energy_cost_monitor`.** Namestitev zamenja isti
 imenik. Pred namestitvijo naredi kopijo testnega HA; selitev produkcijskega
 prototipa je ločen postopek. Podprt je en vnos integracije na namestitev HA.
 
-## 2. Prenos prek HACS
+## 2. Namestitev bete
 
-1. Odpri HACS in zgornji desni meni → **Custom repositories** (repozitoriji po meri).
-2. Dodaj `https://github.com/MrCodeLabs/ha-energy-cost-monitor`, vrsta **Integration**.
-3. Odpri **Energy Cost Monitor (development)** in prenesi paket. Zapiši commit,
-   ki ga prikaže HACS; `532012e` je preverjena različica z dne 2. novembra.
-   Poznejši prenos iz `main` lahko vsebuje nove spremembe; odprti PR ni vključen samodejno.
-4. Ponovno zaženi testni Home Assistant.
-5. Izberi **Nastavitve → Naprave in storitve → Dodaj integracijo → Energy Cost Monitor**.
+1. V **Nastavitve → Marketplace** izberi **Add from link**. Po potrebi poveži
+   GitHub in dodaj `https://github.com/MrCodeLabs/ha-energy-cost-monitor` kot
+   **Integration**.
+2. Odpri **Energy Cost Monitor**, v meniju repozitorija vključi **Pre-release**
+   in izberi **0.1.0-beta.1**. Sledi pozivom za namestitev in ponovni zagon.
+3. Izberi **Nastavitve → Naprave in storitve → Dodaj integracijo → Energy Cost Monitor**.
 
-Postopek sledi [uradnim navodilom HACS](https://www.hacs.dev/docs/faq/custom_repositories/).
-Na tej stopnji ni stabilne izdaje ali vključitve v privzeti katalog.
+V HA 2026.10.2 dodaj isti naslov pod **HACS → Custom repositories**. Pri prenosu
+omogoči različice beta, izberi **0.1.0-beta.1** in znova zaženi HA.
+[Navodila za Home Assistant Marketplace](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Izbor virov in odpiranje plošče
 
@@ -123,21 +121,21 @@ To ni obnova celotnega HA.
 
 ## 7. Posodobitve, kopije in odstranitev
 
-Pred posodobitvijo zapiši commit in naredi konsistentno kopijo HA s konfiguracijo
+Pred posodobitvijo zapiši nameščeno različico in naredi konsistentno kopijo HA s konfiguracijo
 ter **obema** zasebnima datotekama: `.storage/energy_cost_monitor.sqlite3` in
 `.storage/energy_cost_monitor_application.sqlite3`. Pred kopiranjem datotek ustavi
 integracijo/HA. Stari obnovitveni ZIP samo meritev ne vsebuje aplikacijske shrambe.
 Izvozi tudi pomembna poročila; izvozi ne nadomestijo celotne kopije.
 
-Posodobi prek HACS, ponovno zaženi HA in ponovi zgornje preverjanje ohranjenih
-meritev, profilov in poročil. Razvojnega paketa ne posodabljaj samodejno.
+Posodobi prek Marketplacea ali HACS, ponovno zaženi HA in ponovi zgornje
+preverjanje ohranjenih meritev, profilov in poročil.
 Pri povratku ustavi zajem, ohrani trenutni shrambi z novimi meritvami in obnovi
 združljivo kopijo kode, konfiguracije ter obeh shramb. Starejša koda morda ne bere
 nove sheme. Zbirke ne briši zaradi obhoda te zaščite. Obnova celotnega HAOS s tem
 laboratorijem še ni potrjena.
 
 Za prenehanje uporabe onemogoči vnos med napravami in storitvami. Za odstranitev
-najprej ohrani kopijo, odstrani vnos, nato paket prek HACS in ponovno zaženi HA.
+najprej ohrani kopijo, odstrani vnos, nato paket prek Marketplacea ali HACS in ponovno zaženi HA.
 Odstranitev vnosa ohrani zgodovino; odstranitev kode ni izbris podatkov ali selitev
 nazaj v staro aplikacijo. Sprememba identitete virov po začetku zajema zahteva
 selitev, ki je obrazec za ponovno nastavitev še ne omogoča.
@@ -146,14 +144,14 @@ selitev, ki je obrazec za ponovno nastavitev še ne omogoča.
 
 | Težava | Kaj preveriti |
 | --- | --- |
-| Integracija/plošča manjka | Prenos HACS, ponovni zagon, dodajanje integracije, skrbniški račun in osvežitev brskalnika. |
+| Integracija/plošča manjka | Prenos prek Marketplacea ali HACS, ponovni zagon, dodajanje integracije, skrbniški račun in osvežitev brskalnika. |
 | Neznani zneski | Svežina/enote senzorjev, zaključeni intervali, pokritost, datumi cen in manjkajoče/nepotrjene postavke. |
 | Študija ostane v uvajanju | Pokritost in zahtevana dnevna referenca; čakanje je lahko pravilno. |
 | Ponovna nastavitev/uvoz zavrnjena | Omejitve identitete in prekrivanja; ohrani podatke ter popravi preslikavo, ne briši zbirk. |
 | Obrazec zavrnjen | Številke, enote, odmiki datumov, veljavnost in prekrivajoča se obdobja. |
 
 V [prijavi težave](https://github.com/MrCodeLabs/ha-energy-cost-monitor/issues)
-navedi različici HA/HACS, commit, korake ter pričakovani/dejanski rezultat.
+navedi različici Home Assistanta in Energy Cost Monitorja, korake ter pričakovani in dejanski rezultat.
 Uporabi izmišljene primere; izpusti osebne podatke, žetone, zasebne dnevnike,
 račune in zbirke. [Dokazi](acceptance-2026-11-02.md) in [načrt](../ROADMAP.md)
 opredeljujejo omejitve. Starejši tehnični zapisi niso vodič za prvo namestitev.
