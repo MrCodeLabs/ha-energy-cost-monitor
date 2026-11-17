@@ -19,6 +19,8 @@ const context={HTMLElement:Element,document:{createElement:tag=>new Element(tag)
   setInterval:()=>1,clearInterval:()=>{},setTimeout:()=>{},URL,Date,console};
 vm.runInNewContext(readFileSync('custom_components/energy_cost_monitor/frontend/energy-cost-monitor-card.js','utf8'),context);
 const nodes=(root,tag)=>[...(root.tag===tag?[root]:[]),...root.children.flatMap(n=>nodes(n,tag))];
+const control=(card,tag,id)=>nodes(card.shadowRoot,tag).find(node=>node.id===id);
+const edit=(card,id,value)=>{const input=control(card,"input",id);input.value=value;input.events.input();};
 const data={start:0,end:900,sessions:[],comparison:null,latest_sample:null};
 const profiles={active:null,versions:[]};
 (async()=>{
@@ -34,34 +36,38 @@ const profiles={active:null,versions:[]};
       {energy_kwh:{import:2,export:0},complete:{import:true,export:true}},
       {energy_kwh:{import:0.5,export:null},complete:{import:false,export:false}},
     ],
+    profile: {offer_names:{"legacy-2":"Named offer"}},
     comparison: {
-      common_intervals:1,common_coverage:0.5,common_totals:{a:'-2.00',b:'3.00'},
+      common_intervals:1,common_coverage:0.5,common_totals:{"legacy-1":'-2.00',"legacy-2":'3.00'},
       results:[
-        {scenario:{identifier:'a'},total:null,known_net_subtotal:'10.00',coverage:0.5},
-        {scenario:{identifier:'b'},total:'1.00',known_net_subtotal:'1.00',coverage:1,confirmed:true},
+        {scenario:{identifier:'legacy-1'},total:null,known_net_subtotal:'10.00',coverage:0.5},
+        {scenario:{identifier:'legacy-2'},total:'1.00',known_net_subtotal:'1.00',coverage:1,confirmed:true},
       ],
     },
-    regional_bills:{a:{total_gross:null,known_reference_gross:'7.00',components:{excise_net:null},missing:['excise_partial_period']}},
+    regional_bills:{"legacy-1":{total_gross:null,known_reference_gross:'7.00',components:{excise_net:null},missing:['excise_partial_period']}},
   };
   overview._render();
   const withClass = (tag, cls) => nodes(overview.shadowRoot,tag).filter(node=>node.className===cls);
   const values = () => withClass('strong','metric-value').map(node=>node.textContent);
   assert.deepEqual(values(),[overview._money('-2'),overview._number(2.5,'kWh'),overview._number(50,'%')]);
   assert.deepEqual(withClass('span','offer-value').map(node=>node.textContent),[overview._money('-2'),overview._money('3')]);
-  assert.deepEqual(withClass('span','cost-bar').map(node=>[node.style.insetInlineStart,node.style.width]),[['0%','40%'],['40%','60%']]);
+  const summaries = nodes(overview.shadowRoot,"summary");
+  assert(nodes(summaries.find(node=>node.id==="ecm-supply-legacy-1-summary"),"strong").some(node=>node.textContent==="Offer 1"));
+  assert(nodes(summaries.find(node=>node.id==="ecm-supply-legacy-2-summary"),"strong").some(node=>node.textContent==="Named offer"));
+  assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='+' + overview._money('5')));
   assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Partial meter readings'));
   assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Comparable intervals: 1 of 2'));
   assert(nodes(overview.shadowRoot,'small').some(node=>node.textContent==='Known subtotal including VAT'));
-  const regional = () => nodes(overview.shadowRoot,'details').find(node=>node.id==='ecm-regional-a');
+  const regional = () => nodes(overview.shadowRoot,'details').find(node=>node.id==='ecm-regional-legacy-1');
   regional().open = true;
   overview._render();
   assert.equal(regional().open,true,'refresh preserves expanded estimate details');
   assert.equal(nodes(regional(),'dd')[0].textContent,'unknown');
-  overview._data.comparison.common_totals = {a:null,b:null};
+  overview._data.comparison.common_totals = {"legacy-1":null,"legacy-2":null};
   overview._data.intervals = [{energy_kwh:{import:null},complete:{import:false}}];
   overview.hass = {language:'sl'};
   assert.deepEqual(values().slice(0,2),['neznano','neznano']);
-  assert.equal(withClass('span','cost-bar').length,0);
+  assert.deepEqual(withClass('span','offer-value').map(node=>node.textContent),["neznano","neznano"]);
   assert(nodes(overview.shadowRoot,'p').some(node=>node.textContent==='Ni skupnih intervalov z znano ceno'));
 
   const period = new Card();
@@ -100,29 +106,51 @@ const profiles={active:null,versions:[]};
   const pending=new Promise(resolve=>{release=resolve;});card._hass.callApi=()=>pending;
   const refresh=card._refresh();card.disconnectedCallback();release([]);await refresh;
   assert.equal(card._data,data,'disconnected request must not replace state');
-  const formCard=new Card();formCard._data=data;formCard._profiles=profiles;formCard._tab='profiles';formCard._render();
-  const inputs=nodes(formCard.shadowRoot,'input');
-  ['Example','2026-01-01','2027-01-01','0.2','','0'].forEach((value,index)=>inputs[index].value=value);
-  nodes(formCard.shadowRoot,'button').find(n=>n.textContent==='Prepare profile').events.click();
-  const profile=JSON.parse(formCard._draft);assert.equal(profile.scenarios[0].versions[0].export[0].value,null);
-  assert.equal(profile.scenarios[0].versions[0].subscription.value,'0');
-  formCard._profiles={active:'example',versions:[{id:'example',profile}]};
-  formCard._tab='pricing';formCard._render();
-  let nameInput=nodes(formCard.shadowRoot,'input')[0];nameInput.value='Changed';nameInput.events.input();
-  formCard._render();assert.equal(nodes(formCard.shadowRoot,'input')[0].value,'Changed');
-  assert.equal(profile.name,'Example','editing must not mutate saved profile');
-  nodes(formCard.shadowRoot,'button').find(n=>n.textContent==='Add offer').events.click();
-  assert.equal(formCard._pricingDraft.scenarios.length,2);
+  const formCard=new Card();formCard._data=data;formCard._profiles=profiles;formCard._tab='pricing';formCard._render();
+  formCard._hass={config:{time_zone:"Europe/Ljubljana"}};
+  control(formCard,"button","ecm-add-offer").events.click();
+  const advance=()=>control(formCard,"button","ecm-offer-next").events.click();
+  await advance();
+  assert.equal(formCard._offerDraft.step,0);
+  edit(formCard,"ecm-offer-name","Example");
+  edit(formCard,"ecm-offer-price","0,20");
+  edit(formCard,"ecm-offer-fee","0");
+  await advance();
+  edit(formCard,"ecm-offer-from","2026-10-25");
+  edit(formCard,"ecm-offer-last","2026-10-24");
+  await advance();
+  assert.equal(formCard._offerDraft.step,1);
+  edit(formCard,"ecm-offer-last","2026-10-25");
+  await advance();
+  assert(nodes(formCard.shadowRoot,"dd").some(node=>node.textContent==="unknown"));
   let saved;
-  const savedProfiles={active:'saved',versions:[{id:'saved',profile}]};
-  formCard._hass={callApi:async(method,action,payload)=>{saved=payload;return savedProfiles;}};
-  await nodes(formCard.shadowRoot,'button').find(n=>n.textContent==='Save price profile').events.click();
-  assert.equal(saved.name,'Changed');assert.equal(formCard._pricingDraft,null);
+  const savedProfiles={active:'saved',versions:[]};
+  formCard._hass={callApi:async(method,action,payload)=>{saved=payload.offer;return savedProfiles;}};
+  await advance();
+  assert.equal(saved.name,'Example');assert.equal(formCard._offerDraft,null);
   assert.equal(formCard._profiles,savedProfiles,'save response must update visible profile even when refresh is blocked');
-  formCard._render();nameInput=nodes(formCard.shadowRoot,'input')[0];nameInput.value='Retained';nameInput.events.input();
+  const version=saved.terms.scenario.versions[0];
+  assert.equal(version.from,"2026-10-24T22:00:00.000Z");
+  assert.equal(version.until,"2026-10-25T23:00:00.000Z");
+  assert.equal(version.import[0].value,"0.20");
+  assert.equal(version.export.length,0);
+  assert.equal(version.subscription.value,"0");
+  const profile={name:"Example profile",scenarios:[saved.terms.scenario],indexed_import:{},offer_names:{"offer-1":"Example"}};
+  savedProfiles.versions.push({id:"saved",profile});
+  formCard._render();
+  control(formCard,"button","ecm-edit-offer-1").events.click();
+  edit(formCard,"ecm-offer-name","Retained");
+  await advance();
+  await advance();
   formCard._hass.callApi=async()=>{throw Error('offline');};
-  await nodes(formCard.shadowRoot,'button').find(n=>n.textContent==='Save price profile').events.click();
-  assert.equal(formCard._pricingDraft.name,'Retained');
+  await advance();
+  assert.equal(formCard._offerDraft.name,'Retained');
+  assert.equal(profile.offer_names["offer-1"],"Example");
+  formCard._hass.callApi=async(method,action,payload)=>{saved=payload.offer;return savedProfiles;};
+  await advance();
+  assert.equal(saved.base,"saved");
+  assert.equal(saved.name,"Retained");
+  assert(!Object.hasOwn(saved,"terms"),"rename does not resend pricing data");
   formCard._tab='study';formCard._study={state:'not_configured'};formCard._render();
   formCard._hass.callApi=async()=>({state:'warmup'});
   await nodes(formCard.shadowRoot,'button').find(n=>n.textContent==='Start study warm-up').events.click();
@@ -149,16 +177,17 @@ const profiles={active:null,versions:[]};
     assert.notDeepEqual(nodes(localized.shadowRoot,'button').map(n=>n.textContent),english);
   }
   localized._tab='pricing';localized.hass={language:'en'};localized._render();
-  let edit=nodes(localized.shadowRoot,'input')[0];edit.value='Untranslated private name';edit.events.input();
+  control(localized,"button","ecm-edit-offer-1").events.click();
+  edit(localized,"ecm-offer-name","Untranslated private name");
   localized._error='Invalid study settings.';
   localized.hass={language:'sl'};
   assert.equal(nodes(localized.shadowRoot,'input')[0].value,'Untranslated private name');
-  assert.equal(localized._pricingDraft.name,'Untranslated private name');
+  assert.equal(localized._offerDraft.name,'Untranslated private name');
   assert(nodes(localized.shadowRoot,'p').some(n=>n.textContent==='Nastavitve študije niso veljavne.'));
   localized._tab='profiles';localized._render();
-  edit=nodes(localized.shadowRoot,'input')[0];edit.value='Unsaved simple profile';
+  const jsonEditor=nodes(localized.shadowRoot,'textarea')[0];jsonEditor.value='Unsaved JSON profile';jsonEditor.events.input();
   localized.hass={language:'en'};
-  assert.equal(nodes(localized.shadowRoot,'input')[0].value,'Unsaved simple profile');
+  assert.equal(nodes(localized.shadowRoot,'textarea')[0].value,'Unsaved JSON profile');
   localized._tab='history';localized._render();
   const selected=nodes(localized.shadowRoot,'input').find(n=>n.type==='file');selected.files=[{name:'synthetic.sqlite3'}];
   localized.hass={language:'sl'};

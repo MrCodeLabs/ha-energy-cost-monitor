@@ -1,6 +1,6 @@
 # New user guide
 
-Updated 15 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
+Updated 17 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
 
 ## 1. Before you install
 
@@ -15,21 +15,20 @@ You can start with sources only and add prices later. Prepare contract validity,
 import/export prices, subscription and, if needed, agreed block powers and regional
 rates privately. Blank prices mean unknown; zero means an actual zero charge.
 
-**Do not install over an existing `energy_cost_monitor` component.** The installer replaces
-that same component directory. Back up the test HA before installation; migrating
-a production prototype is a separate procedure. Only one ECM entry is supported.
+Back up the test HA before installation or updating. An existing Marketplace or HACS beta
+uses the normal update path. Migrate a legacy `energy_cost_monitor` prototype separately
+before replacing its component directory. Only one ECM entry is supported.
 
-## 2. Install the beta
+## 2. Install Energy Cost Monitor
 
 1. In **Settings → Marketplace**, choose **Add from link**. Connect GitHub if
    prompted and add `https://github.com/MrCodeLabs/ha-energy-cost-monitor` as an
    **Integration**.
-2. Open **Energy Cost Monitor**, enable **Pre-release** from the repository menu,
-   and select **0.1.0-beta.1**. Follow the install and restart prompts.
+2. Open **Energy Cost Monitor** and install **0.1.0**. Follow the restart prompt.
 3. Open **Settings → Devices & services → Add integration → Energy Cost Monitor**.
 
-On HA 2026.10.2, add the same URL under **HACS → Custom repositories**. Enable
-beta versions when selecting the download, choose **0.1.0-beta.1** and restart HA.
+On HA 2026.10.2, add the same URL under **HACS → Custom repositories**. Download
+**0.1.0** and restart HA.
 [Home Assistant Marketplace instructions](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Select sources and open the panel
@@ -52,15 +51,16 @@ setup are optional advanced paths, not prerequisites.
 
 | Tab | What to do |
 | --- | --- |
-| **Prices** | Name the profile, add an offer and contract version, enter validity, subscription and import/export price periods. Select units, record sources and confirm only verified prices. Choose **Save price profile**. |
-| **Profiles** | Inspect saved versions or activate a previous version. Changes create new versions; frozen reports retain their original assumptions. The advanced JSON editor is optional. |
-| **EV and billing** | Optionally enable counter-level EV calculation and enter gap/power/tolerance thresholds. Under regional settings, add effective dates, block rates, agreed powers, levies, VAT and excess-power mode. Save with **Save EV and billing**. |
-| **Study** | Choose timezone, months, warm-up, coverage and daily-check settings; select **Start study warm-up**. The required daily household reference is selected in source settings. |
+| **Prices** | Select **Add offer** or open an existing offer. Enter its display name and rates, pick the first and last valid days, then review and save. For multiple rate periods or nonstandard units, open **Advanced price editor**. |
+| **Settings → Price versions** | Inspect saved versions or activate a previous one. Changes create a version; frozen reports retain their original assumptions. The advanced JSON editor is optional. |
+| **Settings → Billing and EV** | Optionally enable counter-level EV calculation and enter gap/power/tolerance thresholds. Under regional settings, add effective dates, block rates, agreed powers, levies, VAT and excess-power mode. Save with **Save EV and billing**. |
+| **Reports → Study settings** | Choose months and warm-up. Set time zone, coverage and daily-check settings under **Advanced settings**, then select **Start study warm-up**. Select the required daily household reference in source settings. |
 | **Reports** | Choose a view window, then **Freeze displayed period**. Open/download the frozen HTML or CSV report. |
 
-Price timestamps need an offset, for example `2026-01-01T00:00:00+01:00`; the end
-is exclusive. Use the correct offset for the date. Regional dates are entered as
-dates. Connection power is **not** agreed billing power for tariff blocks.
+The guided editor includes the last selected day and uses the offer's time zone.
+Advanced price timestamps still include an offset, for example
+`2026-01-01T00:00:00+01:00`, and use an exclusive end. Regional dates are
+entered as dates. Use the agreed billing power from your contract for tariff blocks.
 
 For self-consumption, choose **Net imported energy over the billing period** under
 **Excise basis** if your invoice applies excise to import minus export. The estimate
@@ -87,7 +87,7 @@ exports energy/supply rows, not an equivalent full regional bill.
 
 ## 5. Optional legacy history import
 
-Skip this for a new installation. **History import** accepts a supported legacy
+Skip this for a new installation. **Settings → History import** accepts a supported legacy
 Energy Cost Monitor SQLite copy, not an arbitrary HA recorder database or CSV.
 Use a consistent backup, never a live database file copied during writes.
 

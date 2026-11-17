@@ -1,7 +1,7 @@
 """Profiles, reference prices, live sessions and immutable reports on synthetic data."""
 
 import copy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import tempfile
@@ -58,6 +58,46 @@ class ApplicationTests(unittest.TestCase):
         result = self.store.view(self.engine, START, START+900, now=START+901)
         self.assertEqual(result["comparison"]["common_coverage"], 1)
         self.assertIsNotNone(result["comparison"]["results"][0]["total"])
+
+    def test_offer_edit_versions_names_and_pricing_without_rewriting_prior_reports(self):
+        value = profile()
+        scenario = value["scenarios"][0]
+        ident = scenario["id"]
+        a = self.store.edit_offer(base=None, offer_id=ident, name="First <offer>",
+                                  terms={"scenario": scenario, "index": None}, profile_name=value["name"])
+        report = self.store.freeze(self.engine, START, START+900, now=START+901)
+        original = self.store.report(report)
+        self.assertIn("First &lt;offer&gt;", render_report(original, "html"))
+
+        b = self.store.edit_offer(base=a, offer_id=ident, name="Renamed offer")
+        with self.assertRaisesRegex(ValueError, "active_profile_changed"):
+            self.store.edit_offer(base=a, offer_id=ident, name="Stale draft")
+        with self.assertRaisesRegex(ValueError, "unknown_offer"):
+            self.store.edit_offer(base=b, offer_id="missing", name="Invalid")
+        versions = self.store.profiles()
+        self.assertEqual(versions["active"], b)
+        self.assertEqual(versions["versions"][0]["profile"]["scenarios"], [scenario])
+        self.assertEqual(versions["versions"][0]["profile"]["offer_names"], {ident: "Renamed offer"})
+        self.assertEqual(self.store.report(report), original)
+
+    def test_name_only_edit_handles_profiles_beyond_the_http_write_limit(self):
+        value = profile()
+        scenario = value["scenarios"][0]
+        version = scenario["versions"][0]
+        start = datetime.fromtimestamp(START, timezone.utc)
+        quarter = timedelta(minutes=15)
+        version["import"] = [
+            {"from": (start + n * quarter).isoformat(), "until": (start + (n + 1) * quarter).isoformat(),
+             "value": "0.18", "unit": "EUR/kWh", "source": "Synthetic reference " + "x" * 850,
+             "status": "reference"}
+            for n in range(300)
+        ]
+        self.assertGreater(len(json.dumps(value)), 256000)
+        base = self.store.save_profile(value)
+        self.store.edit_offer(base=base, offer_id=scenario["id"], name="New label")
+        active = self.store.profiles()["versions"][0]["profile"]
+        self.assertEqual(active["scenarios"], [scenario])
+        self.assertEqual(active["offer_names"], {scenario["id"]: "New label"})
 
     def test_market_negative_missing_units_dst_and_atomic_refusal(self):
         self.assertEqual(parse_market(market(-10), "SI"), [(START, "-0.01")])

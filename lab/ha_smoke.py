@@ -1,7 +1,7 @@
 """Run inside the pinned HA container; only synthetic states, no HA doubles."""
 
 import asyncio
-from contextlib import nullcontext
+from contextlib import closing, nullcontext
 from datetime import datetime, timezone
 import json
 import os
@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 from homeassistant import bootstrap, loader
 from homeassistant.core import HomeAssistant, HassJob
+from sqlite_crash import interrupt_write
 
 DOMAIN = "energy_cost_monitor"
 CONFIG = Path("/config")
@@ -62,9 +63,34 @@ def rows():
         return db.execute("SELECT count(*) FROM samples").fetchone()[0]
 
 
+def crash_stores():
+    storage = CONFIG / ".storage"
+    interrupted = []
+    for name, table, key in [("energy_cost_monitor.sqlite3", "samples", "ts"),
+                             ("energy_cost_monitor_application.sqlite3", "profiles", "id")]:
+        path = storage / name
+        query = f"SELECT {key}, body FROM {table} ORDER BY {key}"
+        with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as db:
+            committed = set(db.execute(query))
+            assert committed
+        journal = interrupt_write(path, f"UPDATE {table} SET body='interrupted test'")
+        interrupted.append((path, journal, query, committed))
+    return interrupted
+
+
+def verify_recovered_stores(interrupted):
+    for path, journal, query, committed in interrupted:
+        assert not journal.exists()
+        with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as db:
+            assert db.execute("PRAGMA integrity_check").fetchall() == [("ok",)]
+            assert committed <= set(db.execute(query))
+            assert not db.execute("SELECT 1 FROM sqlite_schema WHERE name='uncommitted_crash_probe'").fetchone()
+
+
 async def main():
     phase = sys.argv[1]
     migrated = os.environ.get("ECM_LAB_MIGRATE") == "1"
+    interrupted = crash_stores() if phase == "crash" else []
     hass = HomeAssistant(str(CONFIG))
     hass.config.skip_pip = True
     loader.async_setup(hass)
@@ -116,6 +142,8 @@ async def main():
         assert len(entries) == 1
         entry = entries[0]
         assert entry.state.value == "loaded", entry.state
+        if interrupted:
+            await hass.async_add_executor_job(verify_recovered_stores, interrupted)
         runtime = hass.data[DOMAIN]
         if os.environ.get("ECM_LAB_MIGRATE") == "1":
             start = int((CONFIG / "historical-start").read_text())
@@ -206,6 +234,23 @@ async def main():
                 assert response.status == 403, response.status
             async with client.post(base + "/api/energy_cost_monitor/profiles", json=profile, headers=headers) as response:
                 assert response.status == 200, await response.text()
+                base_id = (await response.json())["active"]
+            if os.environ.get("ECM_LAB_BASELINE") != "1":
+                offer_id = profile["scenarios"][0]["id"]
+                rename = {"offer": {"base": base_id, "offer_id": offer_id, "name": "Invented offer label"}}
+                async with client.post(base + "/api/energy_cost_monitor/profiles", json=rename, headers=headers) as response:
+                    assert response.status == 200, await response.text()
+                    versioned = await response.json()
+                    current = next(item["profile"] for item in versioned["versions"] if item["id"] == versioned["active"])
+                    assert current["offer_names"] == {offer_id: "Invented offer label"}
+                    assert current["scenarios"] == profile["scenarios"]
+            if phase == "crash":
+                end = int(time.time() // 900) * 900
+                async with client.post(base + "/api/energy_cost_monitor/reports", json={"start": end - 900, "end": end},
+                                       headers=headers) as response:
+                    assert response.status == 200, await response.text()
+                    named_report = (await response.json())["id"]
+                await hass.async_add_executor_job((CONFIG / "named-report-id").write_text, named_report)
             async with client.get(base + "/api/energy_cost_monitor/view", headers=headers) as response:
                 assert response.status == 200, await response.text()
             study_settings = {"timezone": "Europe/Ljubljana", "months": 3,

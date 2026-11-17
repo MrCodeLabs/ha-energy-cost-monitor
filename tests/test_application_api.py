@@ -78,6 +78,20 @@ class ApplicationApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("attachment", response.headers["Content-Disposition"])
         self.assertEqual(len(self.hass.views), 2)
 
+    async def test_admin_renames_an_offer_in_the_active_version(self):
+        baseline = profile()
+        response = await self.view.dispatch(Request(True, "POST"), "profiles", baseline)
+        base = json.loads(response.text)["active"]
+        ident = baseline["scenarios"][0]["id"]
+        request = {"offer": {"base": base, "offer_id": ident, "name": "Renamed example"}}
+        response = await self.view.dispatch(Request(True, "POST"), "profiles", request)
+        self.assertEqual(response.status, 200)
+        current = json.loads(response.text)["versions"][0]["profile"]
+        self.assertEqual(current["offer_names"], {ident: "Renamed example"})
+        self.assertEqual(current["scenarios"], baseline["scenarios"])
+        response = await self.view.dispatch(Request(True, "POST"), "profiles", request)
+        self.assertEqual(response.status, 400)
+
     async def test_backup_drains_application_writer_and_rejects_new_writes(self):
         app = self.runtime.application
         entered, release = threading.Event(), threading.Event()

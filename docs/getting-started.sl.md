@@ -1,6 +1,6 @@
 # Vodič za nove uporabnike
 
-Posodobljeno 15. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
+Posodobljeno 17. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
 
 ## 1. Pred namestitvijo
 
@@ -15,21 +15,21 @@ cene pa dodaš pozneje. Zasebno pripravi veljavnost pogodbe, cene prevzema/oddaj
 naročnino ter po potrebi dogovorjene moči in regionalne postavke.
 Prazno pomeni neznano; ničla pomeni dejansko ničelno postavko.
 
-**Ne nameščaj čez obstoječo komponento `energy_cost_monitor`.** Namestitev zamenja isti
-imenik. Pred namestitvijo naredi kopijo testnega HA; selitev produkcijskega
-prototipa je ločen postopek. Podprt je en vnos integracije na namestitev HA.
+Pred namestitvijo ali posodobitvijo naredi kopijo testnega HA. Obstoječo beto
+iz Marketplacea ali HACS posodobi po običajnem postopku. Stari prototip
+`energy_cost_monitor` preseli pred zamenjavo imenika komponente. Podprt je en
+vnos integracije na namestitev HA.
 
-## 2. Namestitev bete
+## 2. Namestitev Energy Cost Monitorja
 
 1. V **Nastavitve → Marketplace** izberi **Add from link**. Po potrebi poveži
    GitHub in dodaj `https://github.com/MrCodeLabs/ha-energy-cost-monitor` kot
    **Integration**.
-2. Odpri **Energy Cost Monitor**, v meniju repozitorija vključi **Pre-release**
-   in izberi **0.1.0-beta.1**. Sledi pozivom za namestitev in ponovni zagon.
+2. Odpri **Energy Cost Monitor** in namesti **0.1.0**. Sledi pozivu za ponovni zagon.
 3. Izberi **Nastavitve → Naprave in storitve → Dodaj integracijo → Energy Cost Monitor**.
 
-V HA 2026.10.2 dodaj isti naslov pod **HACS → Custom repositories**. Pri prenosu
-omogoči različice beta, izberi **0.1.0-beta.1** in znova zaženi HA.
+V HA 2026.10.2 dodaj isti naslov pod **HACS → Custom repositories**. Prenesi
+**0.1.0** in znova zaženi HA.
 [Navodila za Home Assistant Marketplace](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Izbor virov in odpiranje plošče
@@ -52,10 +52,10 @@ JSON in ročna kartica Lovelace ostajata izbirni napredni možnosti.
 
 | Zavihek | Postopek |
 | --- | --- |
-| **Cene** | Poimenuj profil, dodaj ponudbo in različico pogodbe, vnesi veljavnost, naročnino ter obdobja cen prevzema/oddaje. Izberi enote in vire; potrdi samo preverjene cene. Izberi **Shrani cenovni profil**. |
-| **Profili** | Preglej različice ali aktiviraj prejšnjo. Spremembe ustvarijo novo različico, zamrznjena poročila ohranijo stare predpostavke. Napredni urejevalnik JSON je izbiren. |
-| **EV in obračun** | Po potrebi vključi izračun EV iz števca ter nastavi razmike, moč in tolerance. Pri regionalnih nastavitvah dodaj datume, blokovne tarife, dogovorjene moči, dajatve, DDV in režim presežne moči. Izberi **Shrani EV in obračun**. |
-| **Študija** | Nastavi časovni pas, mesece, uvajanje, pokritost in dnevno kontrolo; izberi **Začni uvajanje študije**. Zahtevano dnevno referenco hiše izberi med viri integracije. |
+| **Cene** | Izberi **Dodaj ponudbo** ali odpri obstoječo. Vpiši prikazno ime in cene, izberi prvi in zadnji dan veljavnosti ter preveri in shrani vnos. Za več cenovnih obdobij ali druge enote uporabi **Napredni urejevalnik cen**. |
+| **Nastavitve → Različice cenikov** | Preglej različice ali aktiviraj prejšnjo. Spremembe ustvarijo novo različico, zamrznjena poročila ohranijo stare predpostavke. Napredni urejevalnik JSON je izbiren. |
+| **Nastavitve → Obračun in EV** | Po potrebi vključi izračun EV iz števca ter nastavi razmike, moč in tolerance. Pri regionalnih nastavitvah dodaj datume, blokovne tarife, dogovorjene moči, dajatve, DDV in režim presežne moči. Izberi **Shrani EV in obračun**. |
+| **Poročila → Nastavitve študije** | Nastavi mesece in uvajanje. Časovni pas, pokritost in dnevno kontrolo najdeš v **Naprednih nastavitvah**. Izberi **Začni uvajanje študije**. Zahtevano dnevno referenco hiše izberi med viri integracije. |
 | **Poročila** | Izberi obdobje prikaza in **Zamrzni prikazano obdobje**. Odpri/prenesi zamrznjeno poročilo HTML ali CSV. |
 
 Časi cen potrebujejo odmik, npr. `2026-01-01T00:00:00+01:00`; konec obdobja je
@@ -88,7 +88,7 @@ izvozi energijske/dobavne vrstice, ne enakovrednega celotnega regionalnega obra�
 
 ## 5. Izbirni uvoz stare zgodovine
 
-Pri novi namestitvi to preskoči. **Uvoz zgodovine** sprejme podprto kopijo SQLite
+Pri novi namestitvi to preskoči. **Nastavitve → Uvoz zgodovine** sprejme podprto kopijo SQLite
 starega Energy Cost Monitorja, ne poljubne zbirke HA recorder ali CSV.
 Uporabi konsistentno kopijo; datoteke ne kopiraj med aktivnim pisanjem vanjo.
 

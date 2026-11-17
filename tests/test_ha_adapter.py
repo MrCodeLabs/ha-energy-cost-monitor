@@ -1,15 +1,19 @@
 """Adapter lifecycle contracts with HA doubles and real SQLite/executor work."""
 
 import asyncio
+from contextlib import closing
 import json
 from pathlib import Path
+import sqlite3
 import tempfile
 import threading
 import unittest
 from unittest.mock import patch
 
 from ha_contract import ConfigEntryError, ConfigEntryNotReady, DOMAIN, Entry, Hass, install_doubles
+from lab.sqlite_crash import interrupt_write
 from test_accounting import START
+from test_application import profile
 
 
 class AdapterTests(unittest.IsolatedAsyncioTestCase):
@@ -140,6 +144,49 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(path.read_bytes(), before)
         self.assertNotIn(DOMAIN, self.hass.data)
         self.assertFalse(self.hass.listeners)
+
+    async def test_owned_hot_journals_recover_committed_rows_and_resume_collection(self):
+        runtime = await self.setup()
+        ledger = runtime.collector.engine.path
+        store = runtime.application.store
+        profile_id = store.save_profile(profile())
+        report_id = store.freeze(runtime.collector.engine, START-900, START, now=START+1)
+        report = store.report(report_id)
+        with runtime.collector.engine._db() as db:
+            committed = db.execute("SELECT body FROM samples WHERE ts=?", (START,)).fetchone()
+        await self.adapter.async_unload_entry(self.hass, self.entry)
+
+        pending = [
+            await asyncio.to_thread(interrupt_write, ledger, "UPDATE samples SET body='aborted'"),
+            await asyncio.to_thread(interrupt_write, store.path, "UPDATE profiles SET body='aborted'"),
+        ]
+        self.offset = 60
+        self.hass.report("10.1", 60)
+        new = await self.setup()
+        self.assertEqual(self.hass.entities[0].native_value, "collecting")
+        self.assertEqual(new.application.store.profiles()["active"], profile_id)
+        self.assertEqual(new.application.store.report(report_id), report)
+        with new.collector.engine._db() as db:
+            self.assertEqual(db.execute("SELECT body FROM samples WHERE ts=?", (START,)).fetchone(), committed)
+            self.assertEqual(db.execute("SELECT max(ts) FROM samples").fetchone(), (START+60,))
+            self.assertEqual(db.execute("PRAGMA integrity_check").fetchone(), ("ok",))
+        with new.application.store.db() as db:
+            self.assertEqual(db.execute("PRAGMA integrity_check").fetchone(), ("ok",))
+        self.assertTrue(all(not journal.exists() for journal in pending))
+
+    async def test_foreign_hot_journal_and_database_are_preserved(self):
+        path = self.adapter.storage_path(self.hass)
+        path.parent.mkdir()
+        with closing(sqlite3.connect(path)) as db, db:
+            db.execute("PRAGMA application_id=123")
+            db.execute("CREATE TABLE other_data(body TEXT)")
+            db.execute("INSERT INTO other_data VALUES ('untouched')")
+        journal = await asyncio.to_thread(interrupt_write, path, "UPDATE other_data SET body='aborted'")
+        before = path.read_bytes(), journal.read_bytes()
+        with self.assertRaises(ConfigEntryError):
+            await self.setup()
+        self.assertEqual((path.read_bytes(), journal.read_bytes()), before)
+        self.assertNotIn(DOMAIN, self.hass.data)
 
     async def test_storage_access_failure_retries_and_releases_reservation(self):
         with patch.object(self.adapter, "AccountingEngine", side_effect=OSError("synthetic access failure")):

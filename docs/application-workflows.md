@@ -3,6 +3,22 @@
 Current frontend language: English by default, Slovenian when selected in the HA user profile.
 Older Slovenian-only screenshots/labels below describe their tested revision.
 
+**Dashboard update after beta.2:** Open **Prices** to add an offer or change
+its display name. The guided form accepts local calendar days and saves using
+the active profile version. Imported offers with multiple price periods can
+be renamed from the guided form. Their periods remain available in the
+advanced editor, with the existing 256 KB limit for complete profile writes.
+New HTML reports can include the names saved with that report. CSV keeps the
+scenario identifiers.
+
+If the previous beta is needed temporarily, keep both current stores when
+replacing the integration files. Beta.2 retains saved names in the profile and
+report data. Its panel displays scenario identifiers, and its editor accepts
+profiles without the newer `offer_names` field. Activate an earlier compatible
+version if you need to edit prices on beta.2. To retain newer rates while editing
+there, save a separate copy of the current profile with only `offer_names`
+removed. The named version remains available after returning to the candidate.
+
 > New users: follow the [current user guide](getting-started.md) ([Slovenščina](getting-started.sl.md)).
 > Dated sections below preserve development history; earlier pending/local/manual-setup
 > statements describe their revision. The [2 November acceptance](acceptance-2026-11-02.md)
@@ -114,7 +130,7 @@ authenticated client and are never embedded in card configuration.
 | Method/action | Purpose |
 | --- | --- |
 | GET `view?start=…&end=…` | UTC epoch seconds, aligned quarters, at most 31 days |
-| GET/POST `profiles` | Read versions / save complete profile, or `{"activate":"id"}` |
+| GET/POST `profiles` | Read versions, save a complete profile, activate a saved version, or version one offer using an `offer` object. |
 | GET/POST `reports` | List captures / freeze `{"start":…, "end":…}` |
 | GET `report?id=…&format=json\|html\|csv` | Retrieve one immutable capture |
 | GET `market` | Cache freshness, generic fetch error, next attempt |
@@ -124,6 +140,13 @@ required beyond that limit. Private responses are no-store. HTML downloads have 
 sandbox CSP and escape user/source text. No SQLite download endpoint exists.
 Invalid or temporarily unavailable requests return generic errors without local
 paths. APIs are development contracts, not compatibility with the old API.
+
+An offer write identifies the active profile with `base`, its stable
+scenario identifier with `offer_id`, and the label with `name`. Omit
+`terms` to change only the label. To create or change terms, supply
+`terms.scenario` and `terms.index` (null to clear the index). The first
+offer uses `base: null` and supplies `profile_name`. The store rejects a
+stale base and keeps the previous profiles and frozen reports.
 
 Measurements remain in `.storage/energy_cost_monitor.sqlite3`. New profiles,
 price payloads/cache and reports are in the separate schema-1
