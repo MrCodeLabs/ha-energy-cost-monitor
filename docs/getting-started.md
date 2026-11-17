@@ -1,6 +1,6 @@
 # New user guide
 
-Updated 15 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
+Updated 17 November 2026 · [Slovenščina](getting-started.sl.md) · [Project overview](../README.md)
 
 ## 1. Before you install
 
@@ -15,9 +15,9 @@ You can start with sources only and add prices later. Prepare contract validity,
 import/export prices, subscription and, if needed, agreed block powers and regional
 rates privately. Blank prices mean unknown; zero means an actual zero charge.
 
-**Do not install over an existing `energy_cost_monitor` component.** The installer replaces
-that same component directory. Back up the test HA before installation; migrating
-a production prototype is a separate procedure. Only one ECM entry is supported.
+Back up the test HA before installation or updating. An existing Marketplace or HACS beta
+uses the normal update path. Migrate a legacy `energy_cost_monitor` prototype separately
+before replacing its component directory. Only one ECM entry is supported.
 
 ## 2. Install the beta
 
@@ -25,11 +25,11 @@ a production prototype is a separate procedure. Only one ECM entry is supported.
    prompted and add `https://github.com/MrCodeLabs/ha-energy-cost-monitor` as an
    **Integration**.
 2. Open **Energy Cost Monitor**, enable **Pre-release** from the repository menu,
-   and select **0.1.0-beta.1**. Follow the install and restart prompts.
+   and select **0.1.0-beta.2**. Follow the install and restart prompts.
 3. Open **Settings → Devices & services → Add integration → Energy Cost Monitor**.
 
 On HA 2026.10.2, add the same URL under **HACS → Custom repositories**. Enable
-beta versions when selecting the download, choose **0.1.0-beta.1** and restart HA.
+beta versions when selecting the download, choose **0.1.0-beta.2** and restart HA.
 [Home Assistant Marketplace instructions](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Select sources and open the panel

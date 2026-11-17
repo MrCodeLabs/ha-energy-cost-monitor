@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.2 — 17 November 2026
 
 - Redesign the default cost overview with supply, grid and coverage summaries.
   Compare offers across shared intervals and expand separate regional estimates

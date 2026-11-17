@@ -1,6 +1,6 @@
 # Vodič za nove uporabnike
 
-Posodobljeno 15. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
+Posodobljeno 17. 11. 2026 · [English](getting-started.md) · [Pregled projekta](../README.sl.md)
 
 ## 1. Pred namestitvijo
 
@@ -15,9 +15,10 @@ cene pa dodaš pozneje. Zasebno pripravi veljavnost pogodbe, cene prevzema/oddaj
 naročnino ter po potrebi dogovorjene moči in regionalne postavke.
 Prazno pomeni neznano; ničla pomeni dejansko ničelno postavko.
 
-**Ne nameščaj čez obstoječo komponento `energy_cost_monitor`.** Namestitev zamenja isti
-imenik. Pred namestitvijo naredi kopijo testnega HA; selitev produkcijskega
-prototipa je ločen postopek. Podprt je en vnos integracije na namestitev HA.
+Pred namestitvijo ali posodobitvijo naredi kopijo testnega HA. Obstoječo beto
+iz Marketplacea ali HACS posodobi po običajnem postopku. Stari prototip
+`energy_cost_monitor` preseli pred zamenjavo imenika komponente. Podprt je en
+vnos integracije na namestitev HA.
 
 ## 2. Namestitev bete
 
@@ -25,11 +26,11 @@ prototipa je ločen postopek. Podprt je en vnos integracije na namestitev HA.
    GitHub in dodaj `https://github.com/MrCodeLabs/ha-energy-cost-monitor` kot
    **Integration**.
 2. Odpri **Energy Cost Monitor**, v meniju repozitorija vključi **Pre-release**
-   in izberi **0.1.0-beta.1**. Sledi pozivom za namestitev in ponovni zagon.
+   in izberi **0.1.0-beta.2**. Sledi pozivom za namestitev in ponovni zagon.
 3. Izberi **Nastavitve → Naprave in storitve → Dodaj integracijo → Energy Cost Monitor**.
 
 V HA 2026.10.2 dodaj isti naslov pod **HACS → Custom repositories**. Pri prenosu
-omogoči različice beta, izberi **0.1.0-beta.1** in znova zaženi HA.
+omogoči različice beta, izberi **0.1.0-beta.2** in znova zaženi HA.
 [Navodila za Home Assistant Marketplace](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
 
 ## 3. Izbor virov in odpiranje plošče
