@@ -14,7 +14,7 @@ for migrate in 0 1; do
 mkdir "$LAB/config-$migrate"
 cp -r "$ROOT/custom_components" "$LAB/config-$migrate/"
 phases=(create restart)
-if [[ "$migrate" == 1 ]]; then phases+=(restore); fi
+if [[ "$migrate" == 1 ]]; then phases+=(crash restore); fi
 for phase in "${phases[@]}"; do
   timeout 180 docker run --rm --name "$CONTAINER" --user "$(id -u):$(id -g)" \
     --network none --cpus 1 --memory 1536m --pids-limit 128 \

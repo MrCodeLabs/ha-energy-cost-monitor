@@ -5,7 +5,7 @@
 # Energy Cost Monitor for Home Assistant
 
 [![Marketplace: Custom repository](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
-[![0.1.0-beta.2](https://img.shields.io/badge/beta-0.1.0--beta.2-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2)
+[![0.1.0](https://img.shields.io/badge/release-0.1.0-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0)
 [![License: MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
 [![Support via Revolut](https://img.shields.io/badge/Revolut-support-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
 [![Support via PayPal](https://img.shields.io/badge/PayPal-support-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
@@ -17,33 +17,23 @@ Compare electricity supply offers, follow energy measurements and EV sessions,
 and save reproducible reports using existing Home Assistant sensors. The
 integration reads data; it does not control your devices.
 
-**Public beta.** Add Energy Cost Monitor as a custom repository in Home Assistant
-Marketplace and enable pre-releases. Use a separate test instance for the beta.
+Add Energy Cost Monitor as a custom repository in Home Assistant Marketplace.
+Use HACS on Home Assistant 2026.10.2.
 
 **[Start here: installation and user guide](docs/getting-started.md)** ·
 **[Slovenska navodila](README.sl.md)**
 
-## What's new in 0.1.0-beta.2
+## What's new in 0.1.0
 
-- See supply estimates, grid energy and data coverage on the redesigned overview.
-- Compare offers across shared intervals and expand the regional calculation separately.
-- Change between 1, 7 and 30 days while the latest selection stays in sync with the displayed data.
+- Navigate between overview, prices, charging, reports and settings on desktop or mobile.
+- Add rates and validity dates with a guided price editor. Compare offers by name.
+- Rename imported offers while retaining their rates and earlier reports.
+- Resume collection after SQLite recovers an interrupted write at startup.
 
-[Release notes](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2) ·
+[Release notes](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0) ·
 [Changelog](CHANGELOG.md)
 
-## Previous release · 0.1.0-beta.1
-
-- **Guided setup.** Select existing energy sensors and open the automatically
-  added Energy Cost Monitor panel.
-- **Compare electricity offers.** Configure prices and subscriptions and save
-  reports as HTML or CSV.
-- **Follow EV charging.** Track sessions using a cumulative energy counter.
-- **Continue an imported study.** Recover the original schedule and link
-  archived reports when importing a supported SQLite backup.
-
-[Release notes](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1) ·
-[Changelog](CHANGELOG.md)
+Previous releases are listed in [GitHub Releases](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases).
 
 ## What you can configure
 
@@ -61,17 +51,15 @@ One integration instance is supported per HA installation.
 
 ## Verified scope and limits
 
-[PR #11](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/11) merged these
-workflows into `main` (`532012e`). The isolated HA 2026.10.2 laboratory verified
-setup forms, synthetic import, report creation, study controls and HACS download
-and restart. Earlier data, four profile versions and two reports survived the
-update; all 27 package files matched the tested code. All 207 Python tests and
-branch/PR/main CI checks passed. See [acceptance evidence](docs/acceptance-2026-11-02.md).
+An isolated 2026.11 laboratory exercised clean installation, beta upgrade,
+SQLite recovery and rollback with synthetic data. Earlier HACS acceptance on
+2026.10.2 is documented in the [acceptance evidence](docs/acceptance-2026-11-02.md).
+Use the [upgrade and recovery instructions](docs/getting-started.md#7-updates-backups-and-removal)
+for an existing installation.
 
-This does not establish compatibility with every HA version or a full HAOS
-restore. Complete invoice reconciliation, opening/carry-forward credit, payouts,
-2027 regional rules and independent-user acceptance remain open. Missing values
-stay unknown. **Do not replace an existing production implementation yet.**
+Regional estimates cover Slovenia's 2026 rules. Invoice reconciliation, credit
+carry-forward, payouts, 2027 rules and full HAOS restore are outside the verified
+scope of this release.
 
 ## Privacy and help
 

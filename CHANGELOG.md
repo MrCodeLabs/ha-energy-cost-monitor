@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.0 — 17 November 2026
+
+- Resume collection after an interrupted SQLite write by letting SQLite recover
+  the meter and application stores on startup. The existing schema and source
+  identity validation still applies.
+- Use a responsive dashboard with five main sections. Billing, profile
+  versions, history import and study settings are grouped by task.
+- Add a guided editor for an offer's name, rates, validity and review. Choose
+  local calendar dates and enter decimal prices with a dot or comma. Use the
+  advanced editor for multiple contract and price periods.
+- Compare offers by display name and show the difference from the lowest
+  estimate on the same priced intervals. Rename imported offers without
+  resending their rates. Edit or rename from **Prices**. The active profile is
+  versioned and existing reports keep the inputs saved with them.
+
 ## 0.1.0-beta.2 — 17 November 2026
 
 - Redesign the default cost overview with supply, grid and coverage summaries.

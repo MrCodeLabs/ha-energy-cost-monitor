@@ -1,5 +1,59 @@
 /* English source messages; Slovenian translation selected from the HA user language. */
 const ECM_SL = {
+  "Charging": "Polnjenje",
+  "Settings": "Nastavitve",
+  "Electricity prices": "Cene elektrike",
+  "Your offers": "Tvoje ponudbe",
+  "Price versions": "Različice cenikov",
+  "Billing and EV": "Obračun in EV",
+  "Meter sources": "Merilni viri",
+  "Study settings": "Nastavitve študije",
+  "Offer {0}": "Ponudba {0}",
+  "Offer name (optional)": "Ime ponudbe (izbirno)",
+  "Entry method": "Način vnosa",
+  "More than the lowest estimate": "Več od najnižje ocene",
+  "Lowest estimate": "Najnižja ocena",
+  "Lowest estimate (tie)": "Najnižja ocena (izenačeno)",
+  "Edit offer": "Uredi ponudbo",
+  "New offer": "Nova ponudba",
+  "Offer name": "Ime ponudbe",
+  "Offer": "Ponudba",
+  "Validity": "Veljavnost",
+  "Review": "Predogled",
+  "Monthly subscription": "Mesečna naročnina",
+  "Export rate (optional)": "Odkup oddane energije (izbirno)",
+  "Prices exclude VAT. Leave unknown amounts blank. Enter 0 when the price is zero.": "Cene so brez DDV. Neznane zneske pusti prazne. Če je cena nič, vnesi 0.",
+  "Valid from": "Velja od",
+  "Last valid day": "Zadnji dan veljavnosti",
+  "Price source (optional)": "Vir cen (izbirno)",
+  "I checked these prices against the price list or invoice.": "Cene sem preveril na ceniku ali računu.",
+  "Advanced settings": "Napredne nastavitve",
+  "Advanced price editor": "Napredni urejevalnik cen",
+  "Edit detailed prices": "Uredi podrobne cene",
+  "This offer has detailed terms. You can rename it here or open the advanced price editor.": "Ta ponudba ima podrobne cenovne pogoje. Tukaj jo lahko preimenuješ ali odpreš napredni urejevalnik cen.",
+  "Continue": "Nadaljuj",
+  "Review offer": "Preveri vnos",
+  "Save offer": "Shrani ponudbo",
+  "Back": "Nazaj",
+  "Cancel": "Prekliči",
+  "Saving offer …": "Shranjujem ponudbo …",
+  "Offer saved.": "Ponudba je shranjena.",
+  "Offer could not be saved. Check the values or reopen the latest profile. Your draft is still here.": "Ponudbe ni bilo mogoče shraniti. Preveri vrednosti ali ponovno odpri najnovejši profil. Osnutek je ohranjen.",
+  "Finish or discard the other price draft before editing this offer.": "Pred urejanjem te ponudbe dokončaj ali zavrzi drugi osnutek cen.",
+  "Enter an offer name.": "Vnesi ime ponudbe.",
+  "Enter valid rates and a non-negative monthly subscription.": "Vnesi veljavne cene in nenegativno mesečno naročnino.",
+  "Choose a valid date range and time zone.": "Izberi veljavno obdobje in časovni pas.",
+  "Enter a markup or 0.": "Vnesi pribitek ali 0.",
+  "A save creates a new price version.": "Shranjevanje ustvari novo različico cenika.",
+  "My price profile": "Moj cenik",
+  "There are no offers in this profile yet.": "Ta cenik še nima ponudb.",
+  "Maximum of eight offers.": "Največ osem ponudb.",
+  "Saved reports": "Shranjena poročila",
+  "Saving …": "Shranjujem …",
+  "Open price profile": "Odpri cenik",
+  "Imported price list": "Uvoženi cenik",
+  "{0} price periods": "{0} cenovnih obdobij",
+  "Keep or discard your current offer draft before opening another.": "Preden odpreš drugo ponudbo, shrani ali zavrzi trenutni osnutek.",
   "1 day": "1 dan",
   "Not configured": "Ni nastavljena",
   "Warm-up": "Uvajanje",
@@ -113,6 +167,9 @@ const ECM_SL = {
   "Add contract version": "Dodaj različico pogodbe",
   "Remove offer": "Odstrani ponudbo",
   "Add offer": "Dodaj ponudbo",
+  "Add an offer first to configure the price profile.": "Za nastavitve cenika najprej dodaj ponudbo.",
+  "Block rates and agreed power": "Tarifni bloki in dogovorjena moč",
+  "Taxes and levies": "Davki in dajatve",
   "Save price profile": "Shrani cenovni profil",
   "Check the name, validity, prices and overlapping periods. The draft is retained.": "Preveri ime, veljavnost, cene in prekrivanje obdobij. Osnutek je ohranjen.",
   "Discard price changes": "Zavrzi cenovne spremembe",
@@ -219,37 +276,44 @@ const ECM_SL = {
 const ECM_STYLES = `
   :host { display: block; }
   ha-card {
-    --ecm-text: var(--primary-text-color, #17282d);
-    --ecm-muted: var(--secondary-text-color, #516568);
-    --ecm-surface: var(--card-background-color, #fff);
-    --ecm-base: var(--primary-background-color, #f2f5f5);
-    --ecm-border: var(--divider-color, #d5e1e1);
-    --ecm-accent: var(--primary-color, #007b69);
+    --ecm-text: var(--primary-text-color, light-dark(#17282d, #edf5f2));
+    --ecm-muted: var(--secondary-text-color, light-dark(#516568, #b3c4bf));
+    --ecm-surface: var(--card-background-color, light-dark(#fff, #20292e));
+    --ecm-base: var(--primary-background-color, light-dark(#f2f5f5, #151c20));
+    --ecm-border: var(--divider-color, light-dark(#d5e1e1, #3b4c49));
+    --ecm-accent: var(--ecm-accent-color, light-dark(#09634c, #87dbb8));
+    --ecm-action-text: light-dark(#fff, #112d24);
     --ecm-tint: color-mix(in srgb, var(--ecm-accent) 10%, var(--ecm-surface));
     display: block;
     color: var(--ecm-text);
     font: 400 14px/1.45 var(--paper-font-body1_-_font-family, system-ui, sans-serif);
     background: var(--ecm-base);
     border-radius: var(--ha-card-border-radius, 16px);
-    overflow: hidden;
+    overflow: clip;
     container-type: inline-size;
   }
   h2, h3, h4, p { margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  .layout { display: grid; grid-template-columns: minmax(135px, 174px) minmax(0, 1fr); min-height: 330px; }
   small { display: block; line-height: 1.5; }
-  .masthead { padding: 18px clamp(14px, 3cqw, 28px) 0; background: var(--ecm-surface); border-bottom: 1px solid var(--ecm-border); }
-  .masthead h2 { font-size: 1.25rem; line-height: 1.25; overflow-wrap: anywhere; }
-  .content { padding: clamp(14px, 3cqw, 28px); }
+  .masthead { padding: 18px 11px; background: color-mix(in srgb, var(--ecm-accent) 5%, var(--ecm-surface)); border-inline-end: 1px solid var(--ecm-border); }
+  .masthead h2 { font-size: 1rem; line-height: 1.25; overflow-wrap: anywhere; padding: 0 6px; }
+  .content { min-width: 0; padding: clamp(14px, 3cqw, 28px); }
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 16px; }
   .toolbar h3 { font-size: clamp(1.3rem, 3.7cqw, 1.95rem); letter-spacing: -.025em; line-height: 1.15; margin-bottom: 4px; }
   .toolbar small + small { margin-top: 3px; }
   .periods { display: flex; flex-wrap: wrap; gap: 3px; padding: 3px; border: 1px solid var(--ecm-border); border-radius: 12px; background: var(--ecm-surface); }
   .periods button { border-color: transparent; padding: 6px 10px; white-space: nowrap; }
-  nav { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 12px; }
-  button { cursor: pointer; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--ecm-border); background: var(--ecm-surface); color: inherit; font: inherit; }
+  nav { display: grid; gap: 4px; margin-top: 16px; }
+  button { cursor: pointer; min-height: 36px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--ecm-border); background: var(--ecm-surface); color: inherit; font: inherit; }
+  button:hover:not(:disabled) { background: var(--ecm-tint); }
+  button:disabled { opacity: .65; cursor: default; }
+  .primary { background: var(--ecm-accent); color: var(--ecm-action-text); border-color: var(--ecm-accent); font-weight: 650; }
+  .primary:hover:not(:disabled) { background: var(--ecm-accent); filter: brightness(.9); }
   button[aria-pressed=true] { background: var(--ecm-tint); border-color: var(--ecm-accent); font-weight: 650; }
-  nav button { padding: 9px 2px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; color: var(--ecm-muted); }
-  nav button[aria-current=true] { color: var(--ecm-text); border-bottom-color: var(--ecm-accent); font-weight: 650; }
-  button:focus-visible, summary:focus-visible { outline: 2px solid var(--ecm-accent); outline-offset: 2px; }
+  nav button { text-align: start; padding: 7px 9px; border: 0; background: transparent; color: var(--ecm-muted); }
+  nav button[aria-current=true] { background: var(--ecm-tint); color: var(--ecm-accent); font-weight: 650; }
+  :is(button, summary, input, select, textarea, a):focus-visible { outline: 2px solid var(--ecm-accent); outline-offset: 2px; }
   .muted { color: var(--ecm-muted); }
   .error { color: var(--error-color, #b00020); margin-bottom: 10px; }
   .metrics, .overview-grid { display: grid; gap: 12px; }
@@ -264,12 +328,16 @@ const ECM_STYLES = `
   .metric-value, .regional-value { display: block; font-size: clamp(1.18rem, 3.85cqw, 2rem); line-height: 1.2; letter-spacing: -.035em; margin: 5px 0; }
   .metric-value, .regional-value, .offer-value, dd { font-variant-numeric: tabular-nums; }
   .overview-grid h4 { font-size: 1rem; margin-bottom: 4px; }
-  .offer { display: grid; gap: 5px; margin-top: 14px; }
-  .offer-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
-  .offer-value { flex-shrink: 0; }
-  .cost-track { position: relative; height: 6px; border-radius: 4px; background: var(--ecm-base); }
-  .cost-bar { position: absolute; height: 100%; border-radius: inherit; background: var(--ecm-accent); }
-  .cost-zero { position: absolute; height: 100%; width: 1px; background: var(--ecm-muted); }
+  .offer { margin-top: 5px; padding: 0 9px; border-radius: 8px; }
+  .offer + .offer { border-top: 1px solid var(--ecm-border); }
+  .offer.leading { background: var(--ecm-tint); border-color: transparent; }
+  .offer summary { display: grid; grid-template-columns: minmax(0, 1fr) auto 12px; gap: 8px; align-items: center; min-height: 46px; padding: 7px 0; list-style: none; }
+  .offer summary::-webkit-details-marker { display: none; }
+  .offer summary::after { content: ""; width: 7px; height: 7px; border: solid var(--ecm-muted); border-width: 0 1px 1px 0; transform: rotate(45deg); margin-top: -3px; }
+  .offer[open] summary::after { transform: rotate(225deg); margin-top: 3px; }
+  .offer-amount { text-align: end; }
+  .offer-value { display: block; font-weight: 680; white-space: nowrap; }
+  .offer > small:last-child { padding-bottom: 8px; }
   .regional-offer { padding: 10px 0; }
   .regional-offer + .regional-offer { border-top: 1px solid var(--ecm-border); }
   .overview-grid details { margin-top: 4px; }
@@ -281,6 +349,51 @@ const ECM_STYLES = `
   article { padding: 12px 0; border-top: 1px solid var(--ecm-border); }
   textarea { box-sizing: border-box; width: 100%; min-height: 180px; font: 12px monospace; color: inherit; background: var(--ecm-surface); border: 1px solid var(--ecm-border); padding: 10px; }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .section-nav { margin: 0 0 14px; }
+  .section-nav button { border-radius: 9px; }
+  .section-nav a { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 9px; color: var(--ecm-accent); }
+  .panel { min-width: 0; padding: clamp(12px, 2.25cqw, 20px); background: var(--ecm-surface); border: 1px solid var(--ecm-border); border-radius: 12px; overflow-wrap: anywhere; }
+  .panel + .panel { margin-top: 12px; }
+  .panel h4 { font-size: 1rem; margin-bottom: 8px; }
+  .panel > .actions + .panel-row { margin-top: 11px; }
+  .panel-row { border-top: 1px solid var(--ecm-border); padding: 8px 0; }
+  .panel-row summary { font-weight: 620; }
+  .panel :is(p, summary) + .field { margin-top: 10px; }
+  .pricing-grid { display: grid; align-items: start; grid-template-columns: minmax(0, 4fr) minmax(0, 5fr); gap: 12px; }
+  .pricing-grid + .panel { margin-top: 12px; }
+  .pricing-grid .panel + .panel { margin-top: 0; }
+  .offer-picker { display: grid; gap: 4px; margin: 10px 0; }
+  .offer-picker button { text-align: start; overflow-wrap: anywhere; min-height: 43px; }
+  .offer-picker button[aria-pressed=true] { border-color: transparent; color: var(--ecm-accent); }
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; list-style: none; margin: 10px 0 14px; padding: 0; }
+  .steps li { border-top: 3px solid var(--ecm-border); padding-top: 4px; color: var(--ecm-muted); font-size: .83rem; }
+  .steps li[aria-current=step] { border-color: var(--ecm-accent); color: var(--ecm-accent); font-weight: 650; }
+  .field { display: grid; gap: 4px; color: var(--ecm-text); min-width: 0; font-size: .88rem; font-weight: 560; margin: 0 0 10px; }
+  .field :is(input:not([type=checkbox]), select) { display: block; min-width: 0; width: 100%; min-height: 39px; padding: 6px 9px; border: 1px solid var(--ecm-border); border-radius: 8px; background: var(--ecm-surface); color: inherit; font: inherit; font-weight: 400; }
+  .field.check { display: flex; align-items: center; gap: 8px; min-height: 36px; }
+  .field.check input { width: 16px; height: 16px; accent-color: var(--ecm-accent); margin: 0; flex: none; }
+  .field-unit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; border: 1px solid var(--ecm-border); border-radius: 8px; }
+  .field .field-unit input { border: 0; }
+  .field-unit small { padding-inline: 4px 8px; font-weight: 400; white-space: nowrap; }
+  .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 0 10px; }
+  .editor-actions { justify-content: end; border-top: 1px solid var(--ecm-border); padding-top: 11px; }
+  .advanced-fields { padding: 10px 0; }
+  .advanced-fields summary { color: var(--ecm-accent); margin-bottom: 8px; }
+  fieldset { min-width: 0; border: 1px solid var(--ecm-border); border-radius: 9px; margin: 10px 0; padding: 10px; }
+  legend { padding: 0 5px; font-weight: 650; overflow-wrap: anywhere; }
+  .review { display: grid; gap: 6px; margin: 10px 0; }
+  .review div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; border-bottom: 1px solid var(--ecm-border); padding-bottom: 5px; }
+  .review dd { margin: 0; }
+  @container (max-width: 760px) {
+    .pricing-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @container (max-width: 620px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .masthead { padding: 10px 12px; border-inline-end: 0; border-bottom: 1px solid var(--ecm-border); }
+    .masthead h2 { padding: 0; }
+    nav { display: flex; flex-wrap: wrap; margin-top: 7px; }
+    nav button { padding-inline: 7px; }
+  }
   @container (max-width: 580px) {
     .overview-grid { grid-template-columns: minmax(0, 1fr); }
     .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -319,6 +432,75 @@ function gridEnergy(intervals, role) {
   }
   return {total, present, complete};
 }
+
+function localDateTime(time, zone) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
+  }).formatToParts(time);
+  const {year, month, day, hour, minute, second} = Object.fromEntries(parts.map(({type, value}) => [type, value]));
+  return `${year.padStart(4, "0")}-${month}-${day}T${hour}:${minute}:${second}`;
+}
+
+function shiftDay(day, delta) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return "";
+  const time = new Date(Date.parse(day + "T00:00:00Z") + delta * 86400000);
+  return Number.isFinite(time.getTime()) ? time.toISOString().split("T")[0] : "";
+}
+
+function localMidnight(day, zone) {
+  if (shiftDay(day, 0) !== day || !day) return null;
+  const expected = day + "T00:00:00";
+  const target = Date.parse(expected + "Z");
+  let time = target;
+  try {
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const actual = localDateTime(time, zone);
+      if (actual === expected) return time;
+      time += target - Date.parse(actual + "Z");
+    }
+  } catch (_) {
+    // The form also accepts manually entered IANA zones.
+  }
+  return null;
+}
+
+function simpleOffer(scenario) {
+  if (scenario.versions.length !== 1) return null;
+  const version = scenario.versions[0];
+  const start = Date.parse(version.from), end = Date.parse(version.until);
+  const timezone = scenario.timezone;
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return null;
+  let from, until;
+  try {
+    from = localDateTime(start, timezone).slice(0, 10);
+    until = localDateTime(end, timezone).slice(0, 10);
+  } catch (_) {
+    return null;
+  }
+  if (localMidnight(from, timezone) !== start || localMidnight(until, timezone) !== end) return null;
+  for (const periods of [version.import, version.export]) {
+    if (periods.length > 1 || periods.some(p => p.unit !== "EUR/kWh" || Date.parse(p.from) !== start || Date.parse(p.until) !== end)) return null;
+  }
+  const quotes = [version.subscription, ...version.import, ...version.export];
+  const sources = new Set(quotes.map(quote => quote.source));
+  const statuses = new Set(quotes.filter(quote => quote.value !== null).map(quote => quote.status));
+  if (sources.size > 1 || statuses.size > 1) return null;
+  return {
+    from, last: shiftDay(until, -1), timezone, source: version.subscription.source,
+    price: String(version.import[0]?.value ?? ""), export: String(version.export[0]?.value ?? ""),
+    fee: String(version.subscription.value ?? ""), confirmed: statuses.has("confirmed"),
+  };
+}
+
+function decimalInput(value) {
+  const text = value.trim().replace(",", ".");
+  if (!text) return null;
+  const match = /^[+-]?(?:\d+(?:\.(\d*))?|\.(\d+))(?:e([+-]?\d+))?$/i.exec(text);
+  if (!match || text.length > 48 || Math.abs(Number(text)) > 1e9) return undefined;
+  const precision = (match[1] ?? match[2] ?? "").length - Number(match[3] ?? 0);
+  return Number.isFinite(precision) && precision <= 12 ? text : undefined;
+}
 /* Energy Cost Monitor development card. MIT, Copyright 2026 MrCodeLabs. */
 class EnergyCostMonitorCard extends HTMLElement {
   constructor() {
@@ -340,7 +522,12 @@ class EnergyCostMonitorCard extends HTMLElement {
   }
   set hass(hass) {
     const language = this._language();
+    const darkMode = this._hass?.themes?.darkMode;
     this._hass = hass;
+    if (darkMode !== hass?.themes?.darkMode) {
+      const card = this.shadowRoot.querySelector("ha-card");
+      if (card) card.style.colorScheme = this._colorScheme();
+    }
     if (language !== this._language()) {
       const controls = [...this.shadowRoot.querySelectorAll("input,select,textarea")];
       const details = [...this.shadowRoot.querySelectorAll("details")].map(node => node.open);
@@ -365,6 +552,10 @@ class EnergyCostMonitorCard extends HTMLElement {
     return this._t(Object.hasOwn(labels,value) ? labels[value] : String(value));
   }
   _locale() { return this._language() === "sl" ? "sl-SI" : "en-GB"; }
+  _colorScheme() {
+    const darkMode = this._hass?.themes?.darkMode;
+    return typeof darkMode === "boolean" ? darkMode ? "dark" : "light" : "light dark";
+  }
   _t(message, ...values) {
     const key = typeof message === "string" ? message : message.reduce((text, part, i) => text + (i ? `{${i-1}}` : "") + part, "");
     const translated = this._language() === "sl" && Object.hasOwn(ECM_SL, key) ? ECM_SL[key] : key;
@@ -381,7 +572,7 @@ class EnergyCostMonitorCard extends HTMLElement {
   }
   async _refresh() {
     if (!this._connected || !this._hass || this._loading) return;
-    if ((this._tab === "profiles" && this._draft !== null) || this._importDraft || this._pricingDraft || this._settingsDraft || this._studyDraft) return;
+    if (this._draft !== null || this._offerDraft || this._importDraft || this._pricingDraft || this._settingsDraft || this._studyDraft) return;
     this._loading = true;
     const generation = this._generation;
     const days = this._days;
@@ -420,6 +611,13 @@ class EnergyCostMonitorCard extends HTMLElement {
     return number === null ? this._t("unknown") : number.toLocaleString(this._locale(), {style: "currency", currency: "EUR"});
   }
   _time(value) { return value === null || value === undefined ? this._t("still open") : new Date(value*1000).toLocaleString(this._locale()); }
+  _offerLabel(profile, id) {
+    const names = profile?.offer_names ?? {};
+    if (Object.hasOwn(names, id)) return names[id];
+    if (id === "my-offer") return this._t`Offer ${1}`;
+    const generated = /^(?:legacy|offer)-(\d+)$/.exec(id);
+    return generated ? this._t`Offer ${generated[1]}` : id;
+  }
   _render() {
     const root = this.shadowRoot;
     const focusedId = root.activeElement?.id;
@@ -428,87 +626,105 @@ class EnergyCostMonitorCard extends HTMLElement {
     const style = this._node("style", undefined, root);
     style.textContent = ECM_STYLES;
     const shell = this._node("ha-card", undefined, root);
-    const header = this._node("header", undefined, shell, "masthead");
+    shell.style.colorScheme = this._colorScheme();
+    const layout = this._node("div", undefined, shell, "layout");
+    const header = this._node("header", undefined, layout, "masthead");
     this._node("h2", this._config?.title || "Energy Cost Monitor", header);
     const nav = this._node("nav", undefined, header);
     nav.setAttribute("aria-label", "Energy Cost Monitor");
-    for (const [tab,label] of [["overview",this._t("Overview")],["sessions",this._t("EV sessions")],["reports",this._t("Reports")],["profiles",this._t("Profiles")],["pricing",this._t("Prices")],["settings",this._t("EV and billing")],["study",this._t("Study")],["history",this._t("History import")]]) {
-      const button = this._button(label,nav,()=>{this._tab=tab;this._render();});
-      button.id = `ecm-tab-${tab}`;
-      button.setAttribute("aria-current",String(this._tab===tab));
+    const group = {profiles: "settings", history: "settings", study: "reports"}[this._tab] ?? this._tab;
+    for (const [tab, label] of [["overview", "Overview"], ["pricing", "Prices"], ["sessions", "Charging"], ["reports", "Reports"], ["settings", "Settings"]]) {
+      this._navigationButton(nav, tab, label, group);
     }
-    const card = this._node("div", undefined, shell, "content");
-    if (["overview", "sessions", "reports"].includes(this._tab)) this._renderPeriod(card);
+    const card = this._node("div", undefined, layout, "content");
+    if (["overview", "sessions", "reports"].includes(this._tab)) {
+      this._renderPeriod(card);
+    } else {
+      const toolbar = this._node("div", undefined, card, "toolbar");
+      const heading = {pricing: "Electricity prices", settings: "Settings", profiles: "Settings", history: "Settings", study: "Reports"}[this._tab];
+      this._node("h3", this._t(heading), toolbar);
+      if (this._tab === "pricing" && this._data) {
+        const add = this._button(this._t("Add offer"), toolbar, () => this._openOffer());
+        add.id = "ecm-add-offer";
+        add.disabled = (this._activeProfile()?.scenarios.length ?? 0) >= 8;
+      }
+    }
+    this._renderSectionNav(card, group);
     if(this._error) this._node("p",this._t(this._error),card,"error");
+    if(this._notice) this._node("p",this._t(this._notice),card,"muted").setAttribute("role","status");
     const data=this._data;
     if (!data) this._node("p", this._t("Waiting for data …"), card);
-    else if(this._tab==="history") { this._historyForm(card);
-    } else if(this._tab==="pricing") { this._pricingForm(card);
-    } else if(this._tab==="settings") { this._settingsForm(card);
-    } else if(this._tab==="study") { this._studyForm(card);
+    else if(this._tab==="history") { this._historyForm(this._node("section",undefined,card,"panel"));
+    } else if(this._tab==="pricing") { this._pricingForm(card, expanded);
+    } else if(this._tab==="settings") { this._settingsForm(this._node("section",undefined,card,"panel"), expanded);
+    } else if(this._tab==="study") { this._studyForm(this._node("section",undefined,card,"panel"), expanded);
     } else if(this._tab==="overview") { this._renderOverview(card, data, expanded);
     } else if(this._tab==="sessions") {
-      if(!data.sessions.length)this._node("p",this._t("No EV sessions detected in the selected period."),card);
+      const sessions = this._node("section",undefined,card,"panel");
+      if(!data.sessions.length)this._node("p",this._t("No EV sessions detected in the selected period."),sessions);
       for(const session of [...data.sessions].reverse()) {
-        const row=this._node("article",undefined,card), body=session.body;
+        const row=this._node("article",undefined,sessions), body=session.body;
         if(session.legacy)this._node("small",this._t("Archived legacy session \u00b7 original calculation"),row,"muted");
         this._node("strong",`${this._time(session.start)} → ${this._time(session.end)}`,row);
         this._node("p",this._t`${this._number(body.kwh,"kWh")} · charging ${this._number(body.charging_seconds/60,"min")} · paused ${this._number(body.pause_seconds/60,"min")}`,row);
         for(const [name,total] of Object.entries(body.mode_totals || {}))this._node("small",`${name}: ${this._number(total.kwh,"kWh")} · ${this._number(total.seconds/60,"min")}`,row);
-        const events=this._node("details",undefined,row);this._node("summary",this._t("Events and modes (observation only)"),events);
+        const events=this._node("details",undefined,row);
+        events.id = `ecm-session-${session.id ?? session.start}`;
+        events.open = expanded.has(events.id);
+        this._node("summary",this._t("Events and modes (observation only)"),events);
         for(const event of body.events || [])this._node("small",`${this._time(event.ts)} · ${event.state} · ${Object.entries(event.mode || {}).filter(([,v])=>v!==null).map(([k,v])=>`${k}: ${v}`).join(" · ")}`,events);
         this._node("small",body.partial?this._t("Partial session: gaps or unallocated energy at interval boundaries."):this._t("Covered session intervals."),row,"muted");
       }
     } else if(this._tab==="reports") {
-      this._node("p",this._t("A frozen report retains the data, profile and price assumptions at capture time."),card);
-      this._button(this._t("Freeze displayed period"),card,async()=>{
-        try{await this._api("POST","reports",{start:data.start,end:data.end});await this._refresh();}
-        catch(_){this._error="Could not save the report.";this._render();}
-      }).disabled = this._days !== this._dataDays;
+      const reports = this._node("section",undefined,card,"panel");
+      this._node("h4",this._t("Saved reports"),reports);
+      this._node("p",this._t("A frozen report retains the data, profile and price assumptions at capture time."),reports);
+      const actions = this._node("div", undefined, reports, "actions");
+      const freeze = this._button(this._t("Freeze displayed period"),actions,async()=>{
+        if (this._savingReport) return;
+        this._savingReport = true;
+        this._render();
+        try{
+          await this._api("POST","reports",{start:data.start,end:data.end});
+          this._reports = await this._api("GET", "reports");
+          this._error = null;
+        } catch(_) {this._error="Could not save the report.";}
+        finally {this._savingReport = false;this._render();}
+      });
+      freeze.id = "ecm-freeze-report";
+      freeze.disabled = this._days !== this._dataDays || this._savingReport;
+      freeze.className = "primary";
+      if (this._savingReport) freeze.textContent = this._t("Saving …");
       for(const report of this._reports || []) {
-        const row=this._node("article",undefined,card);
+        const row=this._node("details",undefined,reports,"panel-row");
+        row.id = `ecm-report-${report.id}`;
+        row.open = expanded.has(row.id);
+        this._node("summary",`${this._time(report.start)} – ${this._time(report.end)}`,row);
         if(report.legacy)this._node("small",this._t("Archived report \u00b7 not recalculated"),row,"muted");
-        this._node("strong",`${this._time(report.start)} – ${this._time(report.end)}`,row);
         const actions=this._node("div",undefined,row,"actions");
         for(const format of ["html","csv"])this._button(format.toUpperCase(),actions,()=>this._download(report.id,format));
       }
     } else {
-      const form=this._node("details",undefined,card);
-      this._node("summary",this._t("New simple price profile"),form);
-      const fields={};
-      for(const [key,label,type] of [["name",this._t("Profile name"),"text"],["from",this._t("Valid from (UTC)"),"date"],["until",this._t("Valid until (UTC, exclusive)"),"date"],["price",this._t("Import EUR/kWh excluding VAT"),"number"],["export",this._t("Export EUR/kWh excluding VAT"),"number"],["fee",this._t("Subscription EUR/month excluding VAT"),"number"]]) {
-        const wrapper=this._node("label",label,form); wrapper.style.display="block";
-        const input=this._node("input",undefined,wrapper);input.type=type;
-        if(type==="number")input.step="any"; fields[key]=input;
-      }
-      this._node("small",this._t("An empty price means unknown. Enter 0 for a zero subscription. Prices are references until checked against the contract."),form,"muted");
-      this._button(this._t("Prepare profile"),form,()=>{
-        const first=fields.from.value+"T00:00:00Z",last=fields.until.value+"T00:00:00Z";
-        if(!fields.name.value.trim() || !Number.isFinite(Date.parse(first)) || Date.parse(last)<=Date.parse(first) || !Number.isFinite(Date.parse(last))) {
-          this._error="Enter a name and a valid period.";this._render();return;
-        }
-        const quote=(value,unit)=>({value:value===""?null:value,unit,source:"User input",status:value===""?"unknown":"reference"});
-        const period=value=>({...quote(value,"EUR/kWh"),from:first,until:last});
-        this._draft=JSON.stringify({name:fields.name.value,scenarios:[{schema_version:1,id:"my-offer",currency:"EUR",tax_basis:"excluding_vat",timezone:"UTC",versions:[{id:"version-1",from:first,until:last,import:[period(fields.price.value)],export:[period(fields.export.value)],subscription:quote(fields.fee.value,"EUR/month")}]}],indexed_import:{}},null,2);
-        this._error=null;this._render();
-      });
-      this._node("p",this._t("Import a JSON profile with effective dates, prices and sources. Changes create a new version; reports remain unchanged."),card);
-      const advanced=this._node("details",undefined,card);advanced.open=this._draft!==null;
+      const profiles = this._node("section",undefined,card,"panel");
+      this._node("h4", this._t("Price versions"), profiles);
+      const advanced=this._node("details",undefined,profiles,"advanced-fields");advanced.open=this._draft!==null || expanded.has("ecm-profile-json");
+      advanced.id = "ecm-profile-json";
       this._node("summary",this._t("Advanced settings and profile preview"),advanced);
+      this._node("p",this._t("Import a JSON profile with effective dates, prices and sources. Changes create a new version; reports remain unchanged."),advanced);
       const editor=this._node("textarea",undefined,advanced);editor.setAttribute("aria-label",this._t("Supply-scenario JSON profile"));
       const active=this._profiles?.versions.find(v=>v.id===this._profiles.active);
       editor.value=this._draft ?? JSON.stringify(active?.profile || {name:"My profile",scenarios:[],indexed_import:{}},null,2);
       editor.addEventListener("input",()=>{this._draft=editor.value;});
       this._button(this._t("Save new version"),advanced,async()=>{
-        try{await this._api("POST","profiles",JSON.parse(editor.value)); this._draft=null; await this._refresh();}
+        try{this._profiles=await this._api("POST","profiles",JSON.parse(editor.value)); this._draft=null; this._error=null;this._render();await this._refresh();}
         catch(_){this._error="Invalid profile or save failed.";this._render();}
       });
       this._button(this._t("Discard draft"),advanced,()=>{this._draft=null;this._render();});
       for(const version of this._profiles?.versions || []) {
-        const row=this._node("article",undefined,card);
-        this._node("strong",`${version.profile.name}${version.id===this._profiles.active?this._t(" \u00b7 active"):""}`,row);
+        const row=this._node("article",undefined,profiles);
+        this._node("strong",`${this._profileLabel(version.profile)}${version.id===this._profiles.active?this._t(" \u00b7 active"):""}`,row);
         if(version.id!==this._profiles.active)this._button(this._t("Use this version"),row,async()=>{
-          try{await this._api("POST","profiles",{activate:version.id});await this._refresh();}
+          try{this._profiles=await this._api("POST","profiles",{activate:version.id});this._error=null;this._render();await this._refresh();}
           catch(_){this._error="Profile activation failed.";this._render();}
         });
       }
@@ -516,10 +732,36 @@ class EnergyCostMonitorCard extends HTMLElement {
     if (focusedId) root.getElementById(focusedId)?.focus({preventScroll: true});
   }
 
+  _navigationButton(parent, tab, label, current, prefix = "tab") {
+    const button = this._button(this._t(label), parent, () => {
+      if (this._tab !== tab) {
+        this._tab = tab;
+        this._error = null;
+        this._notice = null;
+        this._render();
+      }
+    });
+    button.id = `ecm-${prefix}-${tab}`;
+    button.setAttribute("aria-current", String(current === tab));
+  }
+
+  _renderSectionNav(parent, group) {
+    if (group !== "settings" && group !== "reports") return;
+    const nav = this._node("nav", undefined, parent, "section-nav actions");
+    nav.setAttribute("aria-label", this._t(group === "settings" ? "Settings" : "Reports"));
+    const pages = group === "settings" ? [["settings","Billing and EV"],["profiles","Price versions"],["history","History import"]] :
+      [["reports","Saved reports"], ["study","Study settings"]];
+    for (const [tab, label] of pages) this._navigationButton(nav, tab, label, this._tab, "section");
+    if (group === "settings") {
+      const sources = this._node("a", this._t("Meter sources"), nav);
+      sources.href = "/config/integrations/integration/energy_cost_monitor";
+    }
+  }
+
   _renderPeriod(parent) {
     const toolbar = this._node("div", undefined, parent, "toolbar");
     const heading = this._node("div", undefined, toolbar);
-    const labels = {overview: "Cost overview", sessions: "EV sessions", reports: "Reports"};
+    const labels = {overview: "Cost overview", sessions: "Charging", reports: "Reports"};
     this._node("h3", this._t(labels[this._tab]), heading);
     if (this._data) {
       const {start, end, latest_sample: latest} = this._data;
@@ -548,11 +790,11 @@ class EnergyCostMonitorCard extends HTMLElement {
   }
 
   _renderOverview(parent, data, expanded) {
-    const {comparison, intervals = [], price_error: priceError} = data;
+    const {comparison, profile, intervals = [], price_error: priceError} = data;
     const totals = comparison?.common_totals ?? {};
     const offers = (comparison?.results ?? []).map(result => {
       const id = result.scenario.identifier;
-      return {id, result, cost: Object.hasOwn(totals, id) ? amount(totals[id]) : null};
+      return {id, label: this._offerLabel(profile, id), result, cost: Object.hasOwn(totals, id) ? amount(totals[id]) : null};
     });
     const costs = offers.flatMap(offer => offer.cost === null ? [] : [offer.cost]);
     const lowest = costs.length ? Math.min(...costs) : null;
@@ -571,7 +813,7 @@ class EnergyCostMonitorCard extends HTMLElement {
     };
     const offerMetric = metric(offers.length > 1 ? "Lowest supply estimate" : "Supply estimate", this._money(lowest));
     if (leaders.length) {
-      const label = leaders.length === 1 ? leaders[0].id : this._t`${leaders.length} offers share the lowest estimate`;
+      const label = leaders.length === 1 ? leaders[0].label : this._t`${leaders.length} offers share the lowest estimate`;
       this._node("small", this._t`${label} · excluding VAT`, offerMetric, "muted");
     }
     const gridMetric = metric("Grid import", this._number(imported.total, "kWh"));
@@ -587,8 +829,8 @@ class EnergyCostMonitorCard extends HTMLElement {
     }
 
     const grid = this._node("div", undefined, parent, "overview-grid");
-    this._renderSupply(grid, offers, costs, expanded);
-    this._renderRegional(grid, data.regional_bills ?? {}, expanded);
+    this._renderSupply(grid, offers, lowest, leaders.length > 1, expanded);
+    this._renderRegional(grid, data.regional_bills ?? {}, profile, expanded);
 
     this._node("small", this._t("Supply costs and separate regional estimate · not an invoice or amount payable"), parent, "muted overview-note");
     const sources = Object.values(data.market_provenance ?? {});
@@ -598,7 +840,7 @@ class EnergyCostMonitorCard extends HTMLElement {
     }
   }
 
-  _renderSupply(parent, offers, costs, expanded) {
+  _renderSupply(parent, offers, lowest, tied, expanded) {
     const supply = this._node("section", undefined, parent);
     this._node("h4", this._t("Supply comparison"), supply);
     if (!offers.length) {
@@ -606,40 +848,42 @@ class EnergyCostMonitorCard extends HTMLElement {
       return;
     }
     this._node("small", this._t("Estimates on shared intervals · excluding VAT"), supply, "muted");
-    if (!costs.length) this._node("p", this._t("No shared priced intervals"), supply, "overview-note");
-    const min = Math.min(0, ...costs);
-    const max = Math.max(0, ...costs);
-    const position = value => 100 * (value - min) / (max - min);
-    for (const {id, result, cost} of offers) {
-      const offer = this._node("div", undefined, supply, "offer");
-      const heading = this._node("div", undefined, offer, "offer-heading");
-      this._node("strong", id, heading);
-      this._node("span", this._money(cost), heading, "offer-value");
-      if (cost !== null && max > min) {
-        const track = this._node("div", undefined, offer, "cost-track");
-        track.setAttribute("aria-hidden", "true");
-        const bar = this._node("span", undefined, track, "cost-bar");
-        bar.style.insetInlineStart = `${position(Math.min(cost, 0))}%`;
-        bar.style.width = `${Math.abs(position(cost) - position(0))}%`;
-        if (min < 0 && max > 0) this._node("span", undefined, track, "cost-zero").style.insetInlineStart = `${position(0)}%`;
+    if (lowest === null) this._node("p", this._t("No shared priced intervals"), supply, "overview-note");
+    const ordered = [...offers].sort((a, b) => (a.cost ?? Infinity) - (b.cost ?? Infinity));
+    for (const {id, label, result, cost} of ordered) {
+      const leading = cost !== null && cost === lowest && offers.length > 1;
+      const details = this._node("details", undefined, supply, leading ? "offer leading" : "offer");
+      details.id = `ecm-supply-${id}`;
+      details.open = expanded.has(details.id);
+      const heading = this._node("summary", undefined, details);
+      heading.id = `${details.id}-summary`;
+      const identity = this._node("span", undefined, heading);
+      this._node("strong", label, identity);
+      if (leading) this._node("small", this._t(tied ? "Lowest estimate (tie)" : "Lowest estimate"), identity, "muted");
+      const price = this._node("span", undefined, heading, "offer-amount");
+      this._node("span", this._money(cost), price, "offer-value");
+      if (cost !== null && cost > lowest) {
+        this._node("small", "+" + this._money(cost - lowest), price, "muted")
+          .setAttribute("aria-label", this._money(cost - lowest) + " · " + this._t("More than the lowest estimate"));
       }
-      const details = this._overviewDetails(offer, `ecm-supply-${id}`, expanded);
       this._node("small", this._t`Whole-period total: ${this._money(result.total)}`, details, "muted");
       const pricedCoverage = amount(result.coverage);
       const quality = result.confirmed ? this._t("confirmed supply rates") : this._t("reference or incomplete data");
       this._node("small", this._t`Known subtotal: ${this._money(result.known_net_subtotal)} · ${quality}`, details, "muted");
       this._node("small", this._t`Coverage: ${this._number(pricedCoverage === null ? null : pricedCoverage * 100, "%")}`, details, "muted");
+      const sources = [...new Set((result.scenario.versions ?? []).map(version => version.subscription?.source).filter(Boolean))];
+      if (sources.length) this._node("small", this._t("Price source") + " · " + sources.join(", "), details, "muted");
     }
   }
 
-  _renderRegional(parent, estimates, expanded) {
+  _renderRegional(parent, estimates, profile, expanded) {
     const regional = this._node("section", undefined, parent);
     this._node("h4", this._t("Regional estimate"), regional);
     const bills = Object.entries(estimates);
     if (!bills.length) this._node("p", this._t("Configure regional rates under EV and billing."), regional, "muted");
     for (const [id, bill] of bills) {
       const row = this._node("div", undefined, regional, "regional-offer");
-      this._node("strong", id, row);
+      this._node("strong", this._offerLabel(profile, id), row);
       const total = amount(bill.total_gross);
       this._node("small", this._t(total === null ? "Known subtotal including VAT" : "Estimated total including VAT"), row, "muted");
       this._node("strong", this._money(total ?? bill.known_reference_gross), row, "regional-value");
@@ -665,24 +909,303 @@ class EnergyCostMonitorCard extends HTMLElement {
     return details;
   }
 
-  _field(parent, label, value, type, change) {
-    const wrapper=this._node("label",label,parent);wrapper.style.display="block";
-    const input=this._node("input",undefined,wrapper);input.type=type;
+  _field(parent, label, value, type, change, unit) {
+    const wrapper=this._node("label",label,parent,type==="checkbox"?"field check":"field");
+    const target=unit ? this._node("span",undefined,wrapper,"field-unit") : wrapper;
+    const input=this._node("input",undefined,target);input.type=type;
+    if(unit) {
+      this._node("small",unit,target);
+      input.inputMode="decimal";
+    }
     if(type==="number")input.step="any";
     if(type==="checkbox")input.checked=!!value;else input.value=value ?? "";
     input.addEventListener("input",()=>change(type==="checkbox"?input.checked:input.value));
     return input;
   }
-  _pricingForm(card) {
-    const active=this._profiles?.versions.find(v=>v.id===this._profiles.active)?.profile;
+  _activeProfile() {
+    return this._profiles?.versions.find(version => version.id === this._profiles.active)?.profile;
+  }
+
+  _profileLabel(profile) {
+    return profile.name === "Imported legacy supply (reference)" ? this._t("Imported price list") : profile.name;
+  }
+
+  _openOffer(scenario) {
+    if (this._offerDraft || this._pricingDraft || this._draft !== null || this._settingsDraft) {
+      this._error = this._offerDraft ? "Keep or discard your current offer draft before opening another." :
+        "Finish or discard the other price draft before editing this offer.";
+      this._render();
+      return;
+    }
+    const active = this._activeProfile();
+    const scenarios = active?.scenarios ?? [];
+    if (!scenario && scenarios.length >= 8) return;
+    let number = 1;
+    while (scenarios.some(offer => offer.id === `offer-${number}`)) number++;
+    const id = scenario?.id ?? `offer-${number}`;
+    const values = scenario ? simpleOffer(scenario) : {
+      price: "", export: "", fee: "", from: "", last: "", source: "", confirmed: false,
+      timezone: this._hass?.config?.time_zone || "UTC",
+    };
+    const bindings = active?.indexed_import ?? {};
+    const index = Object.hasOwn(bindings, id) ? bindings[id] : null;
+    this._offerDraft = {
+      id, scenario, base: this._profiles?.active ?? null, step: 0, values,
+      name: scenario ? this._offerLabel(active, id) : "",
+      mode: index ? "indexed" : "fixed", zone: index?.zone ?? "SI",
+      markup: String(index?.markup_eur_kwh ?? "0"), termsEdited: !scenario,
+    };
+    this._generation++;
+    this._error = this._notice = null;
+    this._render();
+    this.shadowRoot.getElementById?.("ecm-offer-name")?.focus();
+  }
+
+  _pricingForm(card, expanded) {
+    const active = this._activeProfile();
+    const grid = this._node("div", undefined, card, "pricing-grid");
+    const list = this._node("section", undefined, grid, "panel");
+    this._node("h4", this._t("Your offers"), list);
+    if (active) this._node("small", this._profileLabel(active), list, "muted");
+    if (!active?.scenarios.length) this._node("p", this._t("There are no offers in this profile yet."), list, "muted");
+    const rows = this._node("div", undefined, list, "offer-picker");
+    for (const scenario of active?.scenarios ?? []) {
+      const row = this._button(undefined, rows, () => this._openOffer(scenario));
+      this._node("strong", this._offerLabel(active, scenario.id), row);
+      const binding = Object.hasOwn(active.indexed_import, scenario.id) ? active.indexed_import[scenario.id] : null;
+      const periods = scenario.versions.reduce((count, version) => count + version.import.length, 0);
+      const single = scenario.versions.length === 1 && periods === 1 ? scenario.versions[0].import[0] : null;
+      const rate = amount(single?.value);
+      if (binding) {
+        this._node("small", this._t("Energy-Charts reference index + markup") + " · " + binding.zone, row, "muted");
+      } else if (rate !== null) {
+        this._node("small", rate.toLocaleString(this._locale(), {maximumFractionDigits:12}) + " " + single.unit, row, "muted");
+      } else if (periods > 1) {
+        this._node("small", this._t`${periods} price periods`, row, "muted");
+      }
+      row.id = `ecm-edit-${scenario.id}`;
+      row.setAttribute("aria-pressed", String(this._offerDraft?.id === scenario.id));
+    }
+    if (active?.scenarios.length === 8) this._node("small", this._t("Maximum of eight offers."), list, "muted");
+    this._navigationButton(list, "profiles", "Price versions", this._tab, "prices-section");
+    if (this._offerDraft) {
+      this._offerEditor(this._node("section", undefined, grid, "panel"), expanded);
+    } else {
+      const advanced = this._node("details", undefined, card, "panel advanced-fields");
+      advanced.id = "ecm-advanced-prices";
+      advanced.open = Boolean(this._pricingDraft) || expanded.has(advanced.id);
+      this._node("summary", this._t("Advanced price editor"), advanced);
+      let rendered = false;
+      const render = () => {
+        if (advanced.open && !rendered) {
+          rendered = true;
+          this._advancedPricingForm(advanced, expanded);
+        }
+      };
+      render();
+      advanced.addEventListener("toggle", render);
+    }
+  }
+
+  _offerEditor(panel, expanded) {
+    const draft = this._offerDraft;
+    this._node("h4", this._t(draft.scenario ? "Edit offer" : "New offer"), panel);
+    const values = draft.values;
+    if (values) {
+      const steps = this._node("ol", undefined, panel, "steps");
+      ["Offer", "Validity", "Review"].forEach((label, i) => {
+        const item = this._node("li", this._t(label), steps);
+        if (i === draft.step) item.setAttribute("aria-current", "step");
+      });
+    }
+    const edit = (parent, key, label, type = "text", unit) => {
+      const input = this._field(parent, this._t(label), values[key], type, value => {
+        values[key] = value;
+        draft.termsEdited = true;
+        if (draft.step === 0) values.confirmed = false;
+      }, unit);
+      input.id = `ecm-offer-${key}`;
+      return input;
+    };
+    if (draft.step === 0) {
+      const name = this._field(panel, this._t("Offer name"), draft.name, "text", value => { draft.name = value; });
+      name.id = "ecm-offer-name";
+      name.maxLength = 100;
+      name.disabled = this._savingOffer;
+      if (values) {
+        const prices = this._node("div", undefined, panel, "field-grid");
+        edit(prices, "price", "Grid import", "text", "€/kWh");
+        edit(prices, "fee", "Monthly subscription", "text", "€/month");
+        edit(panel, "export", "Export rate (optional)", "text", "€/kWh");
+        this._node("small", this._t("Prices exclude VAT. Leave unknown amounts blank. Enter 0 when the price is zero."), panel, "muted");
+      } else {
+        this._node("p", this._t("This offer has detailed terms. You can rename it here or open the advanced price editor."), panel, "muted");
+        const advanced = this._button(this._t("Edit detailed prices"), panel, () => {
+          const profile = JSON.parse(JSON.stringify(this._activeProfile()));
+          if (draft.name.trim()) (profile.offer_names ??= {})[draft.id] = draft.name.trim();
+          this._pricingDraft = profile;
+          this._advancedOffer = draft.id;
+          this._offerDraft = null;
+          this._error = null;
+          this._render();
+        });
+        advanced.disabled = this._savingOffer;
+      }
+    } else if (draft.step === 1) {
+      const dates = this._node("div", undefined, panel, "field-grid");
+      edit(dates, "from", "Valid from", "date");
+      edit(dates, "last", "Last valid day", "date");
+      edit(panel, "source", "Price source (optional)");
+      edit(panel, "confirmed", "I checked these prices against the price list or invoice.", "checkbox");
+      const advanced = this._node("details", undefined, panel, "advanced-fields");
+      advanced.id = "ecm-offer-settings";
+      advanced.open = expanded.has(advanced.id) || draft.mode === "indexed";
+      this._node("summary", this._t("Advanced settings"), advanced);
+      edit(advanced, "timezone", "Time zone (IANA)");
+      this._select(advanced, this._t("Entry method"), draft.mode, [
+        ["fixed", this._t("Entered prices")], ["indexed", this._t("Energy-Charts reference index + markup")],
+      ], mode => {
+        draft.mode = mode;
+        draft.termsEdited = true;
+        this._render();
+      }).id = "ecm-offer-mode";
+      if (draft.mode === "indexed") {
+        this._select(advanced, this._t("Index zone"), draft.zone, ["SI","AT","DE-LU","HR","IT-North","HU"].map(zone => [zone, zone]), zone => {
+          draft.zone = zone;
+          draft.termsEdited = true;
+        });
+        this._field(advanced, this._t("Markup EUR/kWh"), draft.markup, "text", value => {
+          draft.markup = value;
+          draft.termsEdited = true;
+        }, "€/kWh");
+        this._node("small", this._t("The index replaces entered import prices within contract validity. This is a reference, not a confirmed supplier formula."), advanced, "muted");
+      }
+    } else {
+      this._node("strong", draft.name.trim(), panel);
+      const review = this._node("dl", undefined, panel, "review");
+      const money = (value, unit) => decimalInput(value) === null ? this._t("unknown") : value.trim() + " " + unit;
+      const localDay = value => new Date(value + "T00:00:00Z").toLocaleDateString(this._locale(), {dateStyle:"medium",timeZone:"UTC"});
+      const fields = [
+        ["Valid from", localDay(values.from)], ["Last valid day", localDay(values.last)],
+        ["Grid import", draft.mode === "indexed" ? draft.zone + " · " + money(draft.markup, "€/kWh") : money(values.price, "€/kWh")],
+        ["Monthly subscription", money(values.fee, "€/month")],
+        ["Export rate (optional)", money(values.export, "€/kWh")],
+      ];
+      if (values.source.trim()) fields.push(["Price source", values.source.trim()]);
+      for (const [label, value] of fields) {
+        const row = this._node("div", undefined, review);
+        this._node("dt", this._t(label), row, "muted");
+        this._node("dd", value, row);
+      }
+      this._node("small", this._t("A save creates a new price version."), panel, "muted");
+    }
+    const actions = this._node("div", undefined, panel, "actions editor-actions");
+    const back = this._button(this._t(draft.step ? "Back" : "Cancel"), actions, () => {
+      if (draft.step) draft.step--;
+      else this._offerDraft = null;
+      this._error = null;
+      this._render();
+      if (!this._offerDraft) {
+        const id = draft.scenario ? `ecm-edit-${draft.id}` : "ecm-add-offer";
+        this.shadowRoot.getElementById?.(id)?.focus();
+        this._refresh();
+      }
+    });
+    back.id = "ecm-offer-back";
+    back.disabled = this._savingOffer;
+    const label = !values || draft.step === 2 ? "Save offer" : draft.step === 0 ? "Continue" : "Review offer";
+    const next = this._button(this._t(this._savingOffer ? "Saving offer …" : label), actions, () => this._advanceOffer(draft));
+    next.id = "ecm-offer-next";
+    next.className = "primary";
+    next.disabled = this._savingOffer;
+  }
+
+  async _advanceOffer(draft) {
+    if (this._savingOffer) return;
+    const name = draft.name.trim();
+    const values = draft.values;
+    let bounds;
+    let error;
+    if (!name) error = "Enter an offer name.";
+    else if (values && ([values.price, values.export, values.fee].some(value => decimalInput(value) === undefined) ||
+        Number(decimalInput(values.fee)) < 0)) {
+      error = "Enter valid rates and a non-negative monthly subscription.";
+    } else if (values && draft.step > 0) {
+      bounds = [localMidnight(values.from, values.timezone), localMidnight(shiftDay(values.last, 1), values.timezone)];
+      if (bounds.some(value => value === null || value % 900000) || bounds[0] < 86400000 || bounds[1] <= bounds[0]) {
+        error = "Choose a valid date range and time zone.";
+      } else if (draft.mode === "indexed" && decimalInput(draft.markup) == null) {
+        error = "Enter a markup or 0.";
+      }
+    }
+    this._error = error ?? null;
+    if (error || values && draft.step < 2) {
+      if (!error) draft.step++;
+      this._render();
+      if (!error && draft.step === 1) this.shadowRoot.getElementById?.("ecm-offer-from")?.focus();
+      return;
+    }
+
+    const offer = {base:draft.base, offer_id:draft.id, name};
+    if (!draft.base) offer.profile_name = this._t("My price profile");
+    if (values && draft.termsEdited) offer.terms = this._offerTerms(draft, bounds);
+    this._savingOffer = true;
+    this._render();
+    try {
+      this._profiles = await this._api("POST", "profiles", {offer});
+      this._offerDraft = null;
+      this._notice = "Offer saved.";
+    } catch (_) {
+      this._error = "Offer could not be saved. Check the values or reopen the latest profile. Your draft is still here.";
+    } finally {
+      this._savingOffer = false;
+      this._render();
+    }
+    if (!this._offerDraft) {
+      if (this._tab === "pricing") this.shadowRoot.getElementById?.(`ecm-edit-${draft.id}`)?.focus();
+      await this._refresh();
+    }
+  }
+
+  _offerTerms(draft, bounds) {
+    const values = draft.values;
+    const [from, until] = bounds.map(time => new Date(time).toISOString());
+    const previous = draft.scenario?.versions[0];
+    const quote = (text, unit) => {
+      const value = decimalInput(text);
+      return {value, unit, source: values.source.trim() || "User input",
+        status: value === null ? "unknown" : values.confirmed ? "confirmed" : "reference"};
+    };
+    const periods = (key, text) => text.trim() || previous?.[key].length ?
+      [{...quote(text, "EUR/kWh"), from, until}] : [];
+    const version = {id:previous?.id ?? "version-1", from, until, subscription:quote(values.fee, "EUR/month"),
+      import:periods("import", values.price), export:periods("export", values.export)};
+    const scenario = {schema_version:1, id:draft.id, currency:"EUR", tax_basis:"excluding_vat",
+      timezone:values.timezone, versions:[version]};
+    const index = draft.mode === "indexed" ? {zone:draft.zone, markup_eur_kwh:decimalInput(draft.markup)} : null;
+    return {scenario, index};
+  }
+
+  _select(parent, label, value, options, change) {
+    const wrapper = this._node("label", label, parent, "field");
+    const input = this._node("select", undefined, wrapper);
+    for (const [key, text] of options) {
+      const option = this._node("option", text, input);
+      option.value = key;
+      option.selected = key === value;
+    }
+    input.value = value;
+    input.addEventListener("change", () => change(input.value));
+    return input;
+  }
+
+  _advancedPricingForm(card, expanded) {
+    const active=this._activeProfile();
     const draft=this._pricingDraft || JSON.parse(JSON.stringify(active || {name:"",scenarios:[],indexed_import:{}}));
     const touch=()=>{this._pricingDraft=draft;};
     const field=(parent,label,obj,key,type="text")=>this._field(parent,label,obj[key],type,value=>{obj[key]=value;touch();});
     const select=(parent,label,value,options,change)=>{
-      const wrapper=this._node("label",label,parent);wrapper.style.display="block";
-      const input=this._node("select",undefined,wrapper);
-      for(const [key,text] of options){const option=this._node("option",text,input);option.value=key;}
-      input.value=value;input.addEventListener("change",()=>{change(input.value);touch();});return input;
+      return this._select(parent,label,value,options,v=>{change(v);touch();});
     };
     const quote=(unit)=>({value:null,unit,source:"User input",status:"unknown"});
     const priceFields=(parent,p,monthly=false)=>{
@@ -698,13 +1221,22 @@ class EnergyCostMonitorCard extends HTMLElement {
     this._node("p",this._t("Edit offers and periods using forms. Empty prices remain unknown. Effective timestamps need an offset, e.g. 2026-01-01T00:00:00+01:00; the end is exclusive. Changes save a new version."),card);
     field(card,this._t("Profile name"),draft,"name");
     for(const scenario of draft.scenarios){
-      const box=this._node("fieldset",undefined,card);this._node("legend",scenario.id,box);
+      const offer = this._node("details",undefined,card,"panel-row");
+      offer.id = `ecm-advanced-offer-${scenario.id}`;
+      offer.open = expanded.has(offer.id) || this._advancedOffer === scenario.id;
+      this._node("summary",this._offerLabel(draft,scenario.id),offer);
+      const box=this._node("div",undefined,offer,"advanced-fields");
+      this._field(box,this._t("Offer name (optional)"),draft.offer_names?.[scenario.id],"text",value=>{
+        if(value.trim()) (draft.offer_names ??= {})[scenario.id]=value;
+        else if(draft.offer_names) delete draft.offer_names[scenario.id];
+        touch();
+      }).maxLength=100;
       field(box,this._t("Time zone (IANA)"),scenario,"timezone");
       this._node("small",this._t("Offer identifier: ")+scenario.id,box);
-      select(box,this._t("Import price"),draft.indexed_import[scenario.id]?"indexed":"fixed",[["fixed",this._t("Entered prices")],["indexed",this._t("Energy-Charts reference index + markup")]],v=>{
+      const binding = Object.hasOwn(draft.indexed_import, scenario.id) ? draft.indexed_import[scenario.id] : null;
+      select(box,this._t("Import price"),binding?"indexed":"fixed",[["fixed",this._t("Entered prices")],["indexed",this._t("Energy-Charts reference index + markup")]],v=>{
         if(v==="indexed")draft.indexed_import[scenario.id]={zone:"SI",markup_eur_kwh:"0"};else delete draft.indexed_import[scenario.id];
       }).addEventListener("change",()=>this._render());
-      const binding=draft.indexed_import[scenario.id];
       if(binding){
         select(box,this._t("Index zone"),binding.zone,["SI","AT","DE-LU","HR","IT-North","HU"].map(v=>[v,v]),v=>binding.zone=v);
         field(box,this._t("Markup EUR/kWh"),binding,"markup_eur_kwh","number");
@@ -716,12 +1248,21 @@ class EnergyCostMonitorCard extends HTMLElement {
         priceFields(group,version.subscription,true);
         for(const [direction,label] of [["import",this._t("Import")],["export",this._t("Export")]]){
           const section=this._node("details",undefined,group);this._node("summary",label,section);
-          for(const period of version[direction]){
-            const row=this._node("fieldset",undefined,section);
-            field(row,this._t("Price valid from"),period,"from");field(row,this._t("Price valid until"),period,"until");priceFields(row,period);
-            this._button(this._t("Remove price period"),row,()=>{version[direction].splice(version[direction].indexOf(period),1);touch();this._render();});
-          }
-          this._button(this._t("Add period: ")+label,section,()=>{version[direction].push({...quote("EUR/kWh"),from:version.from,until:version.until});touch();this._render();});
+          section.id = `ecm-advanced-${scenario.id}-${version.id}-${direction}`;
+          section.open = expanded.has(section.id);
+          let rendered = false;
+          const render = () => {
+            if (!section.open || rendered) return;
+            rendered = true;
+            for(const period of version[direction]){
+              const row=this._node("fieldset",undefined,section);
+              field(row,this._t("Price valid from"),period,"from");field(row,this._t("Price valid until"),period,"until");priceFields(row,period);
+              this._button(this._t("Remove price period"),row,()=>{version[direction].splice(version[direction].indexOf(period),1);touch();this._render();});
+            }
+            this._button(this._t("Add period: ")+label,section,()=>{version[direction].push({...quote("EUR/kWh"),from:version.from,until:version.until});touch();this._render();});
+          };
+          render();
+          section.addEventListener("toggle", render);
         }
         this._button(this._t("Remove contract version"),group,()=>{scenario.versions.splice(scenario.versions.indexOf(version),1);touch();this._render();});
       }
@@ -729,19 +1270,25 @@ class EnergyCostMonitorCard extends HTMLElement {
         let n=1;while(scenario.versions.some(v=>v.id===`version-${n}`))n++;
         scenario.versions.push({id:`version-${n}`,from:"",until:"",import:[],export:[],subscription:quote("EUR/month")});touch();this._render();
       });
-      this._button(this._t("Remove offer"),box,()=>{draft.scenarios.splice(draft.scenarios.indexOf(scenario),1);delete draft.indexed_import[scenario.id];touch();this._render();});
+      this._button(this._t("Remove offer"),box,()=>{draft.scenarios.splice(draft.scenarios.indexOf(scenario),1);delete draft.indexed_import[scenario.id];if(draft.offer_names) delete draft.offer_names[scenario.id];touch();this._render();});
     }
-    this._button(this._t("Add offer"),card,()=>{
+    const actions = this._node("div",undefined,card,"actions editor-actions");
+    this._button(this._t("Add offer"),actions,()=>{
       let n=1;while(draft.scenarios.some(s=>s.id===`offer-${n}`))n++;
-      draft.scenarios.push({schema_version:1,id:`offer-${n}`,currency:"EUR",tax_basis:"excluding_vat",timezone:this._hass?.config?.time_zone || "UTC",versions:[]});touch();this._render();
-    });
-    this._button(this._t("Save price profile"),card,async()=>{
+      const id = `offer-${n}`;
+      draft.scenarios.push({schema_version:1,id,currency:"EUR",tax_basis:"excluding_vat",timezone:this._hass?.config?.time_zone || "UTC",versions:[]});
+      this._advancedOffer = id;
+      touch();this._render();
+    }).disabled = draft.scenarios.length >= 8;
+    this._advancedOffer = null;
+    this._button(this._t("Discard price changes"),actions,()=>{this._pricingDraft=null;this._error=null;this._render();});
+    this._button(this._t("Save price profile"),actions,async()=>{
       touch();try{this._profiles=await this._api("POST","profiles",draft);this._pricingDraft=null;this._error=null;this._render();await this._refresh();}
       catch(_){this._error="Check the name, validity, prices and overlapping periods. The draft is retained.";this._render();}
-    });
-    this._button(this._t("Discard price changes"),card,()=>{this._pricingDraft=null;this._error=null;this._render();});
+    }).className = "primary";
   }
   _historyForm(card) {
+    this._node("h4",this._t("History import"),card);
     this._node("p",this._t("Select a consistent legacy Energy Cost Monitor SQLite backup. The file is uploaded only to your HA. Import retains original records and adds history preceding native collection; overlap is refused. Both current stores are privately backed up before writing."),card);
     this._node("small",this._t("Import transfers measurements, supply profiles and archived sessions and reports. Regional settings require separate setup."),card);
     if(this._importResult)this._node("p",this._t`Import successful: ${this._importResult.converted_role_intervals} measurement records, ${this._importResult.profiles} profiles, ${this._importResult.reports} reports. Pre-import backup: ${this._importResult.backup}`,card);
@@ -762,7 +1309,7 @@ class EnergyCostMonitorCard extends HTMLElement {
           catch(_){this._error="Could not remove the backup.";this._render();}
         });
       }
-      const label=this._node("label",this._t("Legacy database backup (.sqlite3)"),card);
+      const label=this._node("label",this._t("Legacy database backup (.sqlite3)"),card,"field");
       const file=this._node("input",undefined,label);file.type="file";file.accept=".sqlite3,.sqlite,.db";
       const upload=this._button(this._t("Upload and preview backup"),card,async()=>{
         const selectedFile = label.querySelector("input");
@@ -781,16 +1328,12 @@ class EnergyCostMonitorCard extends HTMLElement {
     }
     const draft=this._importDraft;
     this._node("p",this._t`Preview: ${draft.counts.intervals} legacy intervals, ${draft.counts.sessions} sessions. History boundary: ${this._time(draft.cutover)}.`,card);
+    const mapping = this._node("div",undefined,card,"field-grid");
     for(const role of draft.roles){
-      const label=this._node("label",this._t`Legacy measurement for ${role}`,card);label.style.display="block";
-      const input=this._node("select",undefined,label);
-      for(const value of ["",...draft.metrics]){const option=this._node("option",value||this._t("Select measurement"),input);option.value=value;}
-      input.value=draft.mapping[role]||"";input.addEventListener("change",()=>{draft.mapping[role]=input.value;});
+      this._select(mapping,this._t`Legacy measurement for ${role}`,draft.mapping[role]||"",
+        [["",this._t("Select measurement")],...draft.metrics.map(value=>[value,value])],value=>{draft.mapping[role]=value;});
     }
-    const label=this._node("label",this._t("Legacy supply profile"),card);label.style.display="block";
-    const profile=this._node("select",undefined,label);
-    for(const value of draft.profiles){const option=this._node("option",value,profile);option.value=value;}
-    profile.value=draft.profile;profile.addEventListener("change",()=>{draft.profile=profile.value;});
+    this._select(card,this._t("Legacy supply profile"),draft.profile,draft.profiles.map(value=>[value,value]),value=>{draft.profile=value;});
     this._field(card,this._t("Legacy price comparison end (exclusive date)"),draft.horizon,"date",v=>draft.horizon=v);
     this._field(card,this._t("Activate converted supply profile after import"),draft.activate,"checkbox",v=>draft.activate=v);
     if(draft.study_available)
@@ -810,42 +1353,56 @@ class EnergyCostMonitorCard extends HTMLElement {
       catch(_){this._error="Could not discard the uploaded backup.";this._render();}
     });
   }
-  _settingsForm(card) {
-    const active=this._profiles?.versions.find(v=>v.id===this._profiles.active)?.profile;
-    if(!active){this._node("p",this._t("First create a price profile in the Profiles tab."),card);return;}
+  _settingsForm(card, expanded) {
+    const active=this._activeProfile();
+    this._node("h4",this._t("Billing and EV"),card);
+    if(!active){
+      this._node("p",this._t("Add an offer first to configure the price profile."),card,"muted");
+      this._navigationButton(card,"pricing","Open price profile",this._tab,"settings-link");
+      return;
+    }
     const draft=this._settingsDraft || JSON.parse(JSON.stringify(active));
     const touch=()=>{this._settingsDraft=draft;};
     this._node("p",this._t("Changes create a new profile version. Frozen reports are preserved."),card);
-    const ev=this._node("details",undefined,card);this._node("summary",this._t("EV calculation from counter increments"),ev);
+    const ev=this._node("details",undefined,card,"panel-row");
+    ev.id = "ecm-settings-ev"; ev.open = expanded.has(ev.id);
+    this._node("summary",this._t("EV calculation from counter increments"),ev);
     const enabled=this._field(ev,this._t("Use sample-level calculation"),!!draft.session,"checkbox",v=>{
       if(v)draft.session={max_gap_seconds:90,max_power_kw:null,tolerance_kwh:0,charging_kw:.1,charging_delta_kwh:0};else delete draft.session;
       touch();this._render();
     });enabled.setAttribute("aria-label",this._t("EV counter calculation"));
+    const evFields = this._node("div",undefined,ev,"field-grid");
     if(draft.session) for(const [key,label] of [["max_gap_seconds",this._t("Maximum sample gap (s)")],["max_power_kw",this._t("Maximum EV power (kW)")],["tolerance_kwh",this._t("Counter increment tolerance (kWh)")],["charging_kw",this._t("Charging power threshold (kW)")],["charging_delta_kwh",this._t("Energy increment threshold (kWh)")]])
-      this._field(ev,label,draft.session[key],"number",v=>{draft.session[key]=v===""?null:Number(v);touch();});
+      this._field(evFields,label,draft.session[key],"number",v=>{draft.session[key]=v===""?null:Number(v);touch();});
     this._node("small",this._t("Select EV mode sensors in source settings. The integration only records state and never controls the charger."),ev);
-    const regional=this._node("details",undefined,card);this._node("summary",this._t("Network charges, levies and VAT"),regional);
+    const regional=this._node("details",undefined,card,"panel-row");
+    regional.id = "ecm-settings-regional"; regional.open = expanded.has(regional.id);
+    this._node("summary",this._t("Network charges, levies and VAT"),regional);
     this._node("p",this._t("SI 2026 calendar. Enter effective rates excluding VAT and their validity periods. Enter rates with applicable reductions included. Blank means unknown. Connection power is not agreed block power."),regional);
     for(const [index,version] of (draft.regional || []).entries()) {
       const box=this._node("fieldset",undefined,regional);this._node("legend",this._t`Version ${index+1}`,box);
+      const basics = this._node("div",undefined,box,"field-grid");
       for(const [key,label,type] of [["from",this._t("Valid from"),"date"],["until",this._t("Valid until (exclusive)"),"date"],["source",this._t("Rate source"),"text"],["confirmed",this._t("Rates checked against a valid contract/invoice"),"checkbox"]])
-        this._field(box,label,version[key],type,v=>{version[key]=v;touch();});
+        this._field(basics,label,version[key],type,v=>{version[key]=v;touch();});
+      const blocks = this._node("details",undefined,box,"advanced-fields");
+      blocks.id = `ecm-regional-blocks-${index}`; blocks.open = expanded.has(blocks.id);
+      this._node("summary",this._t("Block rates and agreed power"),blocks);
+      const blockFields = this._node("div",undefined,blocks,"field-grid");
       for(const block of ["1","2","3","4","5"])
         for(const [key,label] of [["energy",this._t("Energy EUR/kWh")],["power",this._t("Power EUR/kW/month")],["agreed_kw",this._t("Agreed power kW")]])
-          this._field(box,this._t`Block ${block}: ${label}`,version[key][block],"number",v=>{version[key][block]=v===""?null:v;touch();});
+          this._field(blockFields,this._t`Block ${block}: ${label}`,version[key][block],"number",v=>{version[key][block]=v===""?null:v;touch();});
+      const taxes = this._node("details",undefined,box,"advanced-fields");
+      taxes.id = `ecm-regional-taxes-${index}`; taxes.open = expanded.has(taxes.id);
+      this._node("summary",this._t("Taxes and levies"),taxes);
+      const taxFields = this._node("div",undefined,taxes,"field-grid");
       for(const [key,label] of [["vat",this._t("Import VAT (fraction, e.g. 0.22)")],["export_vat",this._t("Export VAT (fraction)")],["operator_kwh",this._t("Operator EUR/kWh")],["efficiency_kwh",this._t("Efficiency EUR/kWh")],["excise_kwh",this._t("Excise EUR/kWh")],["renewables_kw",this._t("Renewables/CHP basis (kW)")],["renewables_kw_month",this._t("Renewables/CHP EUR/kW/month")],["excess_factor",this._t("Excess-power factor")]])
-        this._field(box,label,version[key],"number",v=>{version[key]=v===""?null:v;touch();});
-      const exciseLabel=this._node("label",this._t("Excise basis"),box);
-      const exciseSelect=this._node("select",undefined,exciseLabel);
-      for(const [value,label] of [["import",this._t("Imported energy")],["net_import",this._t("Net imported energy over the billing period")]]) {
-        const option=this._node("option",label,exciseSelect);
-        option.value=value;
-        option.selected=(version.excise_basis ?? "import")===value;
-      }
-      exciseSelect.addEventListener("change",()=>{version.excise_basis=exciseSelect.value;touch();});
-      const label=this._node("label",this._t("Excess-power mode"),box),select=this._node("select",undefined,label);
-      for(const [value,text] of [["unknown",this._t("Unconfirmed")],["informative",this._t("Informative, not charged")],["charged",this._t("Charged")]]){const option=this._node("option",text,select);option.value=value;option.selected=version.excess_mode===value;}
-      select.addEventListener("change",()=>{version.excess_mode=select.value;touch();});
+        this._field(taxFields,label,version[key],"number",v=>{version[key]=v===""?null:v;touch();});
+      this._select(taxes,this._t("Excise basis"),version.excise_basis ?? "import",
+        [["import",this._t("Imported energy")],["net_import",this._t("Net imported energy over the billing period")]],
+        value=>{version.excise_basis=value;touch();});
+      this._select(blocks,this._t("Excess-power mode"),version.excess_mode,
+        [["unknown",this._t("Unconfirmed")],["informative",this._t("Informative, not charged")],["charged",this._t("Charged")]],
+        value=>{version.excess_mode=value;touch();});
       this._button(this._t("Remove version from draft"),box,()=>{draft.regional.splice(index,1);if(!draft.regional.length)delete draft.regional;touch();this._render();});
     }
     this._button(this._t("Add rate period"),regional,()=>{
@@ -854,13 +1411,15 @@ class EnergyCostMonitorCard extends HTMLElement {
         vat:null,export_vat:null,operator_kwh:null,efficiency_kwh:null,excise_kwh:null,renewables_kw:null,renewables_kw_month:null,excess_factor:null});
       touch();this._render();
     });
-    this._button(this._t("Save EV and billing"),card,async()=>{
+    const actions = this._node("div",undefined,card,"actions editor-actions");
+    this._button(this._t("Discard setting changes"),actions,()=>{this._settingsDraft=null;this._render();});
+    this._button(this._t("Save EV and billing"),actions,async()=>{
       try{this._profiles=await this._api("POST","profiles",draft);this._settingsDraft=null;this._error=null;this._render();await this._refresh();}
       catch(_){this._error="Check all limits, effective dates and decimal rates. The draft is retained.";this._render();}
-    });
-    this._button(this._t("Discard setting changes"),card,()=>{this._settingsDraft=null;this._render();});
+    }).className = "primary";
   }
-  _studyForm(card) {
+  _studyForm(card, expanded) {
+    this._node("h4",this._t("Study settings"),card);
     const status=this._study || {state:"not_configured"};
     this._node("p",this._t`Study state: ${this._status(status.state)}`,card);
     if(status.quality)this._node("p",this._t`Warm-up coverage: ${this._number(status.quality.coverage*100,"%")} · daily check: ${this._status(status.quality.daily.status)}`,card);
@@ -870,11 +1429,17 @@ class EnergyCostMonitorCard extends HTMLElement {
       return;
     }
     const draft=this._studyDraft || {timezone:this._hass?.config?.time_zone || "Europe/Ljubljana",months:3,warmup_hours:48,minimum_coverage:.99,require_daily_check:true,daily_absolute_kwh:.1,daily_relative:.01,reference_age_seconds:180};
+    const basics = this._node("div",undefined,card,"field-grid");
+    const advanced = this._node("details",undefined,card,"advanced-fields");
+    advanced.id = "ecm-study-advanced"; advanced.open = expanded.has(advanced.id);
+    this._node("summary",this._t("Advanced settings"),advanced);
+    const fields = this._node("div",undefined,advanced,"field-grid");
     for(const [key,label,type] of [["timezone",this._t("Time zone"),"text"],["months",this._t("Number of months"),"number"],["warmup_hours",this._t("Warm-up (hours)"),"number"],["minimum_coverage",this._t("Minimum coverage (fraction)"),"number"],["require_daily_check",this._t("Require daily comparison with household sensor"),"checkbox"],["daily_absolute_kwh",this._t("Daily absolute tolerance (kWh)"),"number"],["daily_relative",this._t("Daily relative tolerance (fraction)"),"number"],["reference_age_seconds",this._t("Maximum daily-reference age (s)"),"number"]])
-      this._field(card,label,draft[key],type,v=>{draft[key]=type==="number"?Number(v):v;this._studyDraft=draft;});
-    this._node("small",this._t("Select the household daily reference in integration sources. Warm-up cannot finish without a valid required reference."),card);
-    this._button(this._t("Start study warm-up"),card,async()=>{try{this._study=await this._api("POST","study",draft);this._studyDraft=null;this._error=null;this._render();await this._refresh();}catch(_){this._error="Invalid study settings.";this._render();}});
-    this._button(this._t("Discard study draft"),card,()=>{this._studyDraft=null;this._render();});
+      this._field(["months","warmup_hours"].includes(key)?basics:fields,label,draft[key],type,v=>{draft[key]=type==="number"?Number(v):v;this._studyDraft=draft;});
+    this._node("small",this._t("Select the household daily reference in integration sources. Warm-up cannot finish without a valid required reference."),advanced,"muted");
+    const actions = this._node("div",undefined,card,"actions editor-actions");
+    this._button(this._t("Discard study draft"),actions,()=>{this._studyDraft=null;this._render();});
+    this._button(this._t("Start study warm-up"),actions,async()=>{try{this._study=await this._api("POST","study",draft);this._studyDraft=null;this._error=null;this._render();await this._refresh();}catch(_){this._error="Invalid study settings.";this._render();}}).className = "primary";
   }
 
   async _download(id, format) {

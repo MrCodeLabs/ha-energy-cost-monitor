@@ -5,7 +5,7 @@
 # Energy Cost Monitor za Home Assistant
 
 [![Marketplace: repozitorij po meri](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
-[![0.1.0-beta.2](https://img.shields.io/badge/beta-0.1.0--beta.2-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2)
+[![0.1.0](https://img.shields.io/badge/izdaja-0.1.0-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0)
 [![Licenca MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
 [![Podpri prek Revoluta](https://img.shields.io/badge/Revolut-podpri-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
 [![Podpri prek PayPala](https://img.shields.io/badge/PayPal-podpri-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
@@ -17,33 +17,23 @@ Primerjaj dobavne ponudbe elektrike, spremljaj meritve in EV seje ter shrani
 ponovljiva poročila iz obstoječih senzorjev Home Assistanta. Integracija podatke
 bere in ne krmili naprav.
 
-**Javna beta.** Dodaj Energy Cost Monitor kot repozitorij po meri v Home Assistant
-Marketplaceu in vključi predizdaje. Za beto uporabi ločeno testno namestitev.
+Dodaj Energy Cost Monitor kot repozitorij po meri v Home Assistant Marketplaceu.
+V Home Assistantu 2026.10.2 uporabi HACS.
 
 **[Začni tukaj: namestitev in uporabniški vodič](docs/getting-started.sl.md)** ·
 [English](README.md)
 
-## Kaj je novega v različici 0.1.0-beta.2
+## Kaj je novega v različici 0.1.0
 
-- Prenovljeni pregled prikaže oceno dobave, izmenjavo z omrežjem in pokritost podatkov.
-- Ponudbe primerja na skupnih intervalih, regionalni izračun pa prikaže v ločenem razdelku.
-- Pri preklopu med 1, 7 in 30 dnevi prikaz sledi zadnji izbiri obdobja.
+- Na računalniku ali telefonu preklapljaj med pregledom, cenami, polnjenjem, poročili in nastavitvami.
+- Vnesi cene in datume veljavnosti z vodenim obrazcem ter primerjaj ponudbe po imenih.
+- Preimenuj uvožene ponudbe in ohrani njihove cene ter prejšnja poročila.
+- Po prekinitvi zapisa SQLite ob zagonu razveljavi nedokončani zapis in nadaljuje zajem.
 
-[Opombe izdaje](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2) ·
+[Opombe izdaje](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0) ·
 [Dnevnik sprememb](CHANGELOG.md)
 
-## Prejšnja izdaja · 0.1.0-beta.1
-
-- **Vodena nastavitev.** Izberi obstoječe senzorje energije in odpri ploščo,
-  ki se samodejno doda v stransko vrstico.
-- **Primerjava dobavnih ponudb.** Nastavi cene in naročnine ter shrani poročila
-  v obliki HTML ali CSV.
-- **Spremljanje polnjenja EV.** Beleži seje z ustreznim kumulativnim števcem.
-- **Nadaljevanje uvožene študije.** Ob uvozu podprte kopije SQLite obnovi prvotni
-  razpored in poveži arhivirana poročila.
-
-[Opombe izdaje](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1) ·
-[Dnevnik sprememb](CHANGELOG.md)
+Prejšnje predizdaje so zbrane v [GitHub Releases](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases).
 
 ## Kaj lahko nastaviš
 
@@ -61,18 +51,15 @@ na namestitev HA.
 
 ## Kaj je preverjeno in kaj še manjka
 
-Funkcije so združene v `main` (`532012e`) prek
-[PR #11](https://github.com/MrCodeLabs/ha-energy-cost-monitor/pull/11).
-V ločenem HA 2026.10.2 so preverjeni obrazci, sintetični uvoz, izdelava poročila,
-krmilni elementi študije ter prenos prek HACS in ponovni zagon. Posodobitev je
-ohranila stare meritve, štiri različice profilov in dve poročili; vseh 27 datotek
-paketa se je ujemalo s preverjeno kodo. Uspešnih je 207 Python testov in CI na
-veji, PR ter main. [Dokazi in omejitve](docs/acceptance-2026-11-02.md).
+V ločenem HA 2026.11 so s sintetičnimi podatki preizkušeni čista namestitev,
+nadgradnja bete, obnova SQLite in povratek. Prejšnji preizkusi HACS v HA
+2026.10.2 so opisani v [zapisniku preverjanja](docs/acceptance-2026-11-02.md).
+Za obstoječo namestitev upoštevaj
+[navodila za nadgradnjo in obnovo](docs/getting-started.sl.md#7-posodobitve-kopije-in-odstranitev).
 
-To ne potrjuje vseh različic HA ali obnove celotnega HAOS. Odprti ostajajo
-primerjava z računom, začetno/preneseno dobroimetje, izplačila, regionalna pravila
-za 2027 ter preverjanje pri neodvisnem uporabniku. Manjkajoče vrednosti ostanejo
-neznane. **Obstoječe produkcijske integracije še ne zamenjuj.**
+Regionalne ocene temeljijo na pravilih za Slovenijo v letu 2026. Uskladitev z
+računom, prenos dobroimetja, izplačila, pravila za 2027 in celotna obnova
+HAOS ostajajo zunaj preverjenega obsega te izdaje.
 
 ## Zasebnost in pomoč
 

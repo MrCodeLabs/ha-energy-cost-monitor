@@ -48,7 +48,7 @@ def encoded(value):
 
 def validate_profile(profile):
     if (not isinstance(profile, dict) or not {"name", "scenarios", "indexed_import"} <= set(profile)
-            or set(profile) - {"name", "scenarios", "indexed_import", "session_charging_kw", "session", "regional"}):
+            or set(profile) - {"name", "scenarios", "indexed_import", "offer_names", "session_charging_kw", "session", "regional"}):
         raise ValueError("invalid_profile_fields")
     if not isinstance(profile["name"], str) or not 1 <= len(profile["name"].strip()) <= 100:
         raise ValueError("invalid_profile_name")
@@ -68,6 +68,10 @@ def validate_profile(profile):
     ids = {s.identifier for s in scenarios}
     if len(ids) != len(scenarios):
         raise ValueError("duplicate_scenario")
+    names = profile.get("offer_names", {})
+    if (not isinstance(names, dict) or not set(names) <= ids or
+            any(not isinstance(name, str) or not 1 <= len(name.strip()) <= 100 for name in names.values())):
+        raise ValueError("invalid_offer_names")
     indexed = profile["indexed_import"]
     if not isinstance(indexed, dict) or not set(indexed) <= ids:
         raise ValueError("invalid_indexed_scenarios")
@@ -152,19 +156,51 @@ class ApplicationStore:
                 yield db
 
     def save_profile(self, profile, now=None):
+        with self.db(True) as db:
+            return self._save_profile(db, profile, now)
+
+    @staticmethod
+    def _save_profile(db, profile, now=None):
         body = encoded(validate_profile(profile))
         ident = hashlib.sha256(body.encode()).hexdigest()
-        with self.db(True) as db:
-            db.execute("INSERT OR IGNORE INTO profiles VALUES(?,?,?)", (ident, time.time() if now is None else now, body))
-            db.execute("INSERT OR REPLACE INTO settings VALUES('active_profile',?)", (ident,))
+        db.execute("INSERT OR IGNORE INTO profiles VALUES(?,?,?)", (ident, time.time() if now is None else now, body))
+        db.execute("INSERT OR REPLACE INTO settings VALUES('active_profile',?)", (ident,))
         return ident
+
+    def edit_offer(self, *, base, offer_id, name, terms=None, profile_name=None):
+        """Version one offer or its display name against the active profile."""
+        if not isinstance(offer_id, str) or not isinstance(name, str) or not 1 <= len(name.strip()) <= 100:
+            raise ValueError("invalid_offer_name")
+        with self.db(True) as db:
+            active, profile = self.active_profile(db)
+            if active != base:
+                raise ValueError("active_profile_changed")
+            if profile is None:
+                profile = {"name": profile_name, "scenarios": [], "indexed_import": {}}
+            scenarios = profile["scenarios"]
+            index = next((i for i, scenario in enumerate(scenarios) if scenario["id"] == offer_id), len(scenarios))
+            if terms is None:
+                if index == len(scenarios):
+                    raise ValueError("unknown_offer")
+            else:
+                if (not isinstance(terms, dict) or set(terms) != {"scenario", "index"}
+                        or not isinstance(terms["scenario"], dict) or terms["scenario"].get("id") != offer_id):
+                    raise ValueError("invalid_offer_terms")
+                scenarios[index:index + 1] = [terms["scenario"]]
+                if terms["index"] is None:
+                    profile["indexed_import"].pop(offer_id, None)
+                else:
+                    profile["indexed_import"][offer_id] = terms["index"]
+            profile.setdefault("offer_names", {})[offer_id] = name.strip()
+            return self._save_profile(db, profile)
 
     def profiles(self):
         with self.db() as db:
             active = db.execute("SELECT value FROM settings WHERE key='active_profile'").fetchone()
             return {"active": active[0] if active else None,
                     "versions": [{"id": i, "created": t, "profile": json.loads(b)}
-                                 for i, t, b in db.execute("SELECT * FROM profiles ORDER BY created DESC LIMIT 100")]}
+                                for i, t, b in db.execute("SELECT * FROM profiles ORDER BY (id=?) DESC, created DESC LIMIT 100",
+                                                         (active[0] if active else None,))]}
 
     def activate(self, ident):
         with self.db(True) as db:
@@ -335,8 +371,10 @@ def render_report(data, format):
     if format == "html":
         def esc(value):
             return html.escape("unknown" if value is None else str(value))
+        names = (data.get("profile") or {}).get("offer_names", {})
         rows = "".join("<tr>" + "".join("<td>" + esc(value) + "</td>" for value in (
-            result["scenario"]["identifier"], result["total"], result["known_net_subtotal"],
+            names.get(result["scenario"]["identifier"], result["scenario"]["identifier"]),
+            result["total"], result["known_net_subtotal"],
             result["coverage"], result["confirmed"])) + "</tr>"
             for result in (data.get("comparison") or {}).get("results", []))
         return ("<!doctype html><meta charset=utf-8><title>Energy Cost Monitor</title>"

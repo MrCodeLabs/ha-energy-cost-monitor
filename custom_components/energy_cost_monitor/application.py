@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from functools import partial
 import json
+from pathlib import Path
 import time
 import sqlite3
 import urllib.error
@@ -13,7 +14,8 @@ import urllib.request
 from homeassistant.core import callback
 
 from ._core.collector import drain_on_cancel
-from ._core.application import ApplicationStore
+from ._core.application import APP_ID, ApplicationStore
+from ._core.sqlite_recovery import recover_interrupted_write
 from ._core.study import Study
 from .const import DOMAIN
 
@@ -106,4 +108,6 @@ class Application:
 
 
 def application_store(hass):
-    return ApplicationStore(hass.config.path(".storage", "energy_cost_monitor_application.sqlite3"))
+    path = Path(hass.config.path(".storage", "energy_cost_monitor_application.sqlite3"))
+    recover_interrupted_write(path, APP_ID)
+    return ApplicationStore(path)

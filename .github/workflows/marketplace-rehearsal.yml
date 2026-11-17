@@ -20,4 +20,4 @@ jobs:
       - name: Exercise the Marketplace package on synthetic data
         env:
           ECM_LAB_GITHUB_TOKEN: ${{ github.token }}
-        run: bash lab/run-marketplace.sh 6456ac3943e0522110d8955fcb7c7b119283f096 "$GITHUB_SHA"
+        run: bash lab/run-marketplace.sh cbbdb18060538b22363b0629085394d3c7422d7e "$GITHUB_SHA"
