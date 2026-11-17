@@ -5,7 +5,7 @@
 # Energy Cost Monitor for Home Assistant
 
 [![Marketplace: Custom repository](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
-[![0.1.0-beta.1](https://img.shields.io/badge/beta-0.1.0--beta.1-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1)
+[![0.1.0-beta.2](https://img.shields.io/badge/beta-0.1.0--beta.2-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2)
 [![License: MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
 [![Support via Revolut](https://img.shields.io/badge/Revolut-support-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
 [![Support via PayPal](https://img.shields.io/badge/PayPal-support-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
@@ -23,7 +23,16 @@ Marketplace and enable pre-releases. Use a separate test instance for the beta.
 **[Start here: installation and user guide](docs/getting-started.md)** ·
 **[Slovenska navodila](README.sl.md)**
 
-## What's new in 0.1.0-beta.1
+## What's new in 0.1.0-beta.2
+
+- See supply estimates, grid energy and data coverage on the redesigned overview.
+- Compare offers across shared intervals and expand the regional calculation separately.
+- Change between 1, 7 and 30 days while the latest selection stays in sync with the displayed data.
+
+[Release notes](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2) ·
+[Changelog](CHANGELOG.md)
+
+## Previous release · 0.1.0-beta.1
 
 - **Guided setup.** Select existing energy sensors and open the automatically
   added Energy Cost Monitor panel.

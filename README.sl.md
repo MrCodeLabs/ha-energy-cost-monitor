@@ -5,7 +5,7 @@
 # Energy Cost Monitor za Home Assistant
 
 [![Marketplace: repozitorij po meri](https://img.shields.io/badge/Marketplace-Custom-41BDF5.svg)](https://www.home-assistant.io/integrations/marketplace/#custom-repositories)
-[![0.1.0-beta.1](https://img.shields.io/badge/beta-0.1.0--beta.1-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.1)
+[![0.1.0-beta.2](https://img.shields.io/badge/beta-0.1.0--beta.2-007ec6.svg)](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2)
 [![Licenca MIT](https://img.shields.io/badge/license-MIT-97CA00.svg)](LICENSE)
 [![Podpri prek Revoluta](https://img.shields.io/badge/Revolut-podpri-007ec6.svg?logo=revolut&logoColor=white)](https://revolut.me/alesvucina)
 [![Podpri prek PayPala](https://img.shields.io/badge/PayPal-podpri-007ec6.svg?logo=paypal&logoColor=white)](https://paypal.me/AlesVucina)
@@ -23,7 +23,16 @@ Marketplaceu in vključi predizdaje. Za beto uporabi ločeno testno namestitev.
 **[Začni tukaj: namestitev in uporabniški vodič](docs/getting-started.sl.md)** ·
 [English](README.md)
 
-## Kaj je novega v različici 0.1.0-beta.1
+## Kaj je novega v različici 0.1.0-beta.2
+
+- Prenovljeni pregled prikaže oceno dobave, izmenjavo z omrežjem in pokritost podatkov.
+- Ponudbe primerja na skupnih intervalih, regionalni izračun pa prikaže v ločenem razdelku.
+- Pri preklopu med 1, 7 in 30 dnevi prikaz sledi zadnji izbiri obdobja.
+
+[Opombe izdaje](https://github.com/MrCodeLabs/ha-energy-cost-monitor/releases/tag/0.1.0-beta.2) ·
+[Dnevnik sprememb](CHANGELOG.md)
+
+## Prejšnja izdaja · 0.1.0-beta.1
 
 - **Vodena nastavitev.** Izberi obstoječe senzorje energije in odpri ploščo,
   ki se samodejno doda v stransko vrstico.
