@@ -23,13 +23,13 @@ run_ha() {
   timeout 240 docker run --rm --user "$(id -u):$(id -g)" \
     --network "$network" --cpus 2 --memory 2g --pids-limit 256 \
     --cap-drop ALL --security-opt no-new-privileges --read-only \
-    --tmpfs /tmp:rw,size=128m -e PYTHONDONTWRITEBYTECODE=1 "${credentials[@]}" \
+    --tmpfs /tmp:rw,size=128m -e PYTHONDONTWRITEBYTECODE=1 -e ECM_LAB_BASELINE "${credentials[@]}" \
     -v "$ROOT:/repo:ro" -v "$LAB/$config:/config" \
     --entrypoint python "$IMAGE" "$@"
 }
 
 run_ha upgrade bridge /repo/lab/marketplace_package.py "$BASELINE"
-run_ha upgrade none /repo/lab/ha_smoke.py create
+ECM_LAB_BASELINE=1 run_ha upgrade none /repo/lab/ha_smoke.py create
 run_ha upgrade bridge /repo/lab/marketplace_package.py "$CANDIDATE" /repo/custom_components/energy_cost_monitor
 run_ha upgrade none /repo/lab/ha_smoke.py restart
 run_ha clean bridge /repo/lab/marketplace_package.py "$CANDIDATE" /repo/custom_components/energy_cost_monitor

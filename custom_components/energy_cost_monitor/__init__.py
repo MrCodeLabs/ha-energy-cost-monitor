@@ -13,9 +13,10 @@ from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.util import dt as dt_util
 
-from ._core.accounting import AccountingEngine
+from ._core.accounting import APPLICATION_ID, AccountingEngine
 from ._core.collector import Collector, drain_on_cancel, validate_settings
 from ._core.observations import Observation
+from ._core.sqlite_recovery import recover_interrupted_write
 from .const import DOMAIN, STORAGE_FILE
 from .application import Application, application_store
 
@@ -98,10 +99,12 @@ async def async_setup_entry(hass, entry):
             raise ConfigEntryError("Invalid Energy Cost Monitor configuration; reconfigure the entry") from None
 
         def open_engine():
-            engine = AccountingEngine(storage_path(hass), config, max_gap_seconds=gap,
-                                      sampling_mode="report")
+            path = storage_path(hass)
+            recover_interrupted_write(path, APPLICATION_ID)
+            engine = AccountingEngine(path, config, max_gap_seconds=gap, sampling_mode="report")
+            store = application_store(hass)
             engine.break_continuity()
-            return engine, application_store(hass)
+            return engine, store
 
         try:
             engine, store = await drain_on_cancel(hass.async_add_executor_job(open_engine))

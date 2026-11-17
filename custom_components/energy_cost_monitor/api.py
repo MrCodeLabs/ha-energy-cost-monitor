@@ -41,6 +41,8 @@ class ApplicationView(HomeAssistantView):
                 if request.method == "POST":
                     if "activate" in data:
                         await app.call(app.store.activate, data["activate"])
+                    elif set(data) == {"offer"} and isinstance(data["offer"], dict):
+                        await app.call(app.store.edit_offer, **data["offer"])
                     else:
                         await app.call(app.store.save_profile, data)
                     app.next_fetch = 0

@@ -1,5 +1,32 @@
 # Existing solutions and project rationale
 
+## Recovery of interrupted SQLite writes
+
+The [Dynamic Energy Cost sensor](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/sensor.py)
+and [Powercalc cost sensors](https://docs.powercalc.nl/sensor-types/cost-sensor/)
+remain relevant for Home Assistant cost sensors. Their companion frontends
+serve balancing-reserve analytics and device profiles, as reviewed below.
+The observed failure is in the two SQLite stores owned by Energy Cost Monitor.
+Startup lets SQLite replay those stores' [hot journals](https://sqlite.org/lockingv3.html#dealing_with_hot_journals)
+and then runs the existing ledger and application validation.
+
+## Guided price editing and dashboard navigation
+
+Home Assistant configures energy sources and price sensors in its Energy
+settings. Dynamic Energy Cost and Powercalc cover sensor calculation, including
+their existing price configuration flows. The MFFR Profit Tracker and Powercalc
+Library UI address balancing-reserve revenue and device profiles. See their
+[configuration source](https://github.com/martinarva/dynamic_energy_cost/blob/main/custom_components/dynamic_energy_cost/config_flow.py),
+[import/export discussion](https://github.com/martinarva/dynamic_energy_cost/issues/243),
+[current cost sensor documentation](https://docs.powercalc.nl/sensor-types/cost-sensor/),
+[MFFR frontend](https://github.com/martinarva/MFFR-Profit-Tracker) and
+[Powercalc Library UI](https://github.com/bramstroker/powercalc-library-ui).
+
+The panel has a separate need to guide users through effective-dated contract
+offers, retain imported rates and show their labels consistently with existing
+report snapshots. This work extends the existing authenticated profile and
+report flow. The form and navigation use the project's own frontend.
+
 ## Cost overview redesign — 15 November 2026
 
 [Home Assistant Energy cards](https://www.home-assistant.io/dashboards/energy/)
